@@ -16,44 +16,48 @@
             justify-content: center; 
             padding: 15px;
             z-index: 50;
+            flex-wrap: wrap;
+            gap: 5px;
         }
-
         .product-category-nav a {
             color: white;
-            margin: 0 15px;
+            margin: 0 10px;
             text-decoration: none;
             font-weight: bold;
             cursor: pointer;
+            padding: 5px 10px;
         }
         .product-category-nav a:hover,
         .product-category-nav a.active {
             color: yellow;
         }
-
         .loading-spinner {
             text-align: center;
             padding: 40px;
-            color: white;
+            color: #666;
         }
-
         .loading-spinner::after {
             content: "";
             display: inline-block;
             width: 30px;
             height: 30px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            border: 4px solid rgba(0, 0, 0, 0.1);
             border-radius: 50%;
-            border-top-color: white;
+            border-top-color: #bc1823;
             animation: spin 0.8s linear infinite;
         }
-
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        .no-products {
+            text-align: center;
+            color: #666;
+            padding: 40px;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <!-- Product Selection Section -->
     <div class="background">
         <img src="Photo/Reservation.jpg" alt="Background">
         <h1 class="quote">YOUR<br>SATISFACTION<br>IS OUR<br>PASSION</h1>
@@ -64,19 +68,16 @@
             </div>
             <div id="product-selection-panel" class="product-selection-panel">
                 <div class="product-category-nav">
-                    <a href="#" data-category="1-32" class="active">Bilao</a>
-                    <a href="#" data-category="33-54">Platter</a>
-                    <a href="#" data-category="55-70">Rice Meal</a>
-                    <a href="#" data-category="71-78">Rice</a>
-                    <a href="#" data-category="79-86">Spaghetti Meals</a>
-                    <a href="#" data-category="87-90">Drink & Beverages</a>
-                    <a href="#" data-category="91-94">Snacks</a>
-                    <a href="#" data-category="95-98">Dessert</a>
+                    <a href="#" data-category="PLATTER" class="active">Platter</a>
+                    <a href="#" data-category="RICE MEAL">Rice Meal</a>
+                    <a href="#" data-category="RICE">Rice</a>
+                    <a href="#" data-category="NOODLES & PASTA">Bilao</a>
+                    <a href="#" data-category="SPAGHETTI MEAL">Spaghetti Meals</a>
+                    <a href="#" data-category="SNACKS">Snacks</a>
+                    <a href="#" data-category="DESSERT">Dessert</a>
+                    <a href="#" data-category="DRINKS & BEVERAGES">Drinks & Beverages</a>
                 </div>
-                <div id="product-groups" class="product-groups">
-                    <!-- Products will be dynamically loaded here -->
-                </div>
-                
+                <div id="product-groups" class="product-groups"></div>
                 <div class="panel-controls">
                     <div class="total-price-container">
                         Total Price: ₱<span id="total-price">0.00</span>
@@ -90,18 +91,15 @@
         </div>
     </div>  
 
-    <!-- Confirmation Popup -->
     <div class="popup-overlay" id="confirmation-popup">
         <div class="popup-content">
-            <p>Are you sure you want to submit your orders?
-            Total Orders: ₱<span id="total-reservation"></span>
-            </p>
+            <p>Are you sure you want to submit your orders?<br>
+            Total Orders: ₱<span id="total-reservation"></span></p>
             <button onclick="confirmReservation()">Yes</button>
             <button onclick="closePopup('confirmation-popup')">No</button>
         </div>
     </div>
 
-    <!-- Success Popup -->
     <div class="popup-overlay" id="success-popup">
         <div class="popup-content">
             <p>Orders received! Our staff will contact you shortly to get your delivery address. Thank you for choosing TABEYA!</p>
@@ -113,47 +111,34 @@
     // ====================================================================
     // GLOBAL VARIABLES
     // ====================================================================
-    
     let allProducts = [];
     let selectedProducts = {};
     let totalAmount = 0;
-    let reservationData = null;
 
     // ====================================================================
     // INITIALIZE PRODUCT SELECTION
     // ====================================================================
-    
     async function initializeProductSelection() {
         try {
-            // Show loading
             const productGroups = document.getElementById('product-groups');
             productGroups.innerHTML = '<div class="loading-spinner"></div>';
 
-            // Fetch products
             const response = await fetch('fetch_products.php');
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
             const data = await response.json();
-
-            if (!data.success) {
-                throw new Error(data.message || 'Failed to fetch products');
-            }
+            if (!data.success) throw new Error(data.message || 'Failed to fetch products');
 
             allProducts = data.products || [];
             console.log('Products loaded:', allProducts.length);
+            console.log('Categories found:', [...new Set(allProducts.map(p => p.Category))]);
 
-            // Show panel
             document.body.classList.add('blur-background');
             document.getElementById('product-selection-panel').style.display = 'block';
 
-            // Display default category
-            const defaultProducts = filterProductsByCategory('1-32');
+            // Display default category (PLATTER)
+            const defaultProducts = filterProductsByCategory('PLATTER');
             displayProducts(defaultProducts);
-
-            // Setup category navigation
             setupCategoryNavigation();
 
         } catch (error) {
@@ -163,27 +148,24 @@
     }
 
     // ====================================================================
-    // FILTER PRODUCTS BY CATEGORY
+    // FILTER PRODUCTS BY CATEGORY (Using actual Category field)
     // ====================================================================
-    
-    function filterProductsByCategory(categoryRange) {
-        const [start, end] = categoryRange.split('-').map(Number);
+    function filterProductsByCategory(categoryName) {
         return allProducts.filter(product => {
-            const productId = parseInt(product.ProductID);
-            return productId >= start && productId <= end;
+            // Match the Category field from database
+            return product.Category && product.Category.toUpperCase() === categoryName.toUpperCase();
         });
     }
 
     // ====================================================================
     // DISPLAY PRODUCTS
     // ====================================================================
-    
     function displayProducts(products) {
         const productGroups = document.getElementById('product-groups');
         productGroups.innerHTML = '';
 
         if (products.length === 0) {
-            productGroups.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1;">No products available in this category.</p>';
+            productGroups.innerHTML = '<p class="no-products">No products available in this category.</p>';
             return;
         }
 
@@ -197,7 +179,7 @@
             productDiv.innerHTML = `
                 <div class="product-details">
                     <h3>${product.ProductName}</h3>
-                    <p>${product.Description || 'High quality catering product'}</p>
+                    <p>${product.Description || ''}</p>
                     <p>Price: ₱${price.toFixed(2)}</p>
                 </div>
                 <div class="product-quantity">
@@ -216,19 +198,17 @@
     // ====================================================================
     // SETUP CATEGORY NAVIGATION
     // ====================================================================
-    
     function setupCategoryNavigation() {
         const categoryItems = document.querySelectorAll('.product-category-nav a');
         
         categoryItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
-
                 categoryItems.forEach(nav => nav.classList.remove('active'));
                 e.target.classList.add('active');
 
-                const categoryRange = e.target.dataset.category;
-                const filteredProducts = filterProductsByCategory(categoryRange);
+                const categoryName = e.target.dataset.category;
+                const filteredProducts = filterProductsByCategory(categoryName);
                 displayProducts(filteredProducts);
             });
         });
@@ -237,7 +217,6 @@
     // ====================================================================
     // UPDATE TOTAL PRICE
     // ====================================================================
-    
     function updateTotal(input) {
         const productId = input.dataset.id;
         const price = parseFloat(input.dataset.price);
@@ -245,69 +224,42 @@
         const productName = input.closest('.product-item').querySelector('h3').textContent;
 
         if (quantity > 0) {
-            selectedProducts[productId] = {
-                id: productId,
-                name: productName,
-                price: price,
-                quantity: quantity
-            };
+            selectedProducts[productId] = { id: productId, name: productName, price: price, quantity: quantity };
         } else {
             delete selectedProducts[productId];
         }
-
         updateDisplayedTotal();
     }
     
-    // ====================================================================
-    // UPDATE DISPLAYED TOTAL
-    // ====================================================================
-    
     function updateDisplayedTotal() {
         totalAmount = 0;
-
         for (const productId in selectedProducts) {
             const product = selectedProducts[productId];
             totalAmount += product.quantity * product.price;
         }
-
         document.getElementById('total-price').textContent = totalAmount.toFixed(2);
     }
 
     // ====================================================================
-    // CLOSE PRODUCT SELECTION
+    // CLOSE / POPUPS / CONFIRM
     // ====================================================================
-    
     function closeProductSelection() {
         document.body.classList.remove('blur-background');
         document.getElementById('product-selection-panel').style.display = 'none';
-        
-        // Reset selections
         selectedProducts = {};
         totalAmount = 0;
         updateDisplayedTotal();
     }
 
-    // ====================================================================
-    // SHOW CONFIRMATION POPUP
-    // ====================================================================
-    
     function showConfirmationPopup() {
-        const selectedCount = Object.keys(selectedProducts).length;
-
-        if (selectedCount === 0) {
+        if (Object.keys(selectedProducts).length === 0) {
             alert('Please select at least one product.');
             return;
         }
-
-        const totalPrice = totalAmount.toFixed(2);
-        document.getElementById('total-reservation').innerText = totalPrice;
+        document.getElementById('total-reservation').innerText = totalAmount.toFixed(2);
         document.getElementById('confirmation-popup').style.display = 'flex';
     }
 
-    // ====================================================================
-    // CLOSE POPUP
-    // ====================================================================
-    
     function closePopup(popupId) {
         document.getElementById(popupId).style.display = 'none';
     }
@@ -315,18 +267,11 @@
     // ====================================================================
     // CONFIRM AND SAVE RESERVATION
     // ====================================================================
-    
     async function confirmReservation() {
         const selectedProductsList = [];
-
         for (const productId in selectedProducts) {
             const product = selectedProducts[productId];
-            selectedProductsList.push({
-                id: productId,
-                name: product.name,
-                quantity: product.quantity,
-                price: product.price
-            });
+            selectedProductsList.push({ id: productId, name: product.name, quantity: product.quantity, price: product.price });
         }
 
         if (selectedProductsList.length === 0) {
@@ -335,18 +280,14 @@
         }
 
         try {
-            // Get user data from localStorage
             const user = JSON.parse(localStorage.getItem('currentUser'));
-            
             if (!user) {
                 alert('User session expired. Please log in again.');
                 window.location.href = 'Login.html';
                 return;
             }
 
-            // Get form data from sessionStorage (saved from CaterReservation.html)
             const formData = sessionStorage.getItem('cateringFormData');
-            
             if (!formData) {
                 alert('Form data not found. Please restart the reservation process.');
                 window.location.href = 'CaterReservation.html';
@@ -354,8 +295,6 @@
             }
 
             const cateringData = JSON.parse(formData);
-
-            // Prepare data for save_product_reservation.php
             const requestBody = new FormData();
             requestBody.append("customer_id", user.customerId || '');
             requestBody.append("customer_name", (user.firstName || '') + " " + (user.lastName || ''));
@@ -368,29 +307,22 @@
             requestBody.append("total_price", totalAmount.toFixed(2));
             requestBody.append("selected_products", JSON.stringify(selectedProductsList));
 
-            // Show loading
-            const confirmBtn = document.querySelector('.popup-content button:first-of-type');
-            const originalText = confirmBtn.textContent;
+            const confirmBtn = document.querySelector('#confirmation-popup button:first-of-type');
             confirmBtn.textContent = 'Saving...';
             confirmBtn.disabled = true;
 
-            // Send to server
             const response = await fetch('save_product_reservation.php', {
                 method: 'POST',
                 body: requestBody,
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
 
             if (data.status === 'success') {
                 closePopup('confirmation-popup');
                 document.getElementById('success-popup').style.display = 'flex';
-                console.log('Reservation saved:', data);
             } else {
                 throw new Error(data.message || 'Unknown error occurred');
             }
@@ -398,37 +330,28 @@
         } catch (error) {
             console.error('Error saving reservation:', error);
             alert('An error occurred while saving your reservation:\n' + error.message);
+            const confirmBtn = document.querySelector('#confirmation-popup button:first-of-type');
+            confirmBtn.textContent = 'Yes';
+            confirmBtn.disabled = false;
         }
     }
 
-    // ====================================================================
-    // REDIRECT TO RESERVATION PAGE
-    // ====================================================================
-    
     function redirectToReservation() {
-        // Clear session data
         sessionStorage.removeItem('cateringFormData');
-        
-        // Redirect
         window.location.href = "CaterReservation.html";
     }
 
     // ====================================================================
     // PAGE INITIALIZATION
     // ====================================================================
-    
     document.addEventListener('DOMContentLoaded', () => {
-        // Check if user is logged in
         const user = JSON.parse(localStorage.getItem('currentUser'));
-        
         if (!user) {
             alert('Please log in first.');
             window.location.href = 'Login.html';
+            return;
         }
-
-        // Check if coming from CaterReservation
         const formData = sessionStorage.getItem('cateringFormData');
-        
         if (!formData) {
             alert('Please complete the catering form first.');
             window.location.href = 'CaterReservation.html';

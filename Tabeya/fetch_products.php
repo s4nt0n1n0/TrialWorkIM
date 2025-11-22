@@ -30,7 +30,7 @@ try {
         http_response_code(500);
         echo json_encode(array(
             "success" => false,
-            "message" => "Database connection failed"
+            "message" => "Database connection failed: " . $conn->connect_error
         ));
         ob_end_flush();
         exit;
@@ -40,13 +40,14 @@ try {
 
     // ============================================================
     // FETCH ALL AVAILABLE PRODUCTS
+    // Fixed: Removed SpicyLevel column that doesn't exist
     // ============================================================
 
     $sql = "SELECT ProductID, ProductName, Category, Description, Price, 
-                   Availability, ServingSize, Image, SpicyLevel, PopularityTag
+                   Availability, ServingSize, Image, PopularityTag
             FROM products 
             WHERE Availability = 'Available'
-            ORDER BY ProductID ASC";
+            ORDER BY Category ASC, ProductID ASC";
 
     $result = $conn->query($sql);
 
@@ -54,7 +55,7 @@ try {
         http_response_code(500);
         echo json_encode(array(
             "success" => false,
-            "message" => "Query failed"
+            "message" => "Query failed: " . $conn->error
         ));
         $conn->close();
         ob_end_flush();
@@ -90,7 +91,7 @@ try {
     http_response_code(500);
     echo json_encode(array(
         "success" => false,
-        "message" => "Error fetching products"
+        "message" => "Error fetching products: " . $e->getMessage()
     ));
     ob_end_flush();
     exit;
