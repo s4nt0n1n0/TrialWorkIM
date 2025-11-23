@@ -166,14 +166,14 @@
             return true;
         }
 
-        // --- Account Link State (FIXED: Direct Profile Link) ---
+        // --- Account Link State ---
         function updateAccountLink() {
             const accountLink = document.getElementById('account-link');
             if (!accountLink) return;
 
             const user = JSON.parse(localStorage.getItem(USER_KEY));
             
-            accountLink.onclick = null; 
+            // accountLink.onclick = null; // Removed, as we set href directly
 
             if (user) {
                 // Logged In: Show name and directly link to Profile.html
@@ -197,17 +197,24 @@
         function saveCart() {
             localStorage.setItem(CART_KEY, JSON.stringify(cart));
             updateCartDisplay();
-            renderCartModal(); 
+            // renderCartModal is called by the modal click event, but we call it here to re-render dynamically
+            if(cartModal.style.display === "block") {
+                renderCartModal();
+            }
         }
         
         // Global function for buttons inside the modal to work
         window.changeQuantity = function(itemId, delta) {
+            // Ensure itemId is treated as string for consistency with array items
+            const itemIdString = String(itemId);
+            
             if (!checkUserLoginStatus()) { 
                 alert("You must log in to modify the cart.");
                 return; 
             } 
 
-            const itemIndex = cart.findIndex(item => item.id === itemId);
+            // Use item.id === itemIdString for strict comparison
+            const itemIndex = cart.findIndex(item => String(item.id) === itemIdString);
             if (itemIndex === -1) return;
 
             cart[itemIndex].quantity += delta;
@@ -219,6 +226,7 @@
             saveCart();
         }
 
+        // Renders the content inside the cart modal
         function renderCartModal() {
             let cartHtml = '';
             let total = 0;
@@ -236,18 +244,18 @@
                 const itemTotal = item.price * item.quantity;
                 total += itemTotal;
 
-                const safeId = item.id.replace(/'/g, "\\'"); 
+                // Escape quotes for safe HTML attribute usage
+                const safeId = String(item.id).replace(/'/g, "\\'"); 
 
                 cartHtml += `
                     <div class="cart-item">
-                        <img src="${item.image || 'Photo/default.jpg'}" alt="${item.name}" class="cart-item-image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
                         <div class="cart-item-info">
                             <span class="cart-item-name">${item.name}</span>
-                            <span class="cart-item-price">@ ₱${item.price.toFixed(2)}</span>
+                            <span class="cart-item-price">₱${parseFloat(item.price).toFixed(2)} ea.</span>
                         </div>
                         <div class="cart-item-controls">
                             <button onclick="changeQuantity('${safeId}', -1)">-</button>
-                            <span class="cart-item-qty">${item.quantity}</span>
+                            <span class="cart-item-quantity">${item.quantity}</span>
                             <button onclick="changeQuantity('${safeId}', 1)">+</button>
                         </div>
                         <span class="cart-item-subtotal">₱${itemTotal.toFixed(2)}</span>
@@ -265,6 +273,7 @@
             // View Cart Button
             if (viewCartBtn) {
                 viewCartBtn.onclick = function() {
+                    // Current page URL for redirect, in case of login requirement
                     if (checkLoginAndProceed('index.html')) { 
                         renderCartModal();
                         cartModal.style.display = "block";
@@ -294,19 +303,21 @@
                     }
 
                     if (cart.length > 0) {
+                        // TODO: Implement the actual redirect to Checkout.html
                         alert("Proceeding to checkout!");
                         cartModal.style.display = "none";
-                        // TODO: window.location.href = 'Checkout.html';
+                        // window.location.href = 'Checkout.html'; 
                     } else {
                         alert("Your cart is empty!");
                     }
                 }
             }
             
-            // Cater Reservation link
+            // Cater Reservation link (FIXED)
             document.getElementById('cater-reservation-link').addEventListener('click', function(event) {
                 event.preventDefault();
-                if (checkLoginAndProceed(CATER_RESERVATION_PAGE)) {
+                // Check login status. If true (logged in), proceed with the redirect.
+                if (checkLoginAndProceed(CATER_RESERVATION_PAGE)) { 
                     window.location.href = CATER_RESERVATION_PAGE;
                 }
             });

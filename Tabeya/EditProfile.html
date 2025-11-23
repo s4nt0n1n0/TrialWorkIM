@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Tabeya</title>
+    
+    <style>
+        /* ========================================= */
+        /* --- BASE STYLES (MATCHING Profile.html STRUCTURE) --- */
+        /* ========================================= */
+        body { margin: 0; font-family: Arial, sans-serif; background-color: #f8f8f8; }
+        
+        /* Header & Navigation */
+        header { position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); z-index: 1000; padding: 10px 0; display: flex; justify-content: space-around; align-items: center; }
+        header .logo img { height: 50px; }
+        header nav a { text-decoration: none; color: #333; margin: 0 15px; font-weight: bold; transition: color 0.3s; }
+        header nav a:hover, header nav a.active { color: #BC1823; }
+        .cart-icon { cursor: pointer; color: #BC1823; font-size: 1.2em; }
+        .cart-count { background-color: #BC1823; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.8em; margin-left: 5px; position: relative; top: -10px; }
+
+        /* Footer Styles */
+        footer { background-color: #333; color: white; padding: 40px 0; margin-top: 50px; }
+        .contact-section { max-width: 1200px; margin: auto; padding: 0 20px; }
+        .contact-info h2 { color: #BC1823; }
+        .info-group { display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 20px; }
+        .info-item { width: 30%; min-width: 200px; margin-bottom: 20px; }
+        .info-item img.icon { height: 30px; margin-right: 10px; vertical-align: middle; }
+        .info-item a { color: white; text-decoration: none; }
+        .info-item a:hover { text-decoration: underline; }
+
+        /* Cart Modal Styles */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
+        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 400px; border-radius: 8px; }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; align-items: center;}
+        #checkout-btn { width: 100%; padding: 10px; background-color: #BC1823; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;}
+        .quantity-control button { background: #eee; border: 1px solid #ccc; padding: 3px 8px; cursor: pointer; }
+
+        /* ========================================= */
+        /* --- EDIT PROFILE STYLES --- */
+        /* ========================================= */
+
+        .profile-section { 
+            max-width: 800px; /* Standardizing max width */
+            margin: 150px auto 70px; 
+            padding: 40px; 
+            min-height: 50vh;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .profile-section h2 {
+            color: #BC1823;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em; 
+            border-bottom: 4px solid #BC1823;
+            padding-bottom: 15px;
+        }
+
+        /* Form Styling */
+        .edit-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #444;
+            font-size: 1.1em;
+        }
+
+        .edit-form input[type="text"],
+        .edit-form input[type="email"],
+        .edit-form input[type="tel"],
+        .edit-form input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 25px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box; /* Ensures padding doesn't affect total width */
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .edit-form input:focus {
+            border-color: #BC1823;
+            outline: none;
+            box-shadow: 0 0 5px rgba(188, 24, 35, 0.3);
+        }
+
+        /* Action Buttons */
+        .profile-actions {
+            display: flex;
+            justify-content: flex-end; /* Align to the right */
+            gap: 15px;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .action-btn {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+
+        .save-btn {
+            background-color: #BC1823;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .save-btn:hover {
+            background-color: #a0151f;
+        }
+
+        .cancel-btn {
+            background-color: #ccc;
+            color: #333;
+        }
+        
+        .cancel-btn:hover {
+            background-color: #bbb;
+        }
+        
+        .action-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="Photo/Tabeya Name.png" alt="Tabeya Logo">
+        </div>
+        <nav>
+            <a href="index.html">HOME</a>
+            <a href="Menu.html">MENU</a> 
+            <a href="#" id="cater-reservation-link">CATER RESERVATION</a>
+            <a href="GALLERY.html">GALLERY</a>
+            <a href="Review.php">TESTIMONY</a>
+            <a href="About.html">ABOUT</a>
+            <a href="Profile.html" id="account-link" class="active">PROFILE</a> 
+            <div class="cart-icon" id="view-cart-btn">
+                🛒 <span class="cart-count" id="cart-item-count">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="profile-section">
+        <h2>Edit Profile</h2>
+        
+        <form class="edit-form" id="edit-profile-form">
+            <label for="full-name">Full Name</label>
+            <input type="text" id="full-name" name="full-name" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="contact">Contact Number</label>
+            <input type="tel" id="contact" name="contact" pattern="[0-9]{10,12}" placeholder="e.g., 09xxxxxxxxx" required>
+            
+            <p style="color: #BC1823; font-weight: bold; margin-top: 30px;">
+                *Note: Password changes require a separate, secure process (or a dedicated input if updating is necessary).
+            </p>
+
+            <div class="profile-actions">
+                <button type="button" class="action-btn cancel-btn" onclick="window.location.href='Profile.html'">Cancel</button>
+                <button type="submit" class="action-btn save-btn" id="save-profile-btn">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Your Cart</h2>
+            <div id="cart-items-list">
+            </div>
+            <div class="cart-summary">
+                <strong>Total: ₱<span id="cart-total">0.00</span></strong>
+            </div>
+            <button id="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="contact-section">
+            <div class="container">
+                <div class="contact-info">
+                    <h2>Contact Us</h2>
+                    <p>Have any questions? We'd love to hear from you.</p>
+                    <div class="info-group">
+                        <div class="info-item visit-us">
+                            <img src="Photo/VisitUs.png" alt="Location Icon" class="icon">
+                            <div>
+                                <strong>Visit us</strong>
+                                <p>Poblacion 2, Vinzons Avenue,<br>Vinzons, Camarines Norte</p>
+                            </div>
+                        </div>
+                        <div class="info-item call-us">
+                            <img src="Photo/Selpon.png" alt="Phone Icon" class="icon">
+                            <div>
+                                <strong>Call us</strong>
+                                <p>09380839641</p>
+                            </div>
+                        </div>
+                        <div class="info-item connect-us">
+                            <img src="Photo/Facebook.png" alt="Facebook Icon" class="icon">
+                            <div>
+                                <strong>Connect to us</strong>
+                                <a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank" class="no-underline">Tabeya, VCN</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        const CART_KEY = 'tabeyaCart';
+        const USER_KEY = 'currentUser';
+        const LOGIN_PAGE = 'Login.html';
+        const PROFILE_PAGE = 'Profile.html';
+        const CATER_RESERVATION_PAGE = 'CaterReservation.html';
+        
+        let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+
+        // --- Core Login Check ---
+        function checkUserLoginStatus() {
+            return localStorage.getItem(USER_KEY) !== null;
+        }
+
+        function checkLoginAndProceed(redirectTarget) {
+            if (!checkUserLoginStatus()) { 
+                alert("You must log in to view this page.");
+                if (redirectTarget) {
+                    localStorage.setItem('redirectAfterLogin', redirectTarget);
+                }
+                window.location.href = LOGIN_PAGE;
+                return false;
+            }
+            return true;
+        }
+
+        function updateAccountLink() {
+            const accountLink = document.getElementById('account-link');
+            const user = JSON.parse(localStorage.getItem(USER_KEY));
+            
+            if (user) {
+                accountLink.textContent = user.name.split(' ')[0].toUpperCase();
+                accountLink.href = PROFILE_PAGE; 
+                accountLink.classList.add('active'); // Keep the active class
+            } else {
+                accountLink.textContent = 'PROFILE';
+                accountLink.href = LOGIN_PAGE;
+                accountLink.classList.add('active');
+            }
+        }
+        
+        // --- Edit Profile Specific Logic ---
+        
+        function populateEditForm() {
+            const user = JSON.parse(localStorage.getItem(USER_KEY));
+            if (user) {
+                document.getElementById('full-name').value = user.name || '';
+                document.getElementById('email').value = user.email || '';
+                document.getElementById('contact').value = user.contact || '';
+                // Password field is intentionally not populated for security
+            }
+        }
+        
+        function handleFormSubmission(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('full-name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const contact = document.getElementById('contact').value.trim();
+
+            if (!name || !email || !contact) {
+                alert("All fields are required.");
+                return;
+            }
+
+            let user = JSON.parse(localStorage.getItem(USER_KEY));
+            
+            if (user) {
+                // Mock update: In a real app, this is where you'd send an AJAX request to your PHP script (e.g., update_profile.php).
+                // For demonstration, we just update localStorage.
+                user.name = name;
+                user.email = email;
+                user.contact = contact;
+                
+                localStorage.setItem(USER_KEY, JSON.stringify(user));
+                
+                // Update header link immediately
+                updateAccountLink();
+
+                alert("✅ Profile updated successfully! (Data saved locally)");
+                window.location.href = PROFILE_PAGE; 
+            } else {
+                alert("Error: User session not found. Please log in again.");
+                window.location.href = LOGIN_PAGE;
+            }
+        }
+
+        // --- Cart Display Logic (Reused from previous context) ---
+        function updateCartDisplay() {
+            const count = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            document.getElementById('cart-item-count').textContent = count;
+        }
+        
+        function calculateTotal() {
+            return cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+        }
+
+        function updateCartItemQuantity(itemId, change) {
+            const itemIndex = cart.findIndex(item => item.id === itemId);
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity += change;
+                if (cart[itemIndex].quantity <= 0) {
+                    cart.splice(itemIndex, 1);
+                }
+            }
+            saveCart();
+        }
+        
+        function saveCart() {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            updateCartDisplay();
+            renderCartModal();
+        }
+
+        function renderCartModal() {
+            const listContainer = document.getElementById('cart-items-list');
+            const totalElement = document.getElementById('cart-total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            let itemsHtml = '';
+
+            if (cart.length === 0) {
+                itemsHtml = '<p style="text-align: center; color: #777; padding: 20px 0;">Your cart is empty.</p>';
+                checkoutBtn.disabled = true;
+            } else {
+                cart.forEach(item => {
+                    const itemTotal = (item.price * item.quantity).toFixed(2);
+                    itemsHtml += `
+                        <div class="cart-item">
+                            <div class="item-info">
+                                <strong>${item.name}</strong>
+                                <p>₱${item.price.toFixed(2)} ea.</p>
+                            </div>
+                            <div class="item-controls">
+                                <div class="quantity-control">
+                                    <button class="qty-minus" data-id="${item.id}">-</button>
+                                    <span style="margin: 0 10px;">${item.quantity}</span>
+                                    <button class="qty-plus" data-id="${item.id}">+</button>
+                                </div>
+                                <span class="item-price-cart">₱${itemTotal}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                checkoutBtn.disabled = false;
+            }
+            
+            listContainer.innerHTML = itemsHtml;
+            totalElement.textContent = calculateTotal();
+            setupCartModalListeners();
+        }
+        
+        function setupCartModalListeners() {
+            const modal = document.getElementById('cart-modal');
+            
+            modal.querySelectorAll('.qty-minus').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    updateCartItemQuantity(e.target.getAttribute('data-id'), -1);
+                });
+            });
+
+            modal.querySelectorAll('.qty-plus').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    updateCartItemQuantity(e.target.getAttribute('data-id'), 1);
+                });
+            });
+            
+            document.getElementById('checkout-btn').addEventListener('click', () => {
+                if (checkLoginAndProceed('Checkout.html')) {
+                    window.location.href = 'Checkout.html';
+                }
+            });
+        }
+
+        // --- Global Listeners ---
+        function setupGlobalListeners() {
+            const modal = document.getElementById('cart-modal');
+            const btn = document.getElementById("view-cart-btn");
+            const span = document.getElementsByClassName("close-btn")[0];
+
+            btn.onclick = function() {
+                renderCartModal();
+                modal.style.display = "block";
+            }
+
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+            
+            document.getElementById('cater-reservation-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                checkLoginAndProceed(CATER_RESERVATION_PAGE);
+            });
+            
+            // Attach submission handler to the form
+            document.getElementById('edit-profile-form').addEventListener('submit', handleFormSubmission);
+        }
+        
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkLoginAndProceed()) { 
+                populateEditForm(); // Load current user data into the form
+            }
+            updateAccountLink();
+            updateCartDisplay();
+            setupGlobalListeners();
+        });
+    </script>
+</body>
+</html>
