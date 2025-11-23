@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Review Submission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #bc1823;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #a01520;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        h2 {
+            color: #bc1823;
+            margin-top: 0;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-section">
+        <h2>🧪 Test Review Submission</h2>
+        
+        <label>Customer ID (from localStorage):</label>
+        <input type="number" id="customer-id" placeholder="Enter customer ID">
+        
+        <label>Overall Rating (1-5):</label>
+        <input type="number" id="overall-rating" value="5" min="1" max="5">
+        
+        <button onclick="testMinimalReview()">Test 1: Submit Minimal Review (Only Overall Rating)</button>
+        <button onclick="testFullReview()">Test 2: Submit Full Review (All Fields)</button>
+        <button onclick="testFromLocalStorage()">Test 3: Use Logged-in User</button>
+        
+        <div id="response"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Customer Info</h2>
+        <div id="user-info">Checking localStorage...</div>
+    </div>
+
+    <script>
+        const responseDiv = document.getElementById('response');
+        const userInfoDiv = document.getElementById('user-info');
+        const customerIdInput = document.getElementById('customer-id');
+
+        // Check if user is logged in
+        function checkUser() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user) {
+                userInfoDiv.innerHTML = `
+                    <strong>✅ Logged In</strong><br>
+                    Name: ${user.firstName} ${user.lastName}<br>
+                    Email: ${user.email}<br>
+                    Customer ID: ${user.customerId}
+                `;
+                customerIdInput.value = user.customerId;
+            } else {
+                userInfoDiv.innerHTML = `
+                    <strong>❌ Not Logged In</strong><br>
+                    Please log in first or manually enter a customer ID above.
+                `;
+            }
+        }
+
+        // Test 1: Minimal review (only overall rating)
+        async function testMinimalReview() {
+            const customerId = parseInt(customerIdInput.value);
+            const rating = parseFloat(document.getElementById('overall-rating').value);
+            
+            if (!customerId || !rating) {
+                showResponse('error', 'Please enter Customer ID and Rating');
+                return;
+            }
+
+            const data = {
+                customerId: customerId,
+                overallRating: rating
+            };
+
+            await submitReview(data, 'Minimal Review');
+        }
+
+        // Test 2: Full review (all fields)
+        async function testFullReview() {
+            const customerId = parseInt(customerIdInput.value);
+            const rating = parseFloat(document.getElementById('overall-rating').value);
+            
+            if (!customerId || !rating) {
+                showResponse('error', 'Please enter Customer ID and Rating');
+                return;
+            }
+
+            const data = {
+                customerId: customerId,
+                overallRating: rating,
+                foodRating: 5,
+                portionRating: 4,
+                serviceRating: 5,
+                ambienceRating: 4,
+                cleanlinessRating: 5,
+                foodComment: 'The food was absolutely delicious! Best Filipino cuisine in town.',
+                portionComment: 'Perfect portion sizes, very satisfying.',
+                serviceComment: 'Excellent and friendly service from the staff.',
+                ambienceComment: 'Cozy and authentic Filipino atmosphere.',
+                cleanlinessComment: 'Very clean and well-maintained restaurant.',
+                generalComment: 'Highly recommend Tabeya! Will definitely come back.'
+            };
+
+            await submitReview(data, 'Full Review');
+        }
+
+        // Test 3: Use logged-in user
+        async function testFromLocalStorage() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (!user || !user.customerId) {
+                showResponse('error', 'No user logged in. Please log in first.');
+                return;
+            }
+
+            const rating = parseFloat(document.getElementById('overall-rating').value);
+
+            const data = {
+                customerId: user.customerId,
+                overallRating: rating,
+                foodRating: 5,
+                serviceRating: 5,
+                generalComment: `Great experience! - ${user.firstName}`
+            };
+
+            await submitReview(data, 'Review from ' + user.firstName);
+        }
+
+        // Submit review function
+        async function submitReview(data, testName) {
+            showResponse('info', `Submitting ${testName}...\n\nData:\n${JSON.stringify(data, null, 2)}`);
+
+            try {
+                const response = await fetch('submit_customer_review.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+
+                const text = await response.text();
+                console.log('Raw response:', text);
+
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch (parseError) {
+                    throw new Error('Invalid JSON response:\n' + text.substring(0, 500));
+                }
+
+                if (result.success) {
+                    showResponse('success', `✅ SUCCESS!\n\n${JSON.stringify(result, null, 2)}`);
+                } else {
+                    showResponse('error', `❌ FAILED\n\n${JSON.stringify(result, null, 2)}`);
+                }
+
+            } catch (error) {
+                console.error('Submit error:', error);
+                showResponse('error', `❌ ERROR\n\n${error.message}`);
+            }
+        }
+
+        // Show response
+        function showResponse(type, message) {
+            responseDiv.className = 'response ' + (type === 'error' ? 'error' : type === 'success' ? 'success' : '');
+            responseDiv.textContent = message;
+        }
+
+        // Initialize
+        checkUser();
+    </script>
+</body>
+</html>

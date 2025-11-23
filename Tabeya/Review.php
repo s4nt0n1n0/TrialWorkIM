@@ -379,157 +379,186 @@ $stats = $stats_result->fetch_assoc();
     </footer>
 
     <script>
-    const USER_KEY = 'currentUser';
-    let currentUser = null;
-    let ratings = { overall: 0, food: 0, portion: 0, service: 0, ambience: 0, cleanliness: 0 };
+    // ============================================================
+// FIXED REVIEW SUBMISSION JAVASCRIPT
+// Add this to the <script> section in Review.php
+// ============================================================
 
-    function getCurrentUser() {
-        try { return JSON.parse(localStorage.getItem(USER_KEY)); } 
-        catch (e) { return null; }
+const USER_KEY = 'currentUser';
+let currentUser = null;
+let ratings = { overall: 0, food: 0, portion: 0, service: 0, ambience: 0, cleanliness: 0 };
+
+function getCurrentUser() {
+    try { 
+        return JSON.parse(localStorage.getItem(USER_KEY)); 
+    } catch (e) { 
+        return null; 
     }
+}
 
-    function updateAccountLink() {
-        const link = document.getElementById('account-link');
-        const user = getCurrentUser();
-        if (user && link) {
-            link.textContent = user.firstName ? user.firstName.toUpperCase() : 'PROFILE';
-            link.href = 'Profile.html';
-        }
+function updateAccountLink() {
+    const link = document.getElementById('account-link');
+    const user = getCurrentUser();
+    if (user && link) {
+        link.textContent = user.firstName ? user.firstName.toUpperCase() : 'PROFILE';
+        link.href = 'Profile.html';
     }
+}
 
-    function toggleAccordion(btn) {
-        const content = btn.nextElementSibling;
-        content.classList.toggle('show');
-        btn.textContent = content.classList.contains('show') ? 'Hide detailed feedback ▲' : 'View detailed feedback ▼';
-    }
+function toggleAccordion(btn) {
+    const content = btn.nextElementSibling;
+    content.classList.toggle('show');
+    btn.textContent = content.classList.contains('show') ? 'Hide detailed feedback ▲' : 'View detailed feedback ▼';
+}
 
-    document.addEventListener('DOMContentLoaded', () => {
-        currentUser = getCurrentUser();
-        updateAccountLink();
-        setupRatingStars();
-        setupModalHandlers();
+document.addEventListener('DOMContentLoaded', () => {
+    currentUser = getCurrentUser();
+    updateAccountLink();
+    setupRatingStars();
+    setupModalHandlers();
+});
+
+function setupRatingStars() {
+    // Overall rating
+    document.querySelectorAll('#overall-stars .rating-star').forEach(star => {
+        star.addEventListener('click', function() {
+            ratings.overall = parseInt(this.dataset.rating);
+            updateStars('#overall-stars .rating-star', ratings.overall);
+        });
     });
 
-    function setupRatingStars() {
-        // Overall rating
-        document.querySelectorAll('#overall-stars .rating-star').forEach(star => {
+    // Category ratings
+    document.querySelectorAll('.category-stars').forEach(container => {
+        const category = container.dataset.category;
+        container.querySelectorAll('.star').forEach(star => {
             star.addEventListener('click', function() {
-                ratings.overall = parseInt(this.dataset.rating);
-                updateStars('#overall-stars .rating-star', ratings.overall);
+                ratings[category] = parseInt(this.dataset.rating);
+                updateStars(`.category-stars[data-category="${category}"] .star`, ratings[category]);
             });
         });
+    });
+}
 
-        // Category ratings
-        document.querySelectorAll('.category-stars').forEach(container => {
-            const category = container.dataset.category;
-            container.querySelectorAll('.star').forEach(star => {
-                star.addEventListener('click', function() {
-                    ratings[category] = parseInt(this.dataset.rating);
-                    updateStars(`.category-stars[data-category="${category}"] .star`, ratings[category]);
-                });
-            });
-        });
-    }
+function updateStars(selector, rating) {
+    document.querySelectorAll(selector).forEach((star, idx) => {
+        star.classList.toggle('active', idx < rating);
+    });
+}
 
-    function updateStars(selector, rating) {
-        document.querySelectorAll(selector).forEach((star, idx) => {
-            star.classList.toggle('active', idx < rating);
-        });
-    }
+function setupModalHandlers() {
+    const modal = document.getElementById('review-modal');
+    const writeBtn = document.getElementById('write-review-btn');
+    const closeBtn = document.getElementById('close-modal-btn');
+    const submitBtn = document.getElementById('submit-review-btn');
+    const userSection = document.getElementById('user-info-section');
 
-    function setupModalHandlers() {
-        const modal = document.getElementById('review-modal');
-        const writeBtn = document.getElementById('write-review-btn');
-        const closeBtn = document.getElementById('close-modal-btn');
-        const submitBtn = document.getElementById('submit-review-btn');
-        const userSection = document.getElementById('user-info-section');
+    writeBtn.addEventListener('click', () => {
+        currentUser = getCurrentUser();
+        if (!currentUser) {
+            userSection.innerHTML = `<div class="login-required">
+                <p>Please <a href="Login.html">log in</a> to write a review.</p>
+            </div>`;
+            submitBtn.disabled = true;
+        } else {
+            userSection.innerHTML = `<div class="user-logged-in">
+                <span class="user-icon">👤</span>
+                <span>Reviewing as: <span class="user-name">${currentUser.firstName} ${currentUser.lastName}</span></span>
+            </div>`;
+            submitBtn.disabled = false;
+        }
+        modal.style.display = 'block';
+    });
 
-        writeBtn.addEventListener('click', () => {
-            currentUser = getCurrentUser();
-            if (!currentUser) {
-                userSection.innerHTML = `<div class="login-required">
-                    <p>Please <a href="Login.html">log in</a> to write a review.</p>
-                </div>`;
-                submitBtn.disabled = true;
-            } else {
-                userSection.innerHTML = `<div class="user-logged-in">
-                    <span class="user-icon">👤</span>
-                    <span>Reviewing as: <span class="user-name">${currentUser.firstName} ${currentUser.lastName}</span></span>
-                </div>`;
-                submitBtn.disabled = false;
-            }
-            modal.style.display = 'block';
-        });
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+        resetForm();
+    });
 
-        closeBtn.addEventListener('click', () => {
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
             modal.style.display = 'none';
             resetForm();
-        });
+        }
+    });
 
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-                resetForm();
-            }
-        });
+    submitBtn.addEventListener('click', submitReview);
+}
 
-        submitBtn.addEventListener('click', submitReview);
+function resetForm() {
+    ratings = { overall: 0, food: 0, portion: 0, service: 0, ambience: 0, cleanliness: 0 };
+    document.querySelectorAll('.rating-star, .category-stars .star').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.comment-field').forEach(f => f.value = '');
+}
+
+async function submitReview() {
+    if (!currentUser) {
+        alert('Please log in to submit a review.');
+        return;
     }
 
-    function resetForm() {
-        ratings = { overall: 0, food: 0, portion: 0, service: 0, ambience: 0, cleanliness: 0 };
-        document.querySelectorAll('.rating-star, .category-stars .star').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.comment-field').forEach(f => f.value = '');
+    if (ratings.overall === 0) {
+        alert('Please provide an overall rating.');
+        return;
     }
 
-    async function submitReview() {
-        if (!currentUser) {
-            alert('Please log in to submit a review.');
-            return;
-        }
+    // ✅ FIXED: Build data object with proper field names matching PHP
+    const data = {
+        customerId: currentUser.customerId,
+        overallRating: ratings.overall,
+        foodRating: ratings.food || 0,        // ✅ Send 0 instead of undefined
+        portionRating: ratings.portion || 0,
+        serviceRating: ratings.service || 0,
+        ambienceRating: ratings.ambience || 0,
+        cleanlinessRating: ratings.cleanliness || 0,
+        foodComment: document.getElementById('food-comment')?.value.trim() || '',
+        portionComment: document.getElementById('portion-comment')?.value.trim() || '',
+        serviceComment: document.getElementById('service-comment')?.value.trim() || '',
+        ambienceComment: document.getElementById('ambience-comment')?.value.trim() || '',
+        cleanlinessComment: document.getElementById('cleanliness-comment')?.value.trim() || '',
+        generalComment: document.getElementById('general-comment')?.value.trim() || ''
+    };
 
-        if (ratings.overall === 0) {
-            alert('Please provide an overall rating.');
-            return;
-        }
+    console.log('Submitting review data:', data);
 
-        const data = {
-            customerId: currentUser.customerId,
-            overallRating: ratings.overall,
-            foodRating: ratings.food,
-            portionRating: ratings.portion,
-            serviceRating: ratings.service,
-            ambienceRating: ratings.ambience,
-            cleanlinessRating: ratings.cleanliness,
-            foodComment: document.getElementById('food-comment').value.trim(),
-            portionComment: document.getElementById('portion-comment').value.trim(),
-            serviceComment: document.getElementById('service-comment').value.trim(),
-            ambienceComment: document.getElementById('ambience-comment').value.trim(),
-            cleanlinessComment: document.getElementById('cleanliness-comment').value.trim(),
-            generalComment: document.getElementById('general-comment').value.trim()
-        };
+    try {
+        const response = await fetch('submit_customer_review.php', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(data)
+        });
 
+        console.log('Response status:', response.status);
+
+        // ✅ FIXED: Get text first, then parse
+        const text = await response.text();
+        console.log('Raw response:', text);
+
+        let result;
         try {
-            const response = await fetch('submit_customer_review.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                alert('Thank you! Your review has been submitted and is pending approval.');
-                document.getElementById('review-modal').style.display = 'none';
-                resetForm();
-            } else {
-                alert('Error: ' + result.message);
-            }
-        } catch (error) {
-            console.error('Submit error:', error);
-            alert('An error occurred. Please try again.');
+            result = JSON.parse(text);
+        } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            throw new Error('Server returned invalid JSON: ' + text.substring(0, 200));
         }
+
+        if (result.success) {
+            alert('✅ ' + result.message);
+            document.getElementById('review-modal').style.display = 'none';
+            resetForm();
+            // Optionally reload the page to show the new review (if approved)
+            // window.location.reload();
+        } else {
+            alert('❌ Error: ' + result.message);
+        }
+
+    } catch (error) {
+        console.error('Submit error:', error);
+        alert('An error occurred while submitting your review. Please try again.\n\nError: ' + error.message);
     }
+}
     </script>
 </body>
 </html>

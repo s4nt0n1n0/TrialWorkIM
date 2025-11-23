@@ -867,3 +867,61 @@ body.blur-background {
                 padding: 5px 8px;
             }
         }
+.availability-label {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    padding: 0;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+}
+
+.availability-label.available {
+    color: #28a745;
+}
+
+.availability-label.low-stock {
+    color: #e67e00;
+}
+
+.availability-label.unavailable {
+    color: #dc3545;
+}
+
+.availability-icon {
+    font-size: 12px;
+}
+
+/* Update product-image to be relative for label positioning */
+.product-image {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    background-color: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+/* Disabled state for unavailable products */
+.product-card.unavailable {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.product-card.unavailable .qty-btn {
+    background-color: #ccc !important;
+    cursor: not-allowed;
+}
+
+.product-card.unavailable .product-price {
+    color: #999;
+}

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History - Tabeya</title>
+    <link rel="stylesheet" href="CSS/Profile.css"> 
+    
+    <style>
+        /* ========================================= */
+        /* GLOBAL LAYOUT FIXES (FOOTER) */
+        /* ========================================= */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure the body takes at least the full viewport height */
+            background-color: var(--background-page);
+        }
+
+        /* Main content should grow to push the footer down */
+        .order-history-section { 
+            flex-grow: 1; /* Allows the main content area to expand */
+            /* Existing styles below */
+            max-width: 900px;
+            margin: 150px auto 50px; 
+            padding: 40px; 
+            background-color: var(--background-card); 
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+        }
+
+        /* ========================================= */
+        /* ORDER HISTORY - ULTRA-CLEAN DESIGN (Re-refined) */
+        /* ========================================= */
+        
+        :root {
+            --tabeya-red: #BC1823;
+            --background-page: #f9f9f9; 
+            --background-card: #ffffff;
+            --border-light: #ececec;
+            --text-dark: #333333;
+            --text-medium: #666666;
+            --status-completed-bg: #e6f7e8;
+            --status-completed-text: #2c9b45;
+            --status-pending-bg: #fff8e1;
+            --status-pending-text: #ff9800;
+        }
+
+        /* Title Styling */
+        .order-history-section h2 {
+            color: var(--tabeya-red); 
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 800;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--tabeya-red);
+            display: inline-block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Order Item Card Design */
+        .order-item { 
+            border: 1px solid var(--border-light); 
+            border-radius: 8px;
+            margin-bottom: 25px;
+            padding: 20px 25px; 
+            background-color: var(--background-card); 
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease-in-out;
+        }
+        .order-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Order Header Styling */
+        .order-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding-bottom: 15px; 
+            margin-bottom: 15px; 
+            border-bottom: 1px solid var(--border-light); 
+        }
+        .order-header h4 { 
+            color: var(--text-dark); 
+            margin: 0; 
+            font-size: 1.4em;
+            font-weight: 700;
+        }
+
+        /* Status Badges */
+        .order-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-completed {
+            background-color: var(--status-completed-bg);
+            color: var(--status-completed-text); 
+        }
+        .status-pending {
+            background-color: var(--status-pending-bg);
+            color: var(--status-pending-text); 
+        }
+
+        /* Order Details Group - CLEAN GRID LAYOUT */
+        .order-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns */
+            gap: 5px 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-light);
+        }
+        .detail-label {
+            font-weight: 500;
+            color: var(--text-medium);
+            text-align: left;
+            padding-right: 10px;
+        }
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: right;
+        }
+        .detail-value.total {
+            color: var(--tabeya-red);
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+        
+        /* Item List Styling */
+        .item-list-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            display: block;
+        }
+        .item-list { 
+            list-style-type: none; 
+            padding-left: 0; 
+        }
+        .item-list li {
+            font-size: 0.95em;
+            padding: 5px 0;
+            color: var(--text-medium);
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dotted var(--border-light);
+        }
+        .item-list li:last-child {
+             border-bottom: none;
+        }
+        
+        /* Empty State Styling */
+        .empty-state { 
+            text-align: center; 
+            color: var(--text-medium); 
+            padding: 80px 20px; 
+            border: 2px dashed var(--border-light); 
+            background-color: var(--background-page); 
+            border-radius: 8px; 
+            margin-top: 30px; 
+        }
+        .empty-state a {
+            color: var(--tabeya-red);
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .empty-state a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="Photo/Tabeya Name.png" alt="Tabeya Logo">
+        </div>
+        <nav>
+            <a href="index.html">HOME</a>
+            <a href="Menu.html">MENU</a> 
+            <a href="#" id="cater-reservation-link">CATER RESERVATION</a>
+            <a href="GALLERY.html">GALLERY</a>
+            <a href="Review.php">TESTIMONY</a>
+            <a href="About.html">ABOUT</a>
+            <a href="Profile.html" id="account-link">PROFILE</a> 
+            <div class="cart-icon" id="view-cart-btn">
+                🛒 <span class="cart-count" id="cart-item-count">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="order-history-section">
+        <h2>Your Order History</h2>
+        
+        <div id="order-list-container">
+            <div class="empty-state">
+                <p>No past orders found.</p>
+                <p>Start ordering from our <a href="Menu.html">MENU</a> today! 😊</p>
+            </div>
+        </div>
+        
+    </div>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Your Cart</h2>
+            <div id="cart-items-list">
+                </div>
+            <div class="cart-summary">
+                <strong>Total: ₱<span id="cart-total">0.00</span></strong>
+            </div>
+            <button id="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+    <footer>
+        <div class="contact-section">
+            <div class="container">
+                <div class="contact-info">
+                    <h2>Contact Us</h2>
+                    <p>Have any questions? We'd love to hear from you.</p>
+                    <div class="info-group">
+                        <div class="info-item visit-us">
+                            <img src="Photo/VisitUs.png" alt="Location Icon" class="icon">
+                            <div>
+                                <strong>Visit us</strong>
+                                <p>Poblacion 2, Vinzons Avenue,<br>Vinzons, Camarines Norte</p>
+                            </div>
+                        </div>
+                        <div class="info-item call-us">
+                            <img src="Photo/Selpon.png" alt="Phone Icon" class="icon">
+                            <div>
+                                <strong>Call us</strong>
+                                <p>09380839641</p>
+                            </div>
+                        </div>
+                        <div class="info-item connect-us">
+                            <img src="Photo/Facebook.png" alt="Facebook Icon" class="icon">
+                            <div>
+                                <strong>Connect to us</strong>
+                                <a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank" class="no-underline">Tabeya, VCN</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const CART_KEY = 'tabeyaCart';
+        const USER_KEY = 'currentUser';
+        const LOGIN_PAGE = 'Login.html';
+        const PROFILE_PAGE = 'Profile.html';
+        const CATER_RESERVATION_PAGE = 'CaterReservation.html'; 
+        
+        let cart = JSON.parse(localStorage.getItem(CART_KEY)) || []; 
+
+        // --- Core Login Check ---
+        function checkUserLoginStatus() {
+            return localStorage.getItem(USER_KEY) !== null;
+        }
+
+        function checkLoginAndProceed(redirectTarget) {
+            if (!checkUserLoginStatus()) { 
+                alert("You must log in to view your order history.");
+                if (redirectTarget) {
+                    localStorage.setItem('redirectAfterLogin', redirectTarget);
+                }
+                window.location.href = LOGIN_PAGE;
+                return false;
+            }
+            return true;
+        }
+
+        function updateAccountLink() {
+            const accountLink = document.getElementById('account-link');
+            const user = JSON.parse(localStorage.getItem(USER_KEY));
+            
+            if (user) {
+                accountLink.textContent = user.name.split(' ')[0].toUpperCase();
+                accountLink.href = PROFILE_PAGE; 
+            } else {
+                accountLink.textContent = 'PROFILE';
+                accountLink.href = LOGIN_PAGE;
+            }
+        }
+
+        // --- Cart Display Logic (Standard) ---
+        function updateCartDisplay() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-item-count').textContent = count;
+        }
+
+        function saveCart() {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            updateCartDisplay();
+            renderCartModal();
+        }
+        
+        function updateCartItemQuantity(itemId, change) {
+            const itemIndex = cart.findIndex(item => item.id === itemId);
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity += change;
+                if (cart[itemIndex].quantity <= 0) {
+                    cart.splice(itemIndex, 1);
+                }
+            }
+            saveCart();
+        }
+        
+        function calculateTotal() {
+            return cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+        }
+
+        function renderCartModal() {
+            const listContainer = document.getElementById('cart-items-list');
+            const totalElement = document.getElementById('cart-total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            let itemsHtml = '';
+
+            if (cart.length === 0) {
+                itemsHtml = '<p style="text-align: center; color: #777; padding: 20px 0;">Your cart is empty.</p>';
+                checkoutBtn.disabled = true;
+            } else {
+                cart.forEach(item => {
+                    const itemTotal = (item.price * item.quantity).toFixed(2);
+                    itemsHtml += `
+                        <div class="cart-item">
+                            <div class="item-info">
+                                <strong>${item.name}</strong>
+                                <p>₱${item.price.toFixed(2)} ea.</p>
+                            </div>
+                            <div class="item-controls">
+                                <div class="quantity-control">
+                                    <button class="qty-minus" data-id="${item.id}">-</button>
+                                    <span style="margin: 0 10px;">${item.quantity}</span>
+                                    <button class="qty-plus" data-id="${item.id}">+</button>
+                                </div>
+                                <span class="item-price-cart">₱${itemTotal}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                checkoutBtn.disabled = false;
+            }
+            
+            listContainer.innerHTML = itemsHtml;
+            totalElement.textContent = calculateTotal();
+            setupCartModalListeners();
+        }
+        
+        function setupCartModalListeners() {
+            const modal = document.getElementById('cart-modal');
+            
+            modal.querySelectorAll('.qty-minus').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    updateCartItemQuantity(e.target.getAttribute('data-id'), -1);
+                });
+            });
+
+            modal.querySelectorAll('.qty-plus').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    updateCartItemQuantity(e.target.getAttribute('data-id'), 1);
+                });
+            });
+            
+            document.getElementById('checkout-btn').addEventListener('click', () => {
+                if (checkLoginAndProceed('Checkout.html')) {
+                    window.location.href = 'Checkout.html';
+                }
+            });
+        }
+        
+        function setupGlobalListeners() {
+            const modal = document.getElementById('cart-modal');
+            const btn = document.getElementById("view-cart-btn");
+            const span = document.getElementsByClassName("close-btn")[0];
+
+            btn.onclick = function() {
+                renderCartModal();
+                modal.style.display = "block";
+            }
+
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+            
+            document.getElementById('cater-reservation-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                checkLoginAndProceed(CATER_RESERVATION_PAGE);
+            });
+        }
+        
+        // --- Order History Logic ---
+        async function fetchOrderHistory(customerId) {
+            // *** IMPORTANT: In a real system, replace this with a backend call. ***
+            
+            // --- MOCK DATA for demonstration ---
+            const mockOrders = [
+                { id: 101, date: '2025-11-15', total: 450.00, status: 'Completed', items: [{name: 'Pancit Canton', qty: 2, price: 150}, {name: 'Lumpiang Shanghai', qty: 1, price: 150}] },
+                { id: 102, date: '2025-11-20', total: 600.00, status: 'Pending', items: [{name: 'Halo-Halo', qty: 4, price: 150}] },
+                { id: 103, date: '2025-11-21', total: 850.50, status: 'Completed', items: [{name: 'Lechon Kawali', qty: 1, price: 500}, {name: 'Rice', qty: 2, price: 30}, {name: 'Mango Shake', qty: 3, price: 96.83}] },
+            ];
+            
+            if (customerId === 1 || customerId === '1') { 
+                renderOrderHistory(mockOrders);
+            } else {
+                renderOrderHistory([]);
+            }
+        }
+
+        function renderOrderHistory(orders) {
+            const container = document.getElementById('order-list-container');
+            container.innerHTML = ''; 
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>No past orders found.</p>
+                        <p>Start ordering from our <a href="Menu.html">MENU</a> today! 😊</p>
+                    </div>
+                `;
+                return;
+            }
+
+            orders.forEach(order => {
+                let itemsHtml = order.items.map(item => 
+                    `<li><span>${item.qty}x ${item.name}</span> <span class="detail-value">₱${(item.qty * item.price).toFixed(2)}</span></li>`
+                ).join('');
+                
+                const statusClass = order.status === 'Completed' ? 'status-completed' : 'status-pending';
+
+                const orderHtml = `
+                    <div class="order-item">
+                        <div class="order-header">
+                            <h4>Order #${order.id}</h4>
+                            <span class="order-status ${statusClass}">${order.status.toUpperCase()}</span>
+                        </div>
+                        <div class="order-details">
+                            <span class="detail-label">Order Date:</span> <span class="detail-value">${order.date}</span>
+                            <span class="detail-label">Total Amount:</span> <span class="detail-value total">₱${order.total.toFixed(2)}</span>
+                        </div>
+                        <div>
+                            <span class="item-list-title">Items Ordered:</span>
+                            <ul class="item-list">${itemsHtml}</ul>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += orderHtml;
+            });
+        }
+        
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkLoginAndProceed('OrderHistory.html')) { 
+                const user = JSON.parse(localStorage.getItem(USER_KEY));
+                const customerId = user ? (user.id || 1) : 1; 
+                fetchOrderHistory(customerId); 
+            }
+            updateAccountLink();
+            updateCartDisplay(); 
+            setupGlobalListeners(); 
+        });
+    </script>
+</body>
+</html>
