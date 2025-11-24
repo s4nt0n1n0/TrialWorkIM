@@ -66,6 +66,103 @@ $stats = $stats_result->fetch_assoc();
     <title>Customer Reviews - Tabeya</title>
     <link rel="stylesheet" href="CSS/ReviewDesign.css">
     <style>
+        /* Cart modal styles copied from Menu/Cater for consistent behavior */
+        .cart-icon {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            color: #333;
+        }
+        .cart-icon .cart-count {
+            background: #bc1823;
+            color: #fff;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 8% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+        .modal-content .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        #cart-items-list .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            gap: 10px;
+        }
+        #cart-items-list .cart-item:last-child {
+            border-bottom: none;
+        }
+        .cart-item-info {
+            flex: 1;
+        }
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .cart-item-controls button {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 4px;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .cart-item-subtotal {
+            min-width: 70px;
+            text-align: right;
+            font-weight: 600;
+        }
+        .cart-summary {
+            margin-top: 15px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+        }
+        #checkout-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            border: none;
+            background: #bc1823;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        #checkout-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
         .review-form-section { margin-bottom: 20px; }
         .review-form-section h4 { color: #bc1823; margin-bottom: 10px; font-size: 14px; }
         .rating-category { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-radius: 8px; }
@@ -117,6 +214,9 @@ $stats = $stats_result->fetch_assoc();
             <a href="Review.php" class="active">TESTIMONY</a>
             <a href="About.html">ABOUT</a>
             <a href="Login.html" id="account-link">PROFILE</a>
+            <div class="cart-icon" id="view-cart-btn" role="button" tabindex="0">
+                🛒 <span class="cart-count" id="cart-item-count">0</span>
+            </div>
         </nav>
     </header>
 
@@ -353,6 +453,18 @@ $stats = $stats_result->fetch_assoc();
         </div>
     </div>
 
+<div id="cart-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Your Cart</h2>
+        <div id="cart-items-list"></div>
+        <div class="cart-summary">
+            <strong>Total: ₱<span id="cart-total">0.00</span></strong>
+        </div>
+        <button id="checkout-btn">Proceed to Checkout</button>
+    </div>
+</div>
+
     <footer>
         <div class="contact-section">
             <div class="container">
@@ -385,8 +497,15 @@ $stats = $stats_result->fetch_assoc();
 // ============================================================
 
 const USER_KEY = 'currentUser';
+const CART_KEY = 'tabeyaCart';
+const LOGIN_PAGE = 'Login.html';
+const PROFILE_PAGE = 'Profile.html';
+const CHECKOUT_PAGE = 'Checkout.html';
+const REVIEW_PAGE = 'Review.php';
+
 let currentUser = null;
 let ratings = { overall: 0, food: 0, portion: 0, service: 0, ambience: 0, cleanliness: 0 };
+let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
 
 function getCurrentUser() {
     try { 
@@ -399,9 +518,15 @@ function getCurrentUser() {
 function updateAccountLink() {
     const link = document.getElementById('account-link');
     const user = getCurrentUser();
-    if (user && link) {
-        link.textContent = user.firstName ? user.firstName.toUpperCase() : 'PROFILE';
-        link.href = 'Profile.html';
+    if (!link) return;
+
+    if (user) {
+        const userName = user.name ? user.name.split(' ')[0].toUpperCase() : (user.firstName || 'PROFILE').toUpperCase();
+        link.textContent = userName;
+        link.href = PROFILE_PAGE;
+    } else {
+        link.textContent = 'PROFILE';
+        link.href = LOGIN_PAGE;
     }
 }
 
@@ -414,8 +539,10 @@ function toggleAccordion(btn) {
 document.addEventListener('DOMContentLoaded', () => {
     currentUser = getCurrentUser();
     updateAccountLink();
+    updateCartDisplay();
     setupRatingStars();
     setupModalHandlers();
+    setupCartListeners();
 });
 
 function setupRatingStars() {
@@ -557,6 +684,141 @@ async function submitReview() {
     } catch (error) {
         console.error('Submit error:', error);
         alert('An error occurred while submitting your review. Please try again.\n\nError: ' + error.message);
+    }
+}
+
+function ensureUserLoggedIn(redirectTarget = REVIEW_PAGE) {
+    if (!getCurrentUser()) {
+        alert("You must log in to perform this action.");
+        localStorage.setItem('redirectAfterLogin', redirectTarget);
+        window.location.href = LOGIN_PAGE;
+        return false;
+    }
+    return true;
+}
+
+function updateCartDisplay() {
+    const cartCountElement = document.getElementById('cart-item-count');
+    if (!cartCountElement) return;
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCountElement.textContent = totalItems;
+}
+
+function calculateCartTotal() {
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+}
+
+function renderCartModal() {
+    const listContainer = document.getElementById('cart-items-list');
+    const totalElement = document.getElementById('cart-total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (!listContainer || !totalElement || !checkoutBtn) return;
+
+    let itemsHtml = '';
+
+    if (cart.length === 0) {
+        itemsHtml = '<p style="text-align: center; color: #777; padding: 15px 0;">Your cart is empty.</p>';
+        checkoutBtn.disabled = true;
+    } else {
+        cart.forEach(item => {
+            const itemTotal = (item.price * item.quantity).toFixed(2);
+            const safeId = String(item.id).replace(/'/g, "\\'");
+
+            itemsHtml += `
+                <div class="cart-item">
+                    <div class="cart-item-info"> 
+                        <span class="cart-item-name">${item.name}</span>
+                        <span class="cart-item-price">₱${parseFloat(item.price).toFixed(2)} ea.</span>
+                    </div>
+                    
+                    <div class="cart-item-controls">
+                        <button onclick="window.updateCartItemQuantity('${safeId}', -1)">-</button>
+                        <span class="cart-item-quantity">${item.quantity}</span> 
+                        <button onclick="window.updateCartItemQuantity('${safeId}', 1)">+</button>
+                    </div>
+                    
+                    <span class="cart-item-subtotal">₱${itemTotal}</span> 
+                </div>
+            `;
+        });
+        checkoutBtn.disabled = false;
+    }
+
+    listContainer.innerHTML = itemsHtml;
+    listContainer.querySelectorAll('img').forEach(img => img.remove());
+    totalElement.textContent = calculateCartTotal();
+}
+
+function saveCart() {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartDisplay();
+    const modal = document.getElementById('cart-modal');
+    if (modal && modal.style.display === 'block') {
+        renderCartModal();
+    }
+}
+
+window.updateCartItemQuantity = function(itemId, change) {
+    if (!ensureUserLoggedIn()) {
+        return;
+    }
+
+    const itemIndex = cart.findIndex(item => String(item.id) === String(itemId));
+    if (itemIndex > -1) {
+        cart[itemIndex].quantity += change;
+        if (cart[itemIndex].quantity <= 0) {
+            cart.splice(itemIndex, 1);
+        }
+        saveCart();
+    }
+};
+
+function setupCartListeners() {
+    const modal = document.getElementById('cart-modal');
+    const viewCartBtn = document.getElementById('view-cart-btn');
+    const closeBtn = document.querySelector('#cart-modal .close-btn');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    if (viewCartBtn && modal) {
+        const openCart = () => {
+            if (!ensureUserLoggedIn(REVIEW_PAGE)) {
+                return;
+            }
+            renderCartModal();
+            modal.style.display = 'block';
+        };
+
+        viewCartBtn.addEventListener('click', openCart);
+        viewCartBtn.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openCart();
+            }
+        });
+    }
+
+    if (closeBtn && modal) {
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+
+    window.addEventListener('click', (event) => {
+        if (modal && event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+            if (ensureUserLoggedIn(CHECKOUT_PAGE)) {
+                window.location.href = CHECKOUT_PAGE;
+            }
+        });
     }
 }
     </script>

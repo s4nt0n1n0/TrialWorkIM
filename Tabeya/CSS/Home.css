@@ -216,28 +216,26 @@ main {
 
 
 /* =========================================== */
-/* === CART MODAL STYLES (THE FIX) === */
+/* === CART MODAL STYLES (FINAL VERSION) === */
 /* =========================================== */
 
-/* 1. Modal Container (Fixes the position to the center) */
+/* 1. Modal Container */
 .modal {
-    /* --- CRUCIAL FIXES --- */
     position: fixed;
     z-index: 200; 
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    /* --------------------- */
     background-color: rgba(0, 0, 0, 0.6); 
-    display: none; /* Hidden by default */
+    display: none; 
     overflow: auto; 
 }
 
 /* 2. Modal Content (The white box) */
 .modal-content {
     background-color: #fefefe;
-    margin: 10% auto; /* Centers the box vertically and horizontally */
+    margin: 10% auto; 
     padding: 30px;
     border: 1px solid #888;
     width: 90%; 
@@ -270,9 +268,20 @@ main {
     cursor: pointer;
 }
 
+/* Centered Title */
+.modal-content h2, .modal-content h3 {
+    color: #BC1823;
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
 /* 4. Cart Item Styling */
 #cart-items-list {
     margin-top: 15px;
+    max-height: 300px;
+    overflow-y: auto; 
+    padding-top: 5px;
 }
 
 .cart-item {
@@ -283,9 +292,17 @@ main {
     justify-content: space-between;
 }
 
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+/* ⚠️ REMOVED .cart-item-image STYLES */
+
 .cart-item-info {
     flex-grow: 1;
-    margin: 0 10px;
+    margin-right: 10px;
+    display: flex; 
+    flex-direction: column;
 }
 
 .cart-item-name {
@@ -297,12 +314,24 @@ main {
 .cart-item-price {
     font-size: 0.85em;
     color: #777;
+    display: block;
 }
 
 .cart-item-controls {
     display: flex;
     align-items: center;
     gap: 5px;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.cart-item-controls .cart-item-quantity {
+    display: inline-block;
+    margin: 0 5px; 
+    min-width: 15px;
+    text-align: center;
+    font-weight: bold;
+    color: #333;
 }
 
 .cart-item-controls button {
@@ -320,6 +349,7 @@ main {
     color: #BC1823;
     width: 70px;
     text-align: right;
+    flex-shrink: 0;
 }
 
 .cart-summary {
@@ -327,6 +357,8 @@ main {
     margin-top: 20px;
     font-size: 1.3em;
     color: #BC1823;
+    padding-top: 10px;
+    border-top: 2px solid #BC1823;
 }
 
 #checkout-btn {
@@ -470,7 +502,7 @@ footer {
         font-size: 2.5em;
     }
 
-    .info-group {
+    .info-group {   
         flex-direction: column;
         align-items: center;
     }

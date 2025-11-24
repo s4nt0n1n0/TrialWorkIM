@@ -106,13 +106,16 @@
         }
 
         function checkLoginAndProceed(redirectTarget) {
-            if (!checkUserLoginStatus()) { 
+            if (!checkUserLoginStatus()) {
                 alert("You must log in to perform this action.");
                 if (redirectTarget) {
                     localStorage.setItem('redirectAfterLogin', redirectTarget);
                 }
                 window.location.href = LOGIN_PAGE;
                 return false;
+            }
+            if (redirectTarget && redirectTarget !== 'Profile.html') {
+                window.location.href = redirectTarget;
             }
             return true;
         }
@@ -121,7 +124,8 @@
         function renderProfileDetails(user) {
             document.getElementById('profile-name').textContent = user.name || 'N/A';
             document.getElementById('profile-email').textContent = user.email || 'N/A';
-            document.getElementById('profile-contact').textContent = user.contact || 'N/A';
+            const contactNumber = user.contactNumber || user.contact || user.contactNo || 'N/A';
+            document.getElementById('profile-contact').textContent = contactNumber;
             
             // Placeholder: Use stored orders count
             const totalOrders = localStorage.getItem('userTotalOrders') || '0'; 

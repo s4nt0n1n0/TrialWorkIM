@@ -169,13 +169,11 @@
     <div class="modal-content">
         <span class="close-btn">&times;</span>
         <h2>Your Cart</h2>
-        <div id="cart-items">
-            <p id="empty-cart-message" style="text-align: center; color: #888;">Your cart is empty.</p>
-        </div>
+        <div id="cart-items-list"></div>
         <div class="cart-summary">
-            <strong>Total: <span id="cart-total">₱0.00</span></strong>
+            <strong>Total: ₱<span id="cart-total">0.00</span></strong>
         </div>
-        <button id="checkout-btn" disabled>Proceed to Checkout</button>
+        <button id="checkout-btn">Proceed to Checkout</button>
     </div>
 </div>
 
@@ -185,6 +183,9 @@
     // ====================================================================
     const LOGIN_PAGE = 'Login.html';
     const CATER_RESERVATION_PAGE = 'CaterReservation.html';
+    const CART_KEY = 'tabeyaCart';
+    const PROFILE_PAGE = 'Profile.html';
+    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
 
     /**
      * Checks if the user is logged in.
@@ -206,25 +207,13 @@
         const accountLink = document.getElementById('account-link');
         const user = getCurrentUser(); // ✅ GET USER FIRST
         
-        // 1. Update Header Link (Login/Logout functionality)
         if (accountLink) {
-            accountLink.onclick = null; 
+            accountLink.onclick = null;
             if (user) {
-                // LOGGED IN STATE
                 const userName = user.name.split(' ')[0].toUpperCase();
                 accountLink.textContent = userName;
-                accountLink.href = '#'; 
-                
-                accountLink.onclick = (e) => {
-                    e.preventDefault();
-                    if (confirm(`Are you sure you want to log out, ${userName}?`)) {
-                        localStorage.removeItem('currentUser');
-                        localStorage.removeItem('tabeyaCart');
-                        window.location.href = 'index.html'; 
-                    }
-                };
+                accountLink.href = PROFILE_PAGE;
             } else {
-                // LOGGED OUT STATE
                 accountLink.textContent = 'PROFILE';
                 accountLink.href = LOGIN_PAGE;
             }
@@ -309,7 +298,7 @@
         const scrollToFormBtn = document.getElementById('scroll-to-form');
 
         // 1. Initial Setup (Security and Pre-fill)
-        updateCartCount();
+        updateCartDisplay();
         updateAccountLinkAndPrefillForm();
         
         // 2. Date Input Setup
@@ -405,135 +394,140 @@
         if (caterLink) {
             caterLink.addEventListener('click', (e) => e.preventDefault());
         }
+        setupCartListeners();
     });
 
     // ====================================================================
-    // === CART MANAGEMENT LOGIC (Standardized) ===
+    // === CART MANAGEMENT LOGIC (Shared with Menu) ===
     // ====================================================================
-    const cartModal = document.getElementById('cart-modal');
-    const viewCartBtn = document.getElementById('view-cart-btn');
-    const closeBtn = document.querySelector('.modal-content .close-btn');
-    const cartCountElement = document.getElementById('cart-item-count');
-    const cartItemsContainer = document.getElementById('cart-items');
-    const cartTotalElement = document.getElementById('cart-total');
-    const checkoutBtn = document.getElementById('checkout-btn');
-    
-    let cart = JSON.parse(localStorage.getItem('tabeyaCart')) || [];
 
-    function saveCart() {
-        localStorage.setItem('tabeyaCart', JSON.stringify(cart));
-        updateCartCount(); 
+    function ensureUserLoggedIn(redirectTarget = CATER_RESERVATION_PAGE) {
+        if (!getCurrentUser()) {
+            alert("You must log in to perform this action.");
+            localStorage.setItem('redirectAfterLogin', redirectTarget);
+            window.location.href = LOGIN_PAGE;
+            return false;
+        }
+        return true;
     }
 
-    function updateCartCount() {
+    function updateCartDisplay() {
+        const cartCountElement = document.getElementById('cart-item-count');
+        if (!cartCountElement) return;
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
         cartCountElement.textContent = totalItems;
     }
 
-    function updateCartTotal() {
-        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        cartTotalElement.textContent = `₱${total.toFixed(2)}`;
-        checkoutBtn.disabled = cart.length === 0 || !getCurrentUser(); 
-        
-        if (!getCurrentUser() && cart.length > 0) {
-            checkoutBtn.textContent = 'Log In to Checkout';
-        } else {
-            checkoutBtn.textContent = 'Proceed to Checkout';
-        }
+    function calculateCartTotal() {
+        return cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
     }
 
-    function renderCart() {
-        cartItemsContainer.innerHTML = '';
+    function renderCartModal() {
+        const listContainer = document.getElementById('cart-items-list');
+        const totalElement = document.getElementById('cart-total');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        if (!listContainer || !totalElement || !checkoutBtn) return;
+
+        let itemsHtml = '';
+
         if (cart.length === 0) {
-            cartItemsContainer.innerHTML = '<p id="empty-cart-message" style="text-align: center; color: #888; margin-top: 20px;">Your cart is empty. Add items from the Menu!</p>';
+            itemsHtml = '<p style="text-align: center; color: #777; padding: 15px 0;">Your cart is empty.</p>';
+            checkoutBtn.disabled = true;
         } else {
-            const list = document.createElement('div');
-            list.id = 'cart-items-list';
+            cart.forEach(item => {
+                const itemTotal = (item.price * item.quantity).toFixed(2);
+                const safeId = String(item.id).replace(/'/g, "\\'");
 
-            cart.forEach((item, index) => {
-                const subtotal = item.price * item.quantity;
-                const itemDiv = document.createElement('div');
-                itemDiv.classList.add('cart-item');
-                
-                const imageSrc = item.image || 'Photo/default-item.jpg'; 
-
-                itemDiv.innerHTML = `
-                    <img src="${imageSrc}" alt="${item.name}" class="cart-item-image">
-                    <div class="cart-item-info">
-                        <span class="cart-item-name">${item.name}</span>
-                        <span class="cart-item-price">@ ₱${item.price.toFixed(2)}</span>
+                itemsHtml += `
+                    <div class="cart-item">
+                        <div class="cart-item-info"> 
+                            <span class="cart-item-name">${item.name}</span>
+                            <span class="cart-item-price">₱${parseFloat(item.price).toFixed(2)} ea.</span>
+                        </div>
+                        
+                        <div class="cart-item-controls">
+                            <button onclick="window.updateCartItemQuantity('${safeId}', -1)">-</button>
+                            <span class="cart-item-quantity">${item.quantity}</span> 
+                            <button onclick="window.updateCartItemQuantity('${safeId}', 1)">+</button>
+                        </div>
+                        
+                        <span class="cart-item-subtotal">₱${itemTotal}</span> 
                     </div>
-                    <div class="cart-item-controls">
-                        <button class="qty-btn" data-index="${index}" data-action="decrease">-</button>
-                        <span class="cart-item-qty">${item.quantity}</span>
-                        <button class="qty-btn" data-index="${index}" data-action="increase">+</button>
-                    </div>
-                    <span class="cart-item-subtotal">₱${subtotal.toFixed(2)}</span>
-                    `;
-                list.appendChild(itemDiv);
+                `;
             });
-            cartItemsContainer.appendChild(list);
+            checkoutBtn.disabled = false;
         }
-        updateCartTotal();
-        saveCart();
+
+        listContainer.innerHTML = itemsHtml;
+        // Safety: ensure no residual product images appear inside the cart.
+        listContainer.querySelectorAll('img').forEach(img => img.remove());
+        totalElement.textContent = calculateCartTotal();
     }
 
-    viewCartBtn.addEventListener('click', () => {
-        if (!getCurrentUser()) {
-             alert("You must log in to view your cart.");
-             localStorage.setItem('redirectAfterLogin', CATER_RESERVATION_PAGE);
-             window.location.href = LOGIN_PAGE;
-             return;
+    function saveCart() {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        updateCartDisplay();
+        const modal = document.getElementById('cart-modal');
+        if (modal && modal.style.display === 'block') {
+            renderCartModal();
         }
-        renderCart(); 
-        cartModal.style.display = 'block';
-    });
-
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            cartModal.style.display = 'none';
-        });
     }
 
-    window.addEventListener('click', (event) => {
-        if (event.target === cartModal) {
-            cartModal.style.display = 'none';
-        }
-    });
-
-    checkoutBtn.addEventListener('click', () => {
-        if (!getCurrentUser()) {
-            alert("You must log in to proceed to checkout.");
-            localStorage.setItem('redirectAfterLogin', CATER_RESERVATION_PAGE);
-            window.location.href = LOGIN_PAGE;
+    window.updateCartItemQuantity = function(itemId, change) {
+        if (!ensureUserLoggedIn()) {
             return;
         }
-        if (cart.length > 0) {
-            alert("Redirecting to checkout page with your order details...");
-        }
-    });
 
-    cartItemsContainer.addEventListener('click', (e) => {
-        const target = e.target;
-        const index = parseInt(target.getAttribute('data-index'));
-
-        if (!isNaN(index) && getCurrentUser()) {
-            let item = cart[index];
-            
-            if (target.classList.contains('qty-btn')) {
-                const action = target.getAttribute('data-action');
-                if (action === 'increase') {
-                    item.quantity += 1;
-                } else if (action === 'decrease' && item.quantity > 1) {
-                    item.quantity -= 1;
-                } else if (action === 'decrease' && item.quantity === 1) {
-                    cart.splice(index, 1);
-                }
+        const itemIndex = cart.findIndex(item => String(item.id) === String(itemId));
+        if (itemIndex > -1) {
+            cart[itemIndex].quantity += change;
+            if (cart[itemIndex].quantity <= 0) {
+                cart.splice(itemIndex, 1);
             }
+            saveCart();
         }
-        
-        renderCart(); 
-    });
+    };
+
+    function setupCartListeners() {
+        const modal = document.getElementById('cart-modal');
+        const viewCartBtn = document.getElementById('view-cart-btn');
+        const closeBtn = document.querySelector('#cart-modal .close-btn');
+        const checkoutBtn = document.getElementById('checkout-btn');
+
+        if (viewCartBtn && modal) {
+            viewCartBtn.addEventListener('click', () => {
+                if (!ensureUserLoggedIn(CATER_RESERVATION_PAGE)) {
+                    return;
+                }
+                renderCartModal();
+                modal.style.display = 'block';
+            });
+        }
+
+        if (closeBtn && modal) {
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+        }
+
+        window.addEventListener('click', (event) => {
+            if (modal && event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener('click', () => {
+                if (cart.length === 0) {
+                    alert("Your cart is empty!");
+                    return;
+                }
+                if (ensureUserLoggedIn('Checkout.html')) {
+                    window.location.href = 'Checkout.html';
+                }
+            });
+        }
+    }
 </script>
 </body>
 </html>

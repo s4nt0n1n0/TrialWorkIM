@@ -42,9 +42,12 @@ function isAjaxRequest() {
 
 /**
  * Set JSON response headers
+ * Guarded because session.php already declares the same helper.
  */
-function setJsonHeaders() {
-    header('Content-Type: application/json; charset=utf-8');
+if (!function_exists('setJsonHeaders')) {
+    function setJsonHeaders() {
+        header('Content-Type: application/json; charset=utf-8');
+    }
 }
 
 /**

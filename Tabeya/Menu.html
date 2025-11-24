@@ -15,7 +15,7 @@
         <nav>
             <a href="index.html">HOME</a>
             <a href="Menu.html" class="active">MENU</a>
-            <a href="CaterReservation.html">CATER RESERVATION</a>
+            <a href="#" id="cater-reservation-link">CATER RESERVATION</a>
             <a href="GALLERY.html">GALLERY</a>
             <a href="Review.php">TESTIMONY</a>
             <a href="About.html">ABOUT</a>
@@ -38,7 +38,7 @@
             <span class="close-btn">&times;</span>
             <h2>Your Cart</h2>
             <div id="cart-items-list">
-                </div>
+            </div>
             <div class="cart-summary">
                 <strong>Total: ₱<span id="cart-total">0.00</span></strong>
             </div>
@@ -88,9 +88,10 @@
         const USER_KEY = 'currentUser';
         const LOGIN_PAGE = 'Login.html';
         const CATER_RESERVATION_PAGE = 'CaterReservation.html';
+        const PROFILE_PAGE = 'Profile.html';
         
-        // Global variable to store fetched products
         let allProducts = [];
+        let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
 
         // --- Core Login Check ---
         function checkUserLoginStatus() {
@@ -107,11 +108,15 @@
                 window.location.href = LOGIN_PAGE;
                 return false;
             }
+            // Only redirect if a target is provided AND login is successful
+            if (redirectTarget && redirectTarget !== 'Menu.html') {
+                 window.location.href = redirectTarget;
+            }
             return true;
         }
         
         // ====================================================================
-        // === DATA FETCHING LOGIC (NEW) ===
+        // === DATA FETCHING LOGIC (Placeholder for PHP/DB) ===
         // ====================================================================
 
         function groupProductsByCategory(products) {
@@ -126,23 +131,21 @@
         }
 
         async function fetchMenuData() {
+            // NOTE: This assumes you have a running server with fetch_products.php
             console.log("Fetching menu data from fetch_products.php...");
             const container = document.getElementById('dynamic-menu-content');
             
             try {
-                // 1. Make a request to your PHP file
                 const response = await fetch('fetch_products.php');
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
-                // 2. Parse the JSON response
                 const result = await response.json();
 
-                // Check the 'success' flag from your PHP
                 if (result.success) {
-                    allProducts = result.products; // Store fetched data
+                    allProducts = result.products; 
                     renderMenu(allProducts);
                     console.log(`Successfully loaded ${result.count} products.`);
                 } else {
@@ -164,9 +167,8 @@
 
 
         // ====================================================================
-        // === CART MANAGEMENT LOGIC (UNMODIFIED) ===
+        // === CART MANAGEMENT LOGIC ===
         // ====================================================================
-        let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
         
         function updateCartDisplay() {
             const count = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -176,12 +178,20 @@
         function saveCart() {
             localStorage.setItem(CART_KEY, JSON.stringify(cart));
             updateCartDisplay();
-            renderCartModal();
+            if(document.getElementById('cart-modal').style.display === "block") {
+                renderCartModal();
+            }
         }
 
         function addToCart(itemDetails) {
-            // Find if item already exists in the cart
-            const existingItem = cart.find(item => item.id == itemDetails.id); // Use == for comparison, as ID might be string in cart, but int in DB
+            if (!checkUserLoginStatus()) { 
+                alert("You must log in to perform this action.");
+                localStorage.setItem('redirectAfterLogin', 'Menu.html'); 
+                window.location.href = LOGIN_PAGE;
+                return;
+            }
+
+            const existingItem = cart.find(item => String(item.id) === String(itemDetails.id)); 
 
             if (existingItem) {
                 existingItem.quantity += 1;
@@ -198,12 +208,17 @@
             alert(`${itemDetails.name} added to cart!`);
         }
         
-        function updateCartItemQuantity(itemId, change) {
-            const itemIndex = cart.findIndex(item => item.id == itemId);
+        // Function called by the plus/minus buttons inside the modal
+        window.updateCartItemQuantity = function(itemId, change) { 
+            if (!checkUserLoginStatus()) { 
+                alert("You must log in to modify the cart.");
+                return; 
+            }
+            
+            const itemIndex = cart.findIndex(item => String(item.id) === String(itemId));
             if (itemIndex > -1) {
                 cart[itemIndex].quantity += change;
                 if (cart[itemIndex].quantity <= 0) {
-                    // Remove item if quantity drops to 0 or less
                     cart.splice(itemIndex, 1);
                 }
                 saveCart();
@@ -215,21 +230,57 @@
         }
 
         // ====================================================================
-        // === RENDERING FUNCTIONS (MODIFIED) ===
+        // === RENDERING FUNCTIONS ===
         // ====================================================================
+        
+        function renderCartModal() {
+            const listContainer = document.getElementById('cart-items-list');
+            const totalElement = document.getElementById('cart-total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            let itemsHtml = '';
+
+            if (cart.length === 0) {
+                itemsHtml = '<p style="text-align: center; color: #777; padding: 15px 0;">Your cart is empty.</p>';
+                checkoutBtn.disabled = true;
+            } else {
+                cart.forEach(item => {
+                    const itemTotal = (item.price * item.quantity).toFixed(2);
+                    const safeId = String(item.id).replace(/'/g, "\\'"); 
+
+                    itemsHtml += `
+                        <div class="cart-item">
+                            <div class="cart-item-info"> 
+                                <span class="cart-item-name">${item.name}</span>
+                                <span class="cart-item-price">₱${parseFloat(item.price).toFixed(2)} ea.</span>
+                            </div>
+                            
+                            <div class="cart-item-controls">
+                                <button onclick="window.updateCartItemQuantity('${safeId}', -1)">-</button>
+                                <span class="cart-item-quantity">${item.quantity}</span> 
+                                <button onclick="window.updateCartItemQuantity('${safeId}', 1)">+</button>
+                            </div>
+                            
+                            <span class="cart-item-subtotal">₱${itemTotal}</span> 
+                        </div>
+                    `;
+                });
+                checkoutBtn.disabled = false;
+            }
+            
+            listContainer.innerHTML = itemsHtml;
+            totalElement.textContent = calculateTotal();
+        }
+        
         function renderMenu(products) {
             const container = document.getElementById('dynamic-menu-content');
             if (!container) return;
 
             let menuHtml = '';
             
-            // Group products by category before rendering
             const groupedProducts = groupProductsByCategory(products);
 
-            // Clear loading text
             container.innerHTML = '';
             
-            // Iterate over the categories
             for (const categoryName in groupedProducts) {
                 menuHtml += `
                     <div class="menu-category-container menu-category">
@@ -238,11 +289,10 @@
                 `;
                 
                 groupedProducts[categoryName].forEach(item => {
-                    // Data directly from PHP/DB: ProductID, ProductName, Price, Image, Description
                     const id = item.ProductID;
                     const name = item.ProductName;
                     const priceDisplay = parseFloat(item.Price).toFixed(2);
-                    const rawPrice = item.Price; // Use the raw price for the data attribute
+                    const rawPrice = item.Price; 
                     const imagePath = item.Image;
                     const description = item.Description || '';
 
@@ -283,58 +333,21 @@
             setupMenuListeners();
         }
         
-        function renderCartModal() {
-            const listContainer = document.getElementById('cart-items-list');
-            const totalElement = document.getElementById('cart-total');
-            const checkoutBtn = document.getElementById('checkout-btn');
-            let itemsHtml = '';
-
-            if (cart.length === 0) {
-                itemsHtml = '<p style="text-align: center; color: #777;">Your cart is empty.</p>';
-                checkoutBtn.disabled = true;
-            } else {
-                cart.forEach(item => {
-                    const itemTotal = (item.price * item.quantity).toFixed(2);
-                    itemsHtml += `
-                        <div class="cart-item">
-                            <div class="item-info">
-                                <strong>${item.name}</strong>
-                                <p>₱${parseFloat(item.price).toFixed(2)} ea.</p>
-                            </div>
-                            <div class="item-controls">
-                                <div class="quantity-control">
-                                    <button class="qty-minus" data-id="${item.id}">-</button>
-                                    <span style="margin: 0 10px;">${item.quantity}</span>
-                                    <button class="qty-plus" data-id="${item.id}">+</button>
-                                </div>
-                                <span class="item-price-cart">₱${itemTotal}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-                checkoutBtn.disabled = false;
-            }
-            
-            listContainer.innerHTML = itemsHtml;
-            totalElement.textContent = calculateTotal();
-            setupCartModalListeners();
-        }
-        
         function updateAccountLink() {
             const accountLink = document.getElementById('account-link');
             const user = JSON.parse(localStorage.getItem(USER_KEY));
             
             if (user) {
-                accountLink.textContent = user.name.split(' ')[0].toUpperCase(); // Show first name
-                accountLink.href = 'Profile.html'; 
+                accountLink.textContent = user.name.split(' ')[0].toUpperCase(); 
+                accountLink.href = PROFILE_PAGE; 
             } else {
                 accountLink.textContent = 'PROFILE';
-                accountLink.href = 'Login.html';
+                accountLink.href = LOGIN_PAGE;
             }
         }
 
         // ====================================================================
-        // === EVENT LISTENERS (UNMODIFIED) ===
+        // === EVENT LISTENERS ===
         // ====================================================================
         function setupMenuListeners() {
             document.querySelectorAll('.add-to-cart-btn').forEach(button => {
@@ -348,42 +361,19 @@
             });
         }
         
-        function setupCartModalListeners() {
-            const modal = document.getElementById('cart-modal');
-            
-            // Quantity buttons listener
-            modal.querySelectorAll('.qty-minus').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    updateCartItemQuantity(id, -1);
-                });
-            });
-
-            modal.querySelectorAll('.qty-plus').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    updateCartItemQuantity(id, 1);
-                });
-            });
-            
-            // Checkout button listener
-            document.getElementById('checkout-btn').addEventListener('click', () => {
-                if (checkLoginAndProceed('Checkout.html')) {
-                    window.location.href = 'Checkout.html';
-                }
-            });
-        }
         
-        // --- Header and Modal Listeners ---
         function setupGlobalListeners() {
             const modal = document.getElementById('cart-modal');
             const btn = document.getElementById("view-cart-btn");
             const span = document.getElementsByClassName("close-btn")[0];
+            const checkoutBtn = document.getElementById('checkout-btn');
 
             // Open the cart modal
             btn.onclick = function() {
-                renderCartModal();
-                modal.style.display = "block";
+                if (checkLoginAndProceed('Menu.html')) {
+                    renderCartModal();
+                    modal.style.display = "block";
+                }
             }
 
             // Close the cart modal with the (x) button
@@ -398,32 +388,42 @@
                 }
             }
             
+            // Checkout button listener
+            checkoutBtn.addEventListener('click', () => {
+                if (cart.length > 0) {
+                     if(checkLoginAndProceed('Checkout.html')) {
+                        // Redirect handled inside checkLoginAndProceed
+                     }
+                } else {
+                    alert("Your cart is empty!");
+                }
+            });
+            
             // Cater Reservation link (requires login check)
-            const caterLink = document.querySelector('nav a[href="CaterReservation.html"]');
+            const caterLink = document.getElementById('cater-reservation-link');
             if (caterLink) {
-                   caterLink.addEventListener('click', (e) => {
-                       e.preventDefault();
-                       checkLoginAndProceed(CATER_RESERVATION_PAGE);
-                   });
+                caterLink.addEventListener('click', (e) => {
+                    e.preventDefault(); 
+                    checkLoginAndProceed(CATER_RESERVATION_PAGE); 
+                });
             }
         }
 
 
         // ====================================================================
-        // === INITIALIZATION (MODIFIED) ===
+        // === INITIALIZATION ===
         // ====================================================================
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchMenuData(); // <--- CRITICAL: Now fetches data from PHP
-            updateCartLink();
-            updateAccountLink();
-            setupGlobalListeners();
-        });
         
-        // Combined function to update all dynamic header elements
-        function updateCartLink() {
+        function updateHeaderElements() {
             updateCartDisplay();
             updateAccountLink();
         }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchMenuData(); 
+            updateHeaderElements(); 
+            setupGlobalListeners();
+        });
     </script>
 </body>
 </html>

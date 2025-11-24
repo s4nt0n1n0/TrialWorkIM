@@ -13,20 +13,52 @@
         body {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Ensure the body takes at least the full viewport height */
+            min-height: 100vh;
             background-color: var(--background-page);
         }
 
-        /* Main content should grow to push the footer down */
         .order-history-section { 
-            flex-grow: 1; /* Allows the main content area to expand */
-            /* Existing styles below */
-            max-width: 900px;
-            margin: 150px auto 50px; 
-            padding: 40px; 
+            flex-grow: 1;
+            width: 95%;
+            max-width: 1400px;
+            margin: 140px auto 60px; 
+            padding: 50px; 
             background-color: var(--background-card); 
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+            border-radius: 18px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12); 
+        }
+
+        .order-history-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 30px;
+            border: 1px solid var(--border-light);
+            background-color: #fff;
+            color: var(--text-dark);
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .back-btn:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        #order-list-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+            gap: 30px;
         }
 
         /* ========================================= */
@@ -64,15 +96,15 @@
         /* Order Item Card Design */
         .order-item { 
             border: 1px solid var(--border-light); 
-            border-radius: 8px;
-            margin-bottom: 25px;
-            padding: 20px 25px; 
+            border-radius: 16px;
+            padding: 28px 30px; 
             background-color: var(--background-card); 
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s ease-in-out;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .order-item:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
         }
 
         /* Order Header Styling */
@@ -111,10 +143,10 @@
         /* Order Details Group - CLEAN GRID LAYOUT */
         .order-details {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Two columns */
-            gap: 5px 20px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
+            grid-template-columns: repeat(2, minmax(180px, 1fr));
+            gap: 12px 25px;
+            margin-bottom: 25px;
+            padding-bottom: 18px;
             border-bottom: 1px dashed var(--border-light);
         }
         .detail-label {
@@ -144,6 +176,7 @@
         .item-list { 
             list-style-type: none; 
             padding-left: 0; 
+            margin: 0;
         }
         .item-list li {
             font-size: 0.95em;
@@ -166,6 +199,10 @@
             background-color: var(--background-page); 
             border-radius: 8px; 
             margin-top: 30px; 
+        }
+        #order-list-container .empty-state {
+            grid-column: 1 / -1;
+            margin-top: 0;
         }
         .empty-state a {
             color: var(--tabeya-red);
@@ -198,6 +235,9 @@
     </header>
 
     <div class="order-history-section">
+        <div class="order-history-toolbar">
+            <a href="Profile.html" class="back-btn">← Back to Profile</a>
+        </div>
         <h2>Your Order History</h2>
         
         <div id="order-list-container">

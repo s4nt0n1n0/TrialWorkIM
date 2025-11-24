@@ -5,129 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - Tabeya</title>
     
+    <link rel="stylesheet" href="CSS/Profile.css">
     <style>
-        /* ========================================= */
-        /* --- BASE STYLES (MATCHING Profile.html STRUCTURE) --- */
-        /* ========================================= */
-        body { margin: 0; font-family: Arial, sans-serif; background-color: #f8f8f8; }
-        
-        /* Header & Navigation */
-        header { position: fixed; top: 0; width: 100%; background-color: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); z-index: 1000; padding: 10px 0; display: flex; justify-content: space-around; align-items: center; }
-        header .logo img { height: 50px; }
-        header nav a { text-decoration: none; color: #333; margin: 0 15px; font-weight: bold; transition: color 0.3s; }
-        header nav a:hover, header nav a.active { color: #BC1823; }
-        .cart-icon { cursor: pointer; color: #BC1823; font-size: 1.2em; }
-        .cart-count { background-color: #BC1823; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.8em; margin-left: 5px; position: relative; top: -10px; }
-
-        /* Footer Styles */
-        footer { background-color: #333; color: white; padding: 40px 0; margin-top: 50px; }
-        .contact-section { max-width: 1200px; margin: auto; padding: 0 20px; }
-        .contact-info h2 { color: #BC1823; }
-        .info-group { display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 20px; }
-        .info-item { width: 30%; min-width: 200px; margin-bottom: 20px; }
-        .info-item img.icon { height: 30px; margin-right: 10px; vertical-align: middle; }
-        .info-item a { color: white; text-decoration: none; }
-        .info-item a:hover { text-decoration: underline; }
-
-        /* Cart Modal Styles */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
-        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 400px; border-radius: 8px; }
-        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; align-items: center;}
-        #checkout-btn { width: 100%; padding: 10px; background-color: #BC1823; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;}
-        .quantity-control button { background: #eee; border: 1px solid #ccc; padding: 3px 8px; cursor: pointer; }
-
-        /* ========================================= */
-        /* --- EDIT PROFILE STYLES --- */
-        /* ========================================= */
-
-        .profile-section { 
-            max-width: 800px; /* Standardizing max width */
-            margin: 150px auto 70px; 
-            padding: 40px; 
-            min-height: 50vh;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        .profile-section {
+            max-width: 720px;
+            margin-top: 140px;
         }
 
-        .profile-section h2 {
-            color: #BC1823;
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 2.5em; 
-            border-bottom: 4px solid #BC1823;
-            padding-bottom: 15px;
-        }
-
-        /* Form Styling */
         .edit-form label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: bold;
             color: #444;
-            font-size: 1.1em;
         }
 
         .edit-form input[type="text"],
         .edit-form input[type="email"],
-        .edit-form input[type="tel"],
-        .edit-form input[type="password"] {
+        .edit-form input[type="tel"] {
             width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 25px;
+            padding: 12px 14px;
+            margin-bottom: 22px;
             border: 1px solid #ccc;
             border-radius: 6px;
-            box-sizing: border-box; /* Ensures padding doesn't affect total width */
-            font-size: 1em;
-            transition: border-color 0.3s;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: #fff;
         }
-        
+
         .edit-form input:focus {
             border-color: #BC1823;
             outline: none;
-            box-shadow: 0 0 5px rgba(188, 24, 35, 0.3);
+            box-shadow: 0 0 6px rgba(188, 24, 35, 0.3);
         }
 
-        /* Action Buttons */
-        .profile-actions {
-            display: flex;
-            justify-content: flex-end; /* Align to the right */
-            gap: 15px;
-            margin-top: 30px;
+        .form-actions {
+            margin-top: 10px;
             border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-        
-        .action-btn {
-            padding: 12px 25px;
-            font-size: 1.1em;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s, opacity 0.3s;
+            padding-top: 18px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
         }
 
-        .save-btn {
-            background-color: #BC1823;
-            color: white;
-            font-weight: bold;
-        }
-        
-        .save-btn:hover {
-            background-color: #a0151f;
-        }
-
-        .cancel-btn {
+        .form-actions .cancel-btn {
             background-color: #ccc;
             color: #333;
         }
-        
-        .cancel-btn:hover {
-            background-color: #bbb;
+
+        .form-actions .save-btn {
+            background-color: #BC1823;
+            color: #fff;
         }
-        
-        .action-btn:disabled {
+
+        .form-actions button {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .form-actions button:hover {
+            transform: translateY(-1px);
+        }
+
+        .form-actions button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
@@ -164,13 +107,9 @@
             <input type="email" id="email" name="email" required>
 
             <label for="contact">Contact Number</label>
-            <input type="tel" id="contact" name="contact" pattern="[0-9]{10,12}" placeholder="e.g., 09xxxxxxxxx" required>
-            
-            <p style="color: #BC1823; font-weight: bold; margin-top: 30px;">
-                *Note: Password changes require a separate, secure process (or a dedicated input if updating is necessary).
-            </p>
+            <input type="tel" id="contact" name="contact" pattern="^09\d{9}$" maxlength="11" placeholder="e.g., 09XXXXXXXXX" required>
 
-            <div class="profile-actions">
+            <div class="profile-actions form-actions">
                 <button type="button" class="action-btn cancel-btn" onclick="window.location.href='Profile.html'">Cancel</button>
                 <button type="submit" class="action-btn save-btn" id="save-profile-btn">Save Changes</button>
             </div>
@@ -230,88 +169,186 @@
         const LOGIN_PAGE = 'Login.html';
         const PROFILE_PAGE = 'Profile.html';
         const CATER_RESERVATION_PAGE = 'CaterReservation.html';
+        const API_ROOT = window.location.origin + window.location.pathname.replace('EditProfile.html', '');
+        const PROFILE_API = `${API_ROOT}api/customers/profile.php`;
+        const UPDATE_PROFILE_API = `${API_ROOT}api/customers/update_profile.php`;
         
         let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        let isSubmitting = false;
 
-        // --- Core Login Check ---
         function checkUserLoginStatus() {
             return localStorage.getItem(USER_KEY) !== null;
         }
 
         function checkLoginAndProceed(redirectTarget) {
-            if (!checkUserLoginStatus()) { 
-                alert("You must log in to view this page.");
+            if (!checkUserLoginStatus()) {
+                alert("You must log in to perform this action.");
                 if (redirectTarget) {
                     localStorage.setItem('redirectAfterLogin', redirectTarget);
                 }
                 window.location.href = LOGIN_PAGE;
                 return false;
             }
+            if (redirectTarget && redirectTarget !== 'EditProfile.html') {
+                window.location.href = redirectTarget;
+            }
             return true;
+        }
+
+        function normalizeUserData(raw) {
+            if (!raw) return null;
+            if (raw.FirstName || raw.LastName) {
+                return {
+                    customerId: raw.CustomerID ?? raw.customerId,
+                    firstName: raw.FirstName || '',
+                    lastName: raw.LastName || '',
+                    email: raw.Email || '',
+                    contactNumber: raw.ContactNumber || ''
+                };
+            }
+
+            const tokens = (raw.name || '').trim().split(/\s+/);
+            return {
+                customerId: raw.customerId,
+                firstName: raw.firstName || tokens[0] || '',
+                lastName: raw.lastName || tokens.slice(1).join(' ') || '',
+                email: raw.email || '',
+                contactNumber: raw.contactNumber || raw.contact || ''
+            };
+        }
+
+        function syncLocalProfile(customer) {
+            const normalized = normalizeUserData(customer);
+            if (!normalized) return null;
+
+            const updated = {
+                name: [normalized.firstName, normalized.lastName].filter(Boolean).join(' ').trim(),
+                email: normalized.email,
+                customerId: normalized.customerId,
+                firstName: normalized.firstName,
+                lastName: normalized.lastName,
+                contactNumber: normalized.contactNumber
+            };
+            localStorage.setItem(USER_KEY, JSON.stringify(updated));
+            return updated;
+        }
+
+        function populateFormFields(user) {
+            if (!user) return;
+            const fullNameInput = document.getElementById('full-name');
+            const emailInput = document.getElementById('email');
+            const contactInput = document.getElementById('contact');
+
+            const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ').trim();
+            fullNameInput.value = fullName || '';
+            emailInput.value = user.email || '';
+            contactInput.value = user.contactNumber || '';
+        }
+
+        async function fetchProfileFromServer() {
+            try {
+                const response = await fetch(PROFILE_API, { credentials: 'include' });
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (error) {
+                    throw new Error('Server returned invalid JSON: ' + text);
+                }
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data?.message || 'Unable to load profile.');
+                }
+
+                return data.customer;
+            } catch (error) {
+                console.error('Profile fetch error:', error);
+                return null;
+            }
         }
 
         function updateAccountLink() {
             const accountLink = document.getElementById('account-link');
-            const user = JSON.parse(localStorage.getItem(USER_KEY));
-            
-            if (user) {
-                accountLink.textContent = user.name.split(' ')[0].toUpperCase();
-                accountLink.href = PROFILE_PAGE; 
-                accountLink.classList.add('active'); // Keep the active class
-            } else {
+            const userData = JSON.parse(localStorage.getItem(USER_KEY));
+
+            if (accountLink && userData) {
+                const firstName = userData.firstName || (userData.name ? userData.name.split(' ')[0] : 'PROFILE');
+                accountLink.textContent = firstName.toUpperCase();
+                accountLink.href = PROFILE_PAGE;
+                accountLink.classList.add('active');
+            } else if (accountLink) {
                 accountLink.textContent = 'PROFILE';
                 accountLink.href = LOGIN_PAGE;
                 accountLink.classList.add('active');
             }
         }
-        
-        // --- Edit Profile Specific Logic ---
-        
-        function populateEditForm() {
-            const user = JSON.parse(localStorage.getItem(USER_KEY));
-            if (user) {
-                document.getElementById('full-name').value = user.name || '';
-                document.getElementById('email').value = user.email || '';
-                document.getElementById('contact').value = user.contact || '';
-                // Password field is intentionally not populated for security
-            }
-        }
-        
-        function handleFormSubmission(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('full-name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const contact = document.getElementById('contact').value.trim();
 
-            if (!name || !email || !contact) {
+        async function handleFormSubmission(event) {
+            event.preventDefault();
+            if (isSubmitting) return;
+
+            const fullNameValue = document.getElementById('full-name').value.trim();
+            const emailValue = document.getElementById('email').value.trim();
+            const contactValue = document.getElementById('contact').value.trim();
+
+            if (!fullNameValue || !emailValue || !contactValue) {
                 alert("All fields are required.");
                 return;
             }
 
-            let user = JSON.parse(localStorage.getItem(USER_KEY));
-            
-            if (user) {
-                // Mock update: In a real app, this is where you'd send an AJAX request to your PHP script (e.g., update_profile.php).
-                // For demonstration, we just update localStorage.
-                user.name = name;
-                user.email = email;
-                user.contact = contact;
-                
-                localStorage.setItem(USER_KEY, JSON.stringify(user));
-                
-                // Update header link immediately
-                updateAccountLink();
+            const [firstName, ...rest] = fullNameValue.split(/\s+/);
+            const lastName = rest.join(' ') || '';
 
-                alert("✅ Profile updated successfully! (Data saved locally)");
-                window.location.href = PROFILE_PAGE; 
-            } else {
-                alert("Error: User session not found. Please log in again.");
-                window.location.href = LOGIN_PAGE;
+            const payload = {
+                firstName,
+                lastName,
+                email: emailValue,
+                contactNumber: contactValue
+            };
+
+            const saveBtn = document.getElementById('save-profile-btn');
+
+            try {
+                isSubmitting = true;
+                saveBtn.textContent = 'Saving...';
+                saveBtn.disabled = true;
+
+                const response = await fetch(UPDATE_PROFILE_API, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+
+                const text = await response.text();
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch (error) {
+                    throw new Error('Server returned invalid JSON: ' + text);
+                }
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result?.message || 'Failed to update profile.');
+                }
+
+                const updated = syncLocalProfile(result.customer);
+                populateFormFields(updated);
+                alert('Profile updated successfully!');
+                window.location.href = PROFILE_PAGE;
+            } catch (error) {
+                console.error('Update profile error:', error);
+                alert(error.message);
+            } finally {
+                isSubmitting = false;
+                saveBtn.textContent = 'Save Changes';
+                saveBtn.disabled = false;
             }
         }
 
-        // --- Cart Display Logic (Reused from previous context) ---
         function updateCartDisplay() {
             const count = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
             document.getElementById('cart-item-count').textContent = count;
@@ -322,7 +359,7 @@
         }
 
         function updateCartItemQuantity(itemId, change) {
-            const itemIndex = cart.findIndex(item => item.id === itemId);
+            const itemIndex = cart.findIndex(item => String(item.id) === String(itemId));
             if (itemIndex > -1) {
                 cart[itemIndex].quantity += change;
                 if (cart[itemIndex].quantity <= 0) {
@@ -397,44 +434,73 @@
             });
         }
 
-        // --- Global Listeners ---
         function setupGlobalListeners() {
             const modal = document.getElementById('cart-modal');
             const btn = document.getElementById("view-cart-btn");
             const span = document.getElementsByClassName("close-btn")[0];
+            const editForm = document.getElementById('edit-profile-form');
 
-            btn.onclick = function() {
-                renderCartModal();
-                modal.style.display = "block";
+            if (btn) {
+                btn.onclick = function() {
+                    renderCartModal();
+                    modal.style.display = "block";
+                };
             }
 
-            span.onclick = function() {
-                modal.style.display = "none";
+            if (span) {
+                span.onclick = function() {
+                    modal.style.display = "none";
+                };
             }
 
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = "none";
                 }
+            };
+            
+            const caterLink = document.getElementById('cater-reservation-link');
+            if (caterLink) {
+                caterLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    checkLoginAndProceed(CATER_RESERVATION_PAGE);
+                });
             }
             
-            document.getElementById('cater-reservation-link').addEventListener('click', (e) => {
-                e.preventDefault();
-                checkLoginAndProceed(CATER_RESERVATION_PAGE);
-            });
-            
-            // Attach submission handler to the form
-            document.getElementById('edit-profile-form').addEventListener('submit', handleFormSubmission);
+            if (editForm) {
+                editForm.addEventListener('submit', handleFormSubmission);
+            }
         }
         
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            if (checkLoginAndProceed()) { 
-                populateEditForm(); // Load current user data into the form
+        async function initializeProfileEditor() {
+            if (!checkLoginAndProceed()) {
+                return;
             }
+
             updateAccountLink();
             updateCartDisplay();
             setupGlobalListeners();
+
+            const serverProfile = await fetchProfileFromServer();
+            let normalizedUser = null;
+
+            if (serverProfile) {
+                normalizedUser = syncLocalProfile(serverProfile);
+            } else {
+                normalizedUser = normalizeUserData(JSON.parse(localStorage.getItem(USER_KEY)));
+            }
+
+            if (!normalizedUser) {
+                alert("Unable to load your profile. Please log in again.");
+                window.location.href = LOGIN_PAGE;
+                return;
+            }
+
+            populateFormFields(normalizedUser);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeProfileEditor();
         });
     </script>
 </body>

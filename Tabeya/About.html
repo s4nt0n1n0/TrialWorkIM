@@ -228,20 +228,15 @@
         if (accountLink) {
             accountLink.onclick = null;
             if (user) {
-                accountLink.textContent = user.name.split(' ')[0].toUpperCase();
-                accountLink.href = '#'; 
-                
-                accountLink.onclick = (e) => {
-                    e.preventDefault();
-                    if (confirm(`Are you sure you want to log out, ${user.name.split(' ')[0]}?`)) {
-                        localStorage.removeItem('currentUser');
-                        localStorage.removeItem('tabeyaCart');
-                        window.location.href = 'index.html';
-                    }
-                };
+                const firstName = user.name ? user.name.split(' ')[0] : user.firstName || 'PROFILE';
+                accountLink.textContent = firstName.toUpperCase();
+                accountLink.href = 'Profile.html';
             } else {
                 accountLink.textContent = 'PROFILE';
                 accountLink.href = LOGIN_PAGE;
+                accountLink.addEventListener('click', () => {
+                    localStorage.setItem('redirectAfterLogin', 'Profile.html');
+                });
             }
         }
         
