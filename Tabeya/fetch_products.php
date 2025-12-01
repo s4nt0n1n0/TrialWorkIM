@@ -14,13 +14,9 @@ ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/error.log');
 
 // Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "tabeya_system";
 
-// Set JSON header FIRST
-header('Content-Type: application/json; charset=utf-8');
+   require_once(__DIR__ . '/api/config/db_config.php');
+   header('Content-Type: application/json; charset=utf-8');
 
 try {
     // Connect to database

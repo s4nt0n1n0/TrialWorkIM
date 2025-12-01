@@ -1,18 +1,9 @@
 <?php
 session_start();
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "tabeya_system";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-$conn->set_charset("utf8mb4");
+require_once(__DIR__ . '/api/config/db_config.php');
+   // Rest of code...
 
 // Fetch approved reviews with customer names
 $sql = "SELECT 
