@@ -252,3 +252,9 @@ Stack trace:
 #1 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\Review.php(3): require_once('D:\\XAMPP\\htdocs...')
 #2 {main}
   thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\api\config\db_config.php on line 28
+[06-Dec-2025 17:41:25 Europe/Berlin] Order processing failed: Insufficient stock for Tomato Sauce in Pizza Roll. Required: 20, Available: 0
+[06-Dec-2025 17:42:13 Europe/Berlin] SUCCESS: Order #1010 created and completed with inventory deduction
+[08-Dec-2025 04:15:55 Europe/Berlin] SUCCESS: New reservation #13 created for customer 2
+[08-Dec-2025 04:27:39 Europe/Berlin] Order processing failed: PROCEDURE tabeya_system.IncrementCustomerOrderCount does not exist
+[08-Dec-2025 06:25:54 Europe/Berlin] SUCCESS: New reservation #14 created for customer 2
+[08-Dec-2025 06:29:45 Europe/Berlin] SUCCESS: New reservation #15 created for customer 7

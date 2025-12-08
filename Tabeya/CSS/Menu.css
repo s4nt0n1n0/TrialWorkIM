@@ -20,7 +20,7 @@ body {
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
-    padding-top: 60px; /* Space for the fixed header */
+    padding-top: 60px;
     min-height: 100vh; 
 }
 
@@ -50,7 +50,6 @@ header .logo img {
 
 nav {
     display: flex;
-    /* CHANGE: Align items centrally to match cart icon */
     align-items: center; 
     gap: 20px;
 }
@@ -70,10 +69,9 @@ nav a.active {
 }
 
 /* =========================================== */
-/* === CART & MODAL STYLES (NEW) === */
+/* === CART & MODAL STYLES === */
 /* =========================================== */
 
-/* Cart Icon in Header */
 .cart-icon {
     font-size: 1.5em;
     cursor: pointer;
@@ -95,42 +93,50 @@ nav a.active {
     line-height: 1; 
 }
 
-/* Add to Cart Button on Menu Items */
 .add-to-cart-btn {
     background-color: #ffffff;
     color: rgb(0, 0, 0);
     border: none;
-    padding: 8px 15px;
+    padding: 10px 20px;
     margin-top: 10px;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 0.9em;
+    font-size: 0.95em;
     font-weight: bold;
-    transition: background-color 0.2s;
-    width: 100%; /* Make button take full width of its container */
+    transition: all 0.3s ease;
+    width: 100%;
     box-sizing: border-box;
 }
 
-.add-to-cart-btn:hover {
+.add-to-cart-btn:hover:not(:disabled) {
     background-color: #a0141d;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.add-to-cart-btn:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    opacity: 0.6;
 }
 
 /* --- Modal Styles --- */
 .modal {
-    display: none; /* Hidden by default */
+    display: none;
     position: fixed;
-    z-index: 200; /* Above header */
+    z-index: 200;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    background-color: rgba(0,0,0,0.4);
 }
 
 .modal-content {
     background-color: #fefefe;
-    /* Centered in view, slight adjustment for aesthetics */
     margin: 10vh auto; 
     padding: 20px;
     border: 1px solid #888;
@@ -155,7 +161,6 @@ nav a.active {
     cursor: pointer;
 }
 
-/* Cart Item List Styles */
 #cart-items-list {
     max-height: 300px;
     overflow-y: auto;
@@ -245,7 +250,7 @@ nav a.active {
     width: 100%;
     padding: 12px;
     margin-top: 15px;
-    background-color: #008000; /* Green for checkout */
+    background-color: #008000;
     color: white;
     border: none;
     border-radius: 4px;
@@ -259,9 +264,8 @@ nav a.active {
     background-color: #006400;
 }
 
-
 /* =========================================== */
-/* === MENU PAGE STYLES (Image-Beside-Text Layout) === */
+/* === MENU PAGE STYLES (ENHANCED CARD LAYOUT) === */
 /* =========================================== */
 
 .menu-section {
@@ -271,7 +275,7 @@ nav a.active {
     margin-bottom: 40px;
     margin-top: 40px; 
     width: 100%;
-    max-width: 1300px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -282,127 +286,204 @@ nav a.active {
     text-align: center;
     font-family: 'Arial Black', sans-serif;
     font-size: 3em; 
-    margin-top: 0; 
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 .menu-category {
-    background-color: rgba(188, 24, 35, 0.8);
+    background-color: rgba(188, 24, 35, 0.85);
     color: white;
-    border-radius: 8px;
+    border-radius: 12px;
     margin-bottom: 35px;
-    padding: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
 .menu-category h3 {
     font-family: 'Arial Black', sans-serif;
     font-size: 2.2em; 
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: white;
-    padding: 5px 0;
+    padding: 10px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-/* --- Menu Grid Container --- */
+/* --- Menu Grid Container (Square Cards) --- */
 .menu-grid2 {
     display: grid;
-    /* Responsive grid with a minimum item width of 350px */
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 25px;
     padding: 10px;
 }
 
-/* --- Individual Menu Item --- */
+/* --- Individual Menu Item (Square Card) --- */
 .menu-item2 {
-    /* Uses Flexbox to arrange image and text side-by-side */
-    display: flex; 
-    align-items: flex-start;
-    
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    transition: transform 0.2s, box-shadow 0.2s;
-    overflow: hidden; 
-    padding: 0; 
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #e0e0e0;
 }
 
 .menu-item2:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
-/* Image Container (Left side) */
+/* Stock Status Badge */
+.stock-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.7em;
+    font-weight: bold;
+    z-index: 10;
+    text-transform: uppercase;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.stock-badge.available {
+    background-color: #28a745;
+    color: white;
+}
+
+.stock-badge.low-stock {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.stock-badge.out-of-stock {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Image Container (Top - Featured) */
 .item-image-container {
-    flex: 0 0 120px; /* Fixed width for the image container */
-    height: 120px; 
+    width: 100%;
+    height: 220px;
+    position: relative;
     overflow: hidden;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .item-image {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures the image covers the container */
+    object-fit: cover;
     display: block;
+    transition: transform 0.3s ease;
 }
 
-/* Text Details Container (Right side) */
+.menu-item2:hover .item-image {
+    transform: scale(1.05);
+}
+
+/* Details Container (Bottom) */
 .item-details-container {
-    flex-grow: 1; 
-    padding: 10px 15px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; 
-    min-height: 120px;
+    flex-grow: 1;
+    background-color: #ffffff;
 }
 
 .item-info2 {
-    /* Contains name and price */
     display: flex;
     flex-direction: column;
-    width: 100%;
+    gap: 8px;
 }
 
 .item-name {
     font-weight: bold;
-    color: white;
-    font-size: 1.1em;
-    line-height: 1.3;
+    color: #222;
+    font-size: 1.15em;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    min-height: 2.8em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Star Rating */
+.star-rating {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 3px;
+}
+
+.star {
+    font-size: 1em;
+    color: #ddd;
+    transition: color 0.2s;
+}
+
+.star.filled {
+    color: #ffc107;
+}
+
+.rating-number {
+    font-size: 0.85em;
+    color: #666;
+    margin-left: 6px;
+    font-weight: 500;
+}
+
+.item-description {
+    font-size: 0.9em;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    min-height: 4em;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.prep-time {
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.prep-time::before {
+    content: "⏱️ ";
 }
 
 .item-price {
     font-weight: bold;
-    color: yellow;
-    font-size: 1.2em;
-    margin-top: 5px;
+    color: #BC1823;
+    font-size: 1.5em;
+    margin: 8px 0 12px 0;
+    letter-spacing: -0.5px;
 }
 
-/* --- Rating Styles (For dynamic stars) --- */
-.rating-trigger {
-    text-decoration: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    padding: 0;
+/* Out of Stock Overlay */
+.menu-item2.out-of-stock {
+    opacity: 0.6;
 }
 
-.star-rating {
-    display: flex;
-    align-items: center;
-    user-select: none;
-}
-
-.star.full {
-    color: gold;
-}
-
-.star.empty {
-    color: #ccc;
-}
-
-/* --- DEPRECATED/OLD MENU STYLES CLEANUP --- */
-/* These classes are hidden as they are no longer used by the JavaScript */
-.menu-grid, .menu-item, .menu-grid1, .menu-item1 {
-    display: none !important; 
+.menu-item2.out-of-stock::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    pointer-events: none;
 }
 
 /* =========================================== */
@@ -411,7 +492,7 @@ nav a.active {
 
 footer {
     width: 100%;
-    flex-shrink: 0; /* Prevents footer from shrinking */
+    flex-shrink: 0;
 }
 
 .contact-section {
@@ -453,7 +534,6 @@ footer {
     gap: 1px; 
 }
 
-/* Unique explicit margins for desktop view */
 .info-item.visit-us {
     margin-right: 130px; 
 }
@@ -493,7 +573,6 @@ footer {
 
 /* Tablet Styles (768px - 1024px) */
 @media (max-width: 1024px) {
-    /* Navigation */
     header {
         flex-direction: column;
         padding: 1rem;
@@ -504,18 +583,15 @@ footer {
         margin-bottom: 1rem;
     }
 
-    /* Important adjustment for nav alignment on tablet */
     nav {
         flex-wrap: wrap;
         justify-content: center;
         gap: 15px;
-        /* Ensure all nav elements are centered */
         width: 100%;
     }
 
-    /* Menu Grid */
     .menu-grid2 {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     }
 
     .menu-section h2 {
@@ -526,13 +602,11 @@ footer {
         font-size: 1.8em;
     }
     
-    /* Footer - Stacking items */
     .info-group {
         flex-direction: column;
         align-items: center;
     }
 
-    /* Resetting explicit margins for stacking */
     .info-item.visit-us,
     .info-item.connect-us,
     .info-item.call-us {
@@ -549,48 +623,41 @@ footer {
 /* Mobile Styles (up to 767px) */
 @media (max-width: 767px) {
     body {
-        /* Remove padding-top for static header */
         padding-top: 0;
     }
 
     header {
-        /* Set header to static flow on small screens to prevent covering content */
         position: static;
         flex-direction: column;
         padding: 10px;
     }
 
-    /* Menu Section */
     .menu-section {
         padding: 10px;
         margin-top: 10px;
     }
     
     .menu-grid2 {
-        grid-template-columns: 1fr; /* Single column on mobile */
-        gap: 20px;
-    }
-
-    .menu-item2 {
-        /* Keep image/text side-by-side but reduce size */
-        flex-direction: row; 
-    }
-    
-    .item-image-container {
-        flex: 0 0 100px; 
-        height: 100px;
-    }
-    
-    .item-details-container {
-        min-height: 100px;
-        padding: 8px 10px;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 15px;
     }
 
     .menu-section h2 {
         font-size: 2em;
     }
+
+    .item-name {
+        font-size: 1em;
+    }
+
+    .item-description {
+        font-size: 0.85em;
+    }
+
+    .item-price {
+        font-size: 1.2em;
+    }
     
-    /* Footer - Stack icon and text for very small screens */
     .info-group {
         flex-direction: column;
     }
@@ -605,7 +672,6 @@ footer {
         margin: 0 0 5px 0;
     }
     
-    /* Adjust modal for small screens */
     .modal-content {
         margin: 5vh auto;
     }

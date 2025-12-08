@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu</title>
+    <title>Menu - Tabeya Restaurant</title>
     <link rel="stylesheet" href="CSS/Menu.css"> 
 </head>
 <body>
@@ -29,7 +29,7 @@
     <section class="menu-section">
         <h2>OUR MENU</h2>
         <div id="dynamic-menu-content">
-            <p style="text-align: center; padding: 50px;">Loading menu items...</p>
+            <p style="text-align: center; padding: 50px; color: white;">Loading menu items...</p>
         </div>
     </section>
 
@@ -98,7 +98,6 @@
             return localStorage.getItem(USER_KEY) !== null;
         }
 
-        // Checks login status and redirects if necessary
         function checkLoginAndProceed(redirectTarget) {
             if (!checkUserLoginStatus()) { 
                 alert("You must log in to perform this action.");
@@ -108,7 +107,6 @@
                 window.location.href = LOGIN_PAGE;
                 return false;
             }
-            // Only redirect if a target is provided AND login is successful
             if (redirectTarget && redirectTarget !== 'Menu.html') {
                  window.location.href = redirectTarget;
             }
@@ -116,7 +114,7 @@
         }
         
         // ====================================================================
-        // === DATA FETCHING LOGIC (Placeholder for PHP/DB) ===
+        // === DATA FETCHING LOGIC ===
         // ====================================================================
 
         function groupProductsByCategory(products) {
@@ -131,7 +129,6 @@
         }
 
         async function fetchMenuData() {
-            // NOTE: This assumes you have a running server with fetch_products.php
             console.log("Fetching menu data from fetch_products.php...");
             const container = document.getElementById('dynamic-menu-content');
             
@@ -151,7 +148,7 @@
                 } else {
                     console.error('Server Error:', result.message);
                     container.innerHTML = `
-                        <p style="text-align: center; color: #BC1823; font-weight: bold;">
+                        <p style="text-align: center; color: yellow; font-weight: bold; padding: 50px;">
                             ERROR: Failed to load menu. ${result.message}
                         </p>`;
                 }
@@ -159,12 +156,35 @@
             } catch (error) {
                 console.error('Fetch Error:', error);
                 container.innerHTML = `
-                    <p style="text-align: center; color: #BC1823; font-weight: bold;">
-                        Could not connect to the server or process menu data. Check 'fetch_products.php' and server status.
+                    <p style="text-align: center; color: yellow; font-weight: bold; padding: 50px;">
+                        Could not connect to the server. Please try again later.
                     </p>`;
             }
         }
 
+        // ====================================================================
+        // === STAR RATING GENERATION ===
+        // ====================================================================
+        
+        function generateStarRating(starRating, orderCount) {
+            let starsHtml = '<div class="star-rating">';
+            
+            // Generate 5 stars
+            for (let i = 1; i <= 5; i++) {
+                if (i <= starRating) {
+                    starsHtml += '<span class="star filled">★</span>';
+                } else {
+                    starsHtml += '<span class="star">★</span>';
+                }
+            }
+            
+            // Calculate average rating display (star rating * 1.0 for display)
+            const ratingDisplay = starRating > 0 ? `(${starRating}.0)` : '(0.0)';
+            starsHtml += `<span class="rating-number">${ratingDisplay}</span>`;
+            starsHtml += '</div>';
+            
+            return starsHtml;
+        }
 
         // ====================================================================
         // === CART MANAGEMENT LOGIC ===
@@ -185,9 +205,15 @@
 
         function addToCart(itemDetails) {
             if (!checkUserLoginStatus()) { 
-                alert("You must log in to perform this action.");
+                alert("You must log in to add items to cart.");
                 localStorage.setItem('redirectAfterLogin', 'Menu.html'); 
                 window.location.href = LOGIN_PAGE;
+                return;
+            }
+
+            // Check if product is available
+            if (!itemDetails.available) {
+                alert(`Sorry, ${itemDetails.name} is currently out of stock.`);
                 return;
             }
 
@@ -200,7 +226,8 @@
                     id: itemDetails.id,
                     name: itemDetails.name,
                     price: itemDetails.price,
-                    quantity: 1
+                    quantity: 1,
+                    stockStatus: itemDetails.stockStatus
                 });
             }
 
@@ -208,7 +235,6 @@
             alert(`${itemDetails.name} added to cart!`);
         }
         
-        // Function called by the plus/minus buttons inside the modal
         window.updateCartItemQuantity = function(itemId, change) { 
             if (!checkUserLoginStatus()) { 
                 alert("You must log in to modify the cart.");
@@ -243,14 +269,24 @@
                 itemsHtml = '<p style="text-align: center; color: #777; padding: 15px 0;">Your cart is empty.</p>';
                 checkoutBtn.disabled = true;
             } else {
+                // Check if any items are out of stock
+                const hasOutOfStock = cart.some(item => 
+                    item.stockStatus === 'out_of_stock' || item.stockStatus === 'low_stock'
+                );
+
                 cart.forEach(item => {
                     const itemTotal = (item.price * item.quantity).toFixed(2);
                     const safeId = String(item.id).replace(/'/g, "\\'"); 
 
+                    // Add warning for out of stock items
+                    const stockWarning = (item.stockStatus === 'out_of_stock' || item.stockStatus === 'low_stock') 
+                        ? '<span style="color: red; font-size: 0.8em;">⚠️ Unavailable</span>' 
+                        : '';
+
                     itemsHtml += `
                         <div class="cart-item">
                             <div class="cart-item-info"> 
-                                <span class="cart-item-name">${item.name}</span>
+                                <span class="cart-item-name">${item.name} ${stockWarning}</span>
                                 <span class="cart-item-price">₱${parseFloat(item.price).toFixed(2)} ea.</span>
                             </div>
                             
@@ -264,7 +300,14 @@
                         </div>
                     `;
                 });
-                checkoutBtn.disabled = false;
+
+                // Disable checkout if any items are unavailable
+                if (hasOutOfStock) {
+                    checkoutBtn.disabled = true;
+                    itemsHtml += '<p style="color: red; text-align: center; padding: 10px;">⚠️ Some items are unavailable. Please remove them to checkout.</p>';
+                } else {
+                    checkoutBtn.disabled = false;
+                }
             }
             
             listContainer.innerHTML = itemsHtml;
@@ -295,9 +338,34 @@
                     const rawPrice = item.Price; 
                     const imagePath = item.Image;
                     const description = item.Description || '';
+                    const starRating = item.StarRating || 0;
+                    const orderCount = item.OrderCount || 0;
+                    const prepTime = item.PrepTime || 0;
+                    const stockStatus = item.StockStatus || 'available';
+                    const availabilityReason = item.AvailabilityReason || '';
+                    const isAvailable = item.IngredientAvailable;
+
+                    // Determine stock badge
+                    let stockBadge = '';
+                    let stockClass = '';
+                    if (stockStatus === 'out_of_stock') {
+                        stockBadge = '<span class="stock-badge out-of-stock">Out of Stock</span>';
+                        stockClass = 'out-of-stock';
+                    } else if (stockStatus === 'low_stock') {
+                        stockBadge = '<span class="stock-badge low-stock">Low Stock</span>';
+                        stockClass = 'low-stock';
+                    }
+
+                    // Generate star rating HTML
+                    const starsHtml = generateStarRating(starRating, orderCount);
+
+                    // Button text and state
+                    const buttonDisabled = !isAvailable ? 'disabled' : '';
+                    const buttonText = !isAvailable ? 'Unavailable' : 'Add to Cart';
 
                     menuHtml += `
-                        <div class="menu-item2" data-item-id="${id}"> 
+                        <div class="menu-item2 ${stockClass}" data-item-id="${id}"> 
+                            ${stockBadge}
                             <div class="item-image-container">
                                 <img 
                                     src="${imagePath}" 
@@ -308,15 +376,20 @@
                             </div>
                             <div class="item-details-container">
                                 <div class="item-info2">
-                                    <span class="item-name">${name}</span>
-                                    <p class="description">${description}</p>
-                                    <span class="item-price">₱${priceDisplay}</span>
+                                    <div class="item-name">${name}</div>
+                                    ${starsHtml}
+                                    <div class="item-description">${description}</div>
+                                    ${prepTime > 0 ? `<div class="prep-time">Prep Time: ${prepTime} min</div>` : ''}
+                                    <div class="item-price">₱${priceDisplay}</div>
                                 </div>
                                 <button class="add-to-cart-btn" 
                                     data-id="${id}" 
                                     data-name="${name}" 
-                                    data-price="${rawPrice}">
-                                    Add to Cart
+                                    data-price="${rawPrice}"
+                                    data-available="${isAvailable}"
+                                    data-stock-status="${stockStatus}"
+                                    ${buttonDisabled}>
+                                    ${buttonText}
                                 </button>
                             </div>
                         </div>
@@ -355,12 +428,13 @@
                     const id = e.target.getAttribute('data-id');
                     const name = e.target.getAttribute('data-name');
                     const price = parseFloat(e.target.getAttribute('data-price'));
+                    const available = e.target.getAttribute('data-available') === 'true';
+                    const stockStatus = e.target.getAttribute('data-stock-status');
                     
-                    addToCart({ id, name, price });
+                    addToCart({ id, name, price, available, stockStatus });
                 });
             });
         }
-        
         
         function setupGlobalListeners() {
             const modal = document.getElementById('cart-modal');
@@ -368,7 +442,6 @@
             const span = document.getElementsByClassName("close-btn")[0];
             const checkoutBtn = document.getElementById('checkout-btn');
 
-            // Open the cart modal
             btn.onclick = function() {
                 if (checkLoginAndProceed('Menu.html')) {
                     renderCartModal();
@@ -376,30 +449,36 @@
                 }
             }
 
-            // Close the cart modal with the (x) button
             span.onclick = function() {
                 modal.style.display = "none";
             }
 
-            // Close the modal when clicking outside of it
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = "none";
                 }
             }
             
-            // Checkout button listener
             checkoutBtn.addEventListener('click', () => {
                 if (cart.length > 0) {
-                     if(checkLoginAndProceed('Checkout.html')) {
-                        // Redirect handled inside checkLoginAndProceed
-                     }
+                    // Verify all items are available before checkout
+                    const hasUnavailable = cart.some(item => 
+                        item.stockStatus === 'out_of_stock' || item.stockStatus === 'low_stock'
+                    );
+
+                    if (hasUnavailable) {
+                        alert("Some items in your cart are unavailable. Please remove them before checkout.");
+                        return;
+                    }
+
+                    if(checkLoginAndProceed('Checkout.html')) {
+                        // Redirect handled inside checkLoginAndProceedF
+                    }
                 } else {
                     alert("Your cart is empty!");
                 }
             });
             
-            // Cater Reservation link (requires login check)
             const caterLink = document.getElementById('cater-reservation-link');
             if (caterLink) {
                 caterLink.addEventListener('click', (e) => {
@@ -408,7 +487,6 @@
                 });
             }
         }
-
 
         // ====================================================================
         // === INITIALIZATION ===
@@ -426,4 +504,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
