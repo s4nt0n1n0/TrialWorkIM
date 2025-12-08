@@ -258,3 +258,12 @@ Stack trace:
 [08-Dec-2025 04:27:39 Europe/Berlin] Order processing failed: PROCEDURE tabeya_system.IncrementCustomerOrderCount does not exist
 [08-Dec-2025 06:25:54 Europe/Berlin] SUCCESS: New reservation #14 created for customer 2
 [08-Dec-2025 06:29:45 Europe/Berlin] SUCCESS: New reservation #15 created for customer 7
+[08-Dec-2025 10:26:34 Europe/Berlin] PHP Warning:  Undefined variable $servername in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 10
+[08-Dec-2025 10:26:34 Europe/Berlin] PHP Warning:  Undefined variable $username in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 10
+[08-Dec-2025 10:26:34 Europe/Berlin] PHP Warning:  Undefined variable $password in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 10
+[08-Dec-2025 10:26:34 Europe/Berlin] PHP Warning:  Undefined variable $dbname in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 10
+[08-Dec-2025 10:26:34 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:10
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(10): mysqli->__construct(NULL, NULL, Object(SensitiveParameterValue), NULL)
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 10

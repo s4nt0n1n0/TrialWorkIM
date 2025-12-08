@@ -265,6 +265,37 @@ nav a.active {
 }
 
 /* =========================================== */
+/* === BEST SELLERS SECTION === */
+/* =========================================== */
+
+.bestsellers-section {
+    padding: 20px;
+    z-index: 1; 
+    margin-bottom: 20px;
+    margin-top: 40px; 
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bestsellers-section h2 {
+    color: yellow;
+    margin-bottom: 30px; 
+    text-align: center;
+    font-family: 'Arial Black', sans-serif;
+    font-size: 3em; 
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.bestsellers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    padding: 10px;
+}
+
+/* =========================================== */
 /* === MENU PAGE STYLES (ENHANCED CARD LAYOUT) === */
 /* =========================================== */
 
@@ -273,7 +304,7 @@ nav a.active {
     flex: 1;
     z-index: 1; 
     margin-bottom: 40px;
-    margin-top: 40px; 
+    margin-top: 20px; 
     width: 100%;
     max-width: 1400px;
     margin-left: auto;
@@ -388,7 +419,7 @@ nav a.active {
 
 /* Details Container (Bottom) */
 .item-details-container {
-    padding: 20px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -398,16 +429,16 @@ nav a.active {
 .item-info2 {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .item-name {
     font-weight: bold;
     color: #222;
     font-size: 1.15em;
-    line-height: 1.4;
-    margin-bottom: 4px;
-    min-height: 2.8em;
+    line-height: 1.3;
+    margin-bottom: 2px;
+    min-height: 2.6em;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -418,7 +449,7 @@ nav a.active {
 .star-rating {
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     gap: 3px;
 }
 
@@ -442,31 +473,20 @@ nav a.active {
 .item-description {
     font-size: 0.9em;
     color: #666;
-    line-height: 1.5;
-    margin-bottom: 12px;
-    min-height: 4em;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    min-height: 3.6em;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-.prep-time {
-    font-size: 0.85em;
-    color: #666;
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-.prep-time::before {
-    content: "⏱️ ";
-}
-
 .item-price {
     font-weight: bold;
     color: #BC1823;
     font-size: 1.5em;
-    margin: 8px 0 12px 0;
+    margin: 6px 0 8px 0;
     letter-spacing: -0.5px;
 }
 
@@ -590,10 +610,15 @@ footer {
         width: 100%;
     }
 
+    .bestsellers-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .menu-grid2 {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     }
 
+    .bestsellers-section h2,
     .menu-section h2 {
         font-size: 2.5em;
     }
@@ -632,6 +657,16 @@ footer {
         padding: 10px;
     }
 
+    .bestsellers-section {
+        padding: 10px;
+        margin-top: 10px;
+    }
+
+    .bestsellers-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
     .menu-section {
         padding: 10px;
         margin-top: 10px;
@@ -642,6 +677,7 @@ footer {
         gap: 15px;
     }
 
+    .bestsellers-section h2,
     .menu-section h2 {
         font-size: 2em;
     }

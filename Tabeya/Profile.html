@@ -33,7 +33,7 @@
             <div class="detail-item"><strong>Name:</strong> <span id="profile-name"></span></div>
             <div class="detail-item"><strong>Email:</strong> <span id="profile-email"></span></div>
             <div class="detail-item"><strong>Contact:</strong> <span id="profile-contact"></span></div>
-            <div class="detail-item"><strong>Total Orders:</strong> <span id="profile-orders-count">0</span></div>
+            <div class="detail-item"><strong>Total Orders:</strong> <span id="profile-orders-count">Loading...</span></div>
             <div class="detail-item"><strong>Account Status:</strong> <span id="profile-status" style="color: green;">Active</span></div>
         </div>
         
@@ -120,16 +120,44 @@
             return true;
         }
 
+        // --- Fetch Total Orders from Server ---
+        async function fetchUserTotalOrders(userId) {
+            try {
+                const response = await fetch(`get_user_orders_count.php?user_id=${userId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    return result.total_orders || 0;
+                } else {
+                    console.error('Error fetching orders:', result.message);
+                    return 0;
+                }
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                return 0;
+            }
+        }
+
         // --- Profile Logic ---
-        function renderProfileDetails(user) {
+        async function renderProfileDetails(user) {
             document.getElementById('profile-name').textContent = user.name || 'N/A';
             document.getElementById('profile-email').textContent = user.email || 'N/A';
             const contactNumber = user.contactNumber || user.contact || user.contactNo || 'N/A';
             document.getElementById('profile-contact').textContent = contactNumber;
             
-            // Placeholder: Use stored orders count
-            const totalOrders = localStorage.getItem('userTotalOrders') || '0'; 
-            document.getElementById('profile-orders-count').textContent = totalOrders;
+            // Fetch actual total orders from server
+            const userId = user.id || user.userId || user.CustomerID;
+            if (userId) {
+                const totalOrders = await fetchUserTotalOrders(userId);
+                document.getElementById('profile-orders-count').textContent = totalOrders;
+            } else {
+                document.getElementById('profile-orders-count').textContent = '0';
+            }
         }
 
         function checkAndLoadProfile() {

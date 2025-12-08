@@ -26,6 +26,14 @@
         </nav>
     </header>
 
+    <!-- Best Sellers Section -->
+    <section class="bestsellers-section">
+        <h2>BEST SELLERS</h2>
+        <div id="bestsellers-content" class="bestsellers-grid">
+            <p style="text-align: center; padding: 50px; color: white;">Loading best sellers...</p>
+        </div>
+    </section>
+
     <section class="menu-section">
         <h2>OUR MENU</h2>
         <div id="dynamic-menu-content">
@@ -143,6 +151,7 @@
 
                 if (result.success) {
                     allProducts = result.products; 
+                    renderBestSellers(allProducts);
                     renderMenu(allProducts);
                     console.log(`Successfully loaded ${result.count} products.`);
                 } else {
@@ -313,6 +322,88 @@
             listContainer.innerHTML = itemsHtml;
             totalElement.textContent = calculateTotal();
         }
+
+        function renderBestSellers(products) {
+            const container = document.getElementById('bestsellers-content');
+            if (!container) return;
+
+            // Sort products by OrderCount (descending) and take top 6
+            const bestSellers = [...products]
+                .sort((a, b) => (b.OrderCount || 0) - (a.OrderCount || 0))
+                .slice(0, 6);
+
+            if (bestSellers.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: white; padding: 20px;">No best sellers available.</p>';
+                return;
+            }
+
+            let html = '';
+            
+            bestSellers.forEach(item => {
+                const id = item.ProductID;
+                const name = item.ProductName;
+                const priceDisplay = parseFloat(item.Price).toFixed(2);
+                const rawPrice = item.Price; 
+                const imagePath = item.Image;
+                const description = item.Description || '';
+                const starRating = item.StarRating || 0;
+                const orderCount = item.OrderCount || 0;
+                const stockStatus = item.StockStatus || 'available';
+                const isAvailable = item.IngredientAvailable;
+
+                // Determine stock badge
+                let stockBadge = '';
+                let stockClass = '';
+                if (stockStatus === 'out_of_stock') {
+                    stockBadge = '<span class="stock-badge out-of-stock">Out of Stock</span>';
+                    stockClass = 'out-of-stock';
+                } else if (stockStatus === 'low_stock') {
+                    stockBadge = '<span class="stock-badge low-stock">Low Stock</span>';
+                    stockClass = 'low-stock';
+                }
+
+                // Generate star rating HTML
+                const starsHtml = generateStarRating(starRating, orderCount);
+
+                // Button text and state
+                const buttonDisabled = !isAvailable ? 'disabled' : '';
+                const buttonText = !isAvailable ? 'Unavailable' : 'Add to Cart';
+
+                html += `
+                    <div class="menu-item2 ${stockClass}" data-item-id="${id}"> 
+                        ${stockBadge}
+                        <div class="item-image-container">
+                            <img 
+                                src="${imagePath}" 
+                                alt="${name}" 
+                                class="item-image"
+                                onerror="this.onerror=null; this.src='Photo/default-image.jpg';" 
+                            >
+                        </div>
+                        <div class="item-details-container">
+                            <div class="item-info2">
+                                <div class="item-name">${name}</div>
+                                ${starsHtml}
+                                <div class="item-description">${description}</div>
+                                <div class="item-price">₱${priceDisplay}</div>
+                            </div>
+                            <button class="add-to-cart-btn" 
+                                data-id="${id}" 
+                                data-name="${name}" 
+                                data-price="${rawPrice}"
+                                data-available="${isAvailable}"
+                                data-stock-status="${stockStatus}"
+                                ${buttonDisabled}>
+                                ${buttonText}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            setupBestSellersListeners();
+        }
         
         function renderMenu(products) {
             const container = document.getElementById('dynamic-menu-content');
@@ -340,9 +431,7 @@
                     const description = item.Description || '';
                     const starRating = item.StarRating || 0;
                     const orderCount = item.OrderCount || 0;
-                    const prepTime = item.PrepTime || 0;
                     const stockStatus = item.StockStatus || 'available';
-                    const availabilityReason = item.AvailabilityReason || '';
                     const isAvailable = item.IngredientAvailable;
 
                     // Determine stock badge
@@ -379,7 +468,6 @@
                                     <div class="item-name">${name}</div>
                                     ${starsHtml}
                                     <div class="item-description">${description}</div>
-                                    ${prepTime > 0 ? `<div class="prep-time">Prep Time: ${prepTime} min</div>` : ''}
                                     <div class="item-price">₱${priceDisplay}</div>
                                 </div>
                                 <button class="add-to-cart-btn" 
@@ -422,8 +510,22 @@
         // ====================================================================
         // === EVENT LISTENERS ===
         // ====================================================================
+        function setupBestSellersListeners() {
+            document.querySelectorAll('#bestsellers-content .add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const name = e.target.getAttribute('data-name');
+                    const price = parseFloat(e.target.getAttribute('data-price'));
+                    const available = e.target.getAttribute('data-available') === 'true';
+                    const stockStatus = e.target.getAttribute('data-stock-status');
+                    
+                    addToCart({ id, name, price, available, stockStatus });
+                });
+            });
+        }
+
         function setupMenuListeners() {
-            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            document.querySelectorAll('#dynamic-menu-content .add-to-cart-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const id = e.target.getAttribute('data-id');
                     const name = e.target.getAttribute('data-name');
@@ -472,7 +574,7 @@
                     }
 
                     if(checkLoginAndProceed('Checkout.html')) {
-                        // Redirect handled inside checkLoginAndProceedF
+                        // Redirect handled inside checkLoginAndProceed
                     }
                 } else {
                     alert("Your cart is empty!");
