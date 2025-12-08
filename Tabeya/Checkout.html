@@ -1,56 +1,84 @@
-              <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - Tabeya</title>
-    <link rel="stylesheet" href="CSS/Menu.css"> 
+    <link rel="stylesheet" href="CSS/Menu.css">
     <style>
-        /* Specific CSS for Checkout Page */
+        /* Enhanced Single Container Checkout Styles */
         .checkout-container {
-            padding: 150px 20px 50px;
-            max-width: 1000px;
+            padding: 120px 20px 50px;
+            max-width: 900px;
             margin: 0 auto;
             min-height: 80vh;
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
         }
 
         .checkout-section {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-
-        /* Left side: Order Details & Total */
-        .order-summary-section {
-            flex: 1;
-            min-width: 300px;
-            max-width: 450px;
+        /* FIX: Footer stays at the bottom and no overlapping */
+        body, html {
+            height: 100%;
+            margin: 0;
         }
 
-        .order-summary-section h2, .details-section h2 {
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .checkout-container {
+            flex: 1 0 auto;           /* This makes the checkout section push footer down */
+            padding-bottom: 40px;     /* Safe spacing above footer */
+        }
+
+        footer {
+            flex-shrink: 0;
+            margin-top: 40px;         /* Space above footer */
+            position: relative;       /* Removes overlap behavior */
+            z-index: 1;
+        }
+
+
+        .checkout-section h2 {
             color: #BC1823;
-            border-bottom: 2px solid #BC1823;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            border-bottom: 3px solid #BC1823;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        /* Order Summary Styles */
+        .order-summary-box {
+            background-color: #f8f9fa;
+            border: 2px solid #BC1823;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .order-summary-box h3 {
+            color: #BC1823;
+            margin-bottom: 15px;
+            font-size: 1.3em;
         }
 
         #cart-items-display {
-            max-height: 350px;
+            max-height: 300px;
             overflow-y: auto;
             margin-bottom: 15px;
-            padding-right: 10px; /* Space for scrollbar */
         }
 
         .checkout-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px dashed #ddd;
             font-size: 0.95em;
         }
@@ -63,13 +91,10 @@
             flex-grow: 1;
         }
 
-        .item-details-co span {
-            display: block;
-        }
-
         .item-name-co {
             font-weight: bold;
             color: #333;
+            margin-bottom: 3px;
         }
 
         .item-qty-price-co {
@@ -79,72 +104,402 @@
         
         .item-subtotal-co {
             font-weight: bold;
-            color: #008000; /* Green for total price */
+            color: #008000;
+            font-size: 1.1em;
         }
         
         .summary-total {
             text-align: right;
             margin-top: 15px;
             padding-top: 15px;
-            border-top: 2px solid #BC1823;
-            font-size: 1.5em;
+            border-top: 3px solid #BC1823;
+            font-size: 1.8em;
             color: #BC1823;
+            font-weight: bold;
         }
-        
-        /* Right side: Customer & Order Details Form */
-        .details-section {
-            flex: 1;
-            min-width: 300px;
-            max-width: 450px;
+
+        /* Form Section */
+        .form-section {
+            margin-top: 30px;
+        }
+
+        .form-section h3 {
+            color: #BC1823;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #BC1823;
+            padding-bottom: 10px;
         }
         
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             color: #333;
+            font-size: 1.05em;
         }
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
             box-sizing: border-box;
             font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #BC1823;
+            outline: none;
+        }
+
+        /* Delivery Options Styling */
+        .delivery-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .delivery-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: white;
+        }
+
+        .delivery-option:hover {
+            background-color: #f8f9fa;
+            border-color: #BC1823;
+        }
+
+        .delivery-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .delivery-option label {
+            cursor: pointer;
+            margin: 0;
+            font-weight: 500;
+            font-size: 1.05em;
+            flex-grow: 1;
+        }
+
+        .delivery-address-box {
+            display: none;
+            margin-top: 15px;
+            padding: 20px;
+            background-color: #fff3cd;
+            border-radius: 8px;
+            border: 2px solid #ffc107;
+        }
+
+        .delivery-address-box.show {
+            display: block;
+        }
+
+        .delivery-address-box input {
+            margin-bottom: 10px;
+            border: 2px solid #ffc107;
+        }
+
+        .delivery-address-box p {
+            color: #008000;
+            font-size: 0.95em;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* GCash Payment Section */
+        .payment-box {
+            background-color: #fff3cd;
+            border: 3px solid #ffc107;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .payment-box h3 {
+            color: #BC1823;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            text-align: center;
+        }
+
+        .payment-icon {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .payment-box p {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .payment-amount {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .payment-amount p {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .amount {
+            font-size: 2.5em;
+            color: #BC1823;
+            font-weight: bold;
+        }
+
+        /* File Upload Styling */
+        .file-input-wrapper {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 25px;
+            background-color: white;
+            border: 3px dashed #BC1823;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            background-color: #f8f9fa;
+            border-color: #a0141d;
+        }
+
+        .file-input-label.has-file {
+            border-color: #008000;
+            background-color: #d4edda;
+            border-style: solid;
+        }
+
+        .file-input-label span {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .file-name-display {
+            display: none;
+            color: #008000;
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.05em;
+        }
+
+        .file-name-display.show {
+            display: block;
         }
         
         .full-width-btn {
             width: 100%;
-            padding: 15px;
-            background-color: #008000; /* Green for submission */
+            padding: 18px;
+            background-color: #008000;
             color: white;
             border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
+            border-radius: 8px;
+            font-size: 1.3em;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 20px;
+            transition: all 0.3s;
+            margin-top: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .full-width-btn:hover {
+        .full-width-btn:hover:not(:disabled) {
             background-color: #006400;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
-        /* Media Queries for Responsiveness */
+        .full-width-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
+        }
+
+        /* Success Popup */
+        .success-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        /* ADDED: Wider container so summary + payment are not too stretched */
+.checkout-container {
+    max-width: 1100px;      /* Increased from 900px */
+    width: 100%;
+}
+
+/* ADDED: Make inner checkout section wider and centered better */
+.checkout-section {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* ADDED: Make order summary and payment boxes wider */
+.order-summary-box,
+.payment-box {
+    max-width: 100%;
+}
+
+/* ADDED: Allow checkout page to scroll independently */
+body {
+    overflow-y: auto;
+}
+
+/* ADDED: Prevent overlapping with footer on smaller screens */
+.checkout-container {
+    padding-bottom: 120px !important; 
+}
+
+/* ADDED: Responsive behavior so content shrinks but does NOT overlap */
+@media (max-width: 1024px) {
+    .checkout-container {
+        max-width: 95%;
+    }
+
+    .checkout-section {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .checkout-section {
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    .order-summary-box,
+    .payment-box {
+        padding: 15px;
+    }
+}
+
+        .success-popup-content {
+            background-color: white;
+            padding: 50px 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .success-popup-icon {
+            font-size: 6em;
+            margin-bottom: 20px;
+        }
+
+        .success-popup-content h2 {
+            color: #008000;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .success-popup-content p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+
+        .success-popup-content button {
+            background-color: #BC1823;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 25px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .success-popup-content button:hover {
+            background-color: #a0141d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .checkout-container {
-                flex-direction: column;
-                padding-top: 100px;
+                padding-top: 80px;
+                padding-left: 15px;
+                padding-right: 15px;
             }
 
-            .order-summary-section, .details-section {
-                max-width: 100%;
+            .checkout-section {
+                padding: 25px 20px;
+            }
+
+            .checkout-section h2 {
+                font-size: 1.6em;
+            }
+
+            .summary-total {
+                font-size: 1.5em;
+            }
+
+            .amount {
+                font-size: 2em;
+            }
+
+            .success-popup-content {
+                padding: 40px 25px;
+                margin: 20px;
+            }
+
+            .success-popup-icon {
+                font-size: 4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .checkout-item {
+                flex-wrap: wrap;
+            }
+
+            .item-subtotal-co {
+                width: 100%;
+                text-align: right;
+                margin-top: 5px;
             }
         }
     </style>
@@ -170,56 +525,94 @@
     </header>
 
     <div class="checkout-container">
-        <div class="checkout-section order-summary-section">
-            <h2>Order Summary</h2>
-            <div id="cart-items-display">
+        <div class="checkout-section">
+            <h2>Checkout</h2>
+
+            <!-- Order Summary Box -->
+            <div class="order-summary-box">
+                <h3>📦 Order Summary</h3>
+                <div id="cart-items-display"></div>
+                <div class="summary-total">
+                    Total: ₱<span id="order-grand-total">0.00</span>
                 </div>
-            <div class="summary-total">
-                Total: ₱<span id="order-grand-total">0.00</span>
             </div>
-        </div>
 
-        <div class="checkout-section details-section">
-            <h2>Order Details</h2>
-            <form id="checkout-form" action="process_order.php" method="POST">
-                
-                <input type="hidden" name="cart_data" id="cart_data_input">
-                <input type="hidden" name="total_amount" id="total_amount_input">
-                <input type="hidden" name="customer_id" id="customer_id_input">
-
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required readonly>
-                </div>
-                <div class="form-group">
-                    <label for="contact">Contact Number:</label>
-                    <input type="text" id="contact" name="contact" required>
+            <!-- Order Details Form -->
+            <form id="checkout-form">
+                <div class="form-section">
+                    <h3>📝 Customer Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="name">Full Name:</label>
+                        <input type="text" id="name" name="name" required readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contact">Contact Number:</label>
+                        <input type="text" id="contact" name="contact" required pattern="09[0-9]{9}" placeholder="09XXXXXXXXX">
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="order_type">Order Type:</label>
-                    <select id="order_type" name="order_type" required>
-                        <option value="DELIVERY">Delivery</option>
-                        <option value="PICKUP">Pickup</option>
-                    </select>
+                <div class="form-section">
+                    <h3>🚚 Delivery Options</h3>
+                    
+                    <div class="delivery-options">
+                        <div class="delivery-option">
+                            <input type="radio" id="order-pickup" name="order_type" value="PICKUP" checked>
+                            <label for="order-pickup">🏪 Pickup at Restaurant</label>
+                        </div>
+                        <div class="delivery-option">
+                            <input type="radio" id="order-delivery" name="order_type" value="DELIVERY">
+                            <label for="order-delivery">🚚 Delivery to Address</label>
+                        </div>
+                    </div>
+                    
+                    <div class="delivery-address-box" id="delivery-address-group">
+                        <input type="text" id="address" name="address" placeholder="Enter your full delivery address..." maxlength="500">
+                        <p>✓ Free Delivery available within Poblacion, Vinzons</p>
+                    </div>
                 </div>
 
-                <div class="form-group" id="delivery-address-group">
-                    <label for="address">Delivery Address:</label>
-                    <textarea id="address" name="address" rows="3" required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="payment_method">Payment Method:</label>
-                    <select id="payment_method" name="payment_method" required>
-                        <option value="COD">Cash On Delivery (COD)</option>
-                        <option value="GCASH">GCash</option>
-                        <option value="PAYMAYA">PayMaya</option>
-                    </select>
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="special-requests">📝 Special Requests (Optional):</label>
+                        <textarea id="special-requests" name="special_requests" rows="3" placeholder="E.g., No spicy, extra serving, specific arrangements..."></textarea>
+                    </div>
                 </div>
 
-                <button type="submit" class="full-width-btn">Place Order</button>
+                <!-- GCash Payment Section -->
+                <div class="payment-box">
+                    <div class="payment-icon">💳</div>
+                    <h3>GCash Payment</h3>
+                    <p>Please transfer the amount to our registered GCash number<br>and upload a screenshot of your receipt.</p>
+                    
+                    <div class="payment-amount">
+                        <p>Total Amount to Pay:</p>
+                        <div class="amount">₱<span id="payment-total-amount">0.00</span></div>
+                    </div>
+
+                    <div class="file-input-wrapper">
+                        <input type="file" id="gcash-receipt" name="gcash_receipt" accept="image/*" required>
+                        <label for="gcash-receipt" class="file-input-label">
+                            <span>📷 Click to select or drag image here</span>
+                        </label>
+                    </div>
+                    <div class="file-name-display" id="file-name-display"></div>
+                </div>
+
+                <button type="submit" class="full-width-btn" id="place-order-btn">Confirm Payment & Place Order</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div class="success-popup" id="success-popup">
+        <div class="success-popup-content">
+            <div class="success-popup-icon">✅</div>
+            <h2>Payment Received!</h2>
+            <p>Thank you for your order!</p>
+            <p>Our owner will contact you shortly to confirm your Order.</p>
+            <button onclick="redirectToHome()">Continue Shopping</button>
         </div>
     </div>
     
@@ -258,9 +651,6 @@
     </footer>
 
     <script>
-        // ====================================================================
-        // === CONFIGURATION & DATA ===
-        // ====================================================================
         const CART_KEY = 'tabeyaCart';
         const USER_KEY = 'currentUser';
         const LOGIN_PAGE = 'Login.html';
@@ -268,8 +658,9 @@
 
         let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
         let currentUser = JSON.parse(localStorage.getItem(USER_KEY));
+        let uploadedFile = null;
 
-        // Redirect if cart is empty or user is not logged in (redundant check)
+        // Redirect if cart is empty or user is not logged in
         if (cart.length === 0) {
             alert("Your cart is empty. Redirecting to Menu.");
             window.location.href = 'Menu.html';
@@ -279,17 +670,11 @@
             localStorage.setItem('redirectAfterLogin', 'Checkout.html');
             window.location.href = LOGIN_PAGE;
         }
-        
-        // ====================================================================
-        // === HELPER FUNCTIONS ===
-        // ====================================================================
+
         function calculateTotal() {
             return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
         }
 
-        // ====================================================================
-        // === RENDERING & INITIALIZATION ===
-        // ====================================================================
         function renderOrderSummary() {
             const display = document.getElementById('cart-items-display');
             let itemsHtml = '';
@@ -302,8 +687,8 @@
                 itemsHtml += `
                     <div class="checkout-item">
                         <div class="item-details-co">
-                            <span class="item-name-co">${item.name}</span>
-                            <span class="item-qty-price-co">${item.quantity} x ₱${item.price.toFixed(2)}</span>
+                            <div class="item-name-co">${item.name}</div>
+                            <div class="item-qty-price-co">${item.quantity} x ₱${item.price.toFixed(2)}</div>
                         </div>
                         <span class="item-subtotal-co">₱${subtotal.toFixed(2)}</span>
                     </div>
@@ -312,69 +697,146 @@
 
             display.innerHTML = itemsHtml;
             document.getElementById('order-grand-total').textContent = grandTotal.toFixed(2);
-            
-            // Populate hidden inputs for form submission
-            document.getElementById('cart_data_input').value = JSON.stringify(cart);
-            document.getElementById('total_amount_input').value = grandTotal.toFixed(2);
+            document.getElementById('payment-total-amount').textContent = grandTotal.toFixed(2);
         }
 
         function populateUserDetails() {
             if (currentUser) {
-                // *** THE FINAL FIX: Using 'customerId' (lowercase d) matching Login.html ***
-                document.getElementById('customer_id_input').value = currentUser.customerId || ''; 
-                
-                document.getElementById('name').value = `${currentUser.name}`; 
-                // Note: Assuming contact number is stored as 'contactNumber' in Login.html (if not, adjust to 'contactNumber')
-                document.getElementById('contact').value = currentUser.contactNumber || currentUser.contact || ''; 
-                // Address is not automatically pre-filled from Login.html in this version, user must input or it comes from PHP session/cookie
+                document.getElementById('name').value = currentUser.name || '';
+                document.getElementById('contact').value = currentUser.contactNumber || currentUser.contact || '';
             }
         }
-        
+
         function setupOrderTypeListener() {
-            const orderTypeSelect = document.getElementById('order_type');
+            const orderTypeRadios = document.querySelectorAll('input[name="order_type"]');
             const addressGroup = document.getElementById('delivery-address-group');
-            const addressTextarea = document.getElementById('address');
+            const addressInput = document.getElementById('address');
             
-            orderTypeSelect.addEventListener('change', (e) => {
-                if (e.target.value === 'PICKUP') {
-                    // Hide address for pickup
-                    addressGroup.style.display = 'none';
-                    addressTextarea.removeAttribute('required');
-                } else {
-                    // Show address for delivery
-                    addressGroup.style.display = 'block';
-                    addressTextarea.setAttribute('required', 'required');
-                }
+            orderTypeRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    if (e.target.value === 'DELIVERY') {
+                        addressGroup.classList.add('show');
+                        addressInput.setAttribute('required', 'required');
+                    } else {
+                        addressGroup.classList.remove('show');
+                        addressInput.removeAttribute('required');
+                    }
+                });
             });
-            
-            // Initialize visibility based on default selection
-            orderTypeSelect.dispatchEvent(new Event('change'));
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please upload a valid image file (JPG, PNG, GIF, or WebP).');
+                event.target.value = '';
+                return;
+            }
+
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('File size must be less than 5MB.');
+                event.target.value = '';
+                return;
+            }
+
+            uploadedFile = file;
+            document.getElementById('file-name-display').textContent = `✓ File selected: ${file.name}`;
+            document.getElementById('file-name-display').classList.add('show');
+            document.querySelector('.file-input-label').classList.add('has-file');
         }
 
         function updateCartLink() {
-             const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-             document.getElementById('cart-item-count').textContent = count;
-             
-             // Update account link
-             const accountLink = document.getElementById('account-link');
-             if (currentUser) {
-                 accountLink.textContent = currentUser.name.split(' ')[0].toUpperCase();
-                 accountLink.href = 'Profile.html';
-             } else {
-                 accountLink.textContent = 'PROFILE';
-                 accountLink.href = 'Login.html';
-             }
-         }
-         
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-item-count').textContent = count;
+            
+            const accountLink = document.getElementById('account-link');
+            if (currentUser) {
+                accountLink.textContent = currentUser.name.split(' ')[0].toUpperCase();
+                accountLink.href = 'Profile.html';
+            } else {
+                accountLink.textContent = 'PROFILE';
+                accountLink.href = 'Login.html';
+            }
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            if (!uploadedFile) {
+                alert('Please upload your GCash receipt screenshot.');
+                return;
+            }
+
+            const btn = document.getElementById('place-order-btn');
+            btn.textContent = 'Processing Payment...';
+            btn.disabled = true;
+
+            try {
+                const formData = new FormData();
+                
+                // Customer data
+                formData.append('customer_id', currentUser.customerId || '');
+                formData.append('name', document.getElementById('name').value);
+                formData.append('contact', document.getElementById('contact').value);
+                
+                // Order data
+                const orderType = document.querySelector('input[name="order_type"]:checked').value;
+                formData.append('order_type', orderType);
+                
+                if (orderType === 'DELIVERY') {
+                    formData.append('address', document.getElementById('address').value);
+                }
+                
+                // Payment data - Always GCash
+                formData.append('payment_method', 'GCASH');
+                formData.append('gcash_receipt', uploadedFile);
+                
+                // Special requests
+                formData.append('special_requests', document.getElementById('special-requests').value);
+                
+                // Cart data
+                formData.append('cart_data', JSON.stringify(cart));
+                formData.append('total_amount', calculateTotal().toFixed(2));
+
+                const response = await fetch('process_order_enhanced.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Clear cart
+                    localStorage.removeItem(CART_KEY);
+                    
+                    // Show success popup
+                    document.getElementById('success-popup').style.display = 'flex';
+                } else {
+                    throw new Error(result.message || 'Order processing failed');
+                }
+
+            } catch (error) {
+                console.error('Order error:', error);
+                alert('Error: ' + error.message);
+                btn.textContent = 'Confirm Payment & Place Order';
+                btn.disabled = false;
+            }
+        }
+
+        function redirectToHome() {
+            window.location.href = 'index.html';
+        }
+
         function setupGlobalListeners() {
-            // Placeholder for viewing cart from header (no modal needed on checkout, but keeps icon function)
             document.getElementById('view-cart-btn').addEventListener('click', () => {
-                // Redirect back to menu or show alert
                 alert("Please modify your cart on the Menu page.");
-                window.location.href = 'Menu.html'; 
+                window.location.href = 'Menu.html';
             });
             
-            // Cater Reservation link (requires login check - simplified logic here)
             document.getElementById('cater-reservation-link').addEventListener('click', (e) => {
                 e.preventDefault();
                 if (currentUser) {
@@ -385,17 +847,11 @@
                     window.location.href = LOGIN_PAGE;
                 }
             });
-            
-            // Handle form submission (Optional: Add front-end validation if needed)
-            document.getElementById('checkout-form').addEventListener('submit', (e) => {
-                // The form submits to process_order.php
-            });
+
+            document.getElementById('checkout-form').addEventListener('submit', handleFormSubmit);
+            document.getElementById('gcash-receipt').addEventListener('change', handleFileUpload);
         }
 
-
-        // ====================================================================
-        // === START UP ===
-        // ====================================================================
         document.addEventListener('DOMContentLoaded', () => {
             updateCartLink();
             renderOrderSummary();
