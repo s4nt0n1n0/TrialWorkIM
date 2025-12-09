@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Configuration - Tabeya System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .config-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #BC1823;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header .icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #BC1823;
+            box-shadow: 0 0 0 3px rgba(188, 24, 35, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+        }
+
+        .note {
+            background: #f0f8ff;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border-left: 4px solid #BC1823;
+            margin-bottom: 20px;
+        }
+
+        .note p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .note strong {
+            color: #BC1823;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-test {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-test:hover {
+            background: #1976D2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-save {
+            background: #BC1823;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #a0141d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(188, 24, 35, 0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .status-message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .config-container {
+                padding: 30px 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="config-container">
+        <div class="header">
+            <div class="icon">🗄️</div>
+            <h1>Server Configuration</h1>
+            <p>Configure your database connection settings to continue</p>
+        </div>
+
+        <form id="config-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="server-ip">Server IP</label>
+                    <input type="text" id="server-ip" name="server-ip" value="localhost" required>
+                </div>
+                <div class="form-group">
+                    <label for="port">Port</label>
+                    <input type="text" id="port" name="port" value="3306" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="database">Database Name</label>
+                <input type="text" id="database" name="database" value="tabeya_system" required>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="root" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Leave blank if no password">
+            </div>
+
+            <div class="note">
+                <p><strong>📝 Note:</strong> Enter the database username (default: <strong>root</strong>). For XAMPP installations, the default password is usually empty.</p>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn btn-test" id="test-connection-btn">
+                    Test Connection
+                </button>
+                <button type="submit" class="btn btn-save" id="save-continue-btn" disabled>
+                    Save & Continue
+                </button>
+            </div>
+
+            <div class="status-message" id="status-message"></div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('config-form');
+        const testBtn = document.getElementById('test-connection-btn');
+        const saveBtn = document.getElementById('save-continue-btn');
+        const statusMessage = document.getElementById('status-message');
+
+        let connectionTested = false;
+
+        // Test Connection
+        testBtn.addEventListener('click', async function() {
+            const serverIp = document.getElementById('server-ip').value.trim();
+            const port = document.getElementById('port').value.trim();
+            const database = document.getElementById('database').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!serverIp || !port || !database || !username) {
+                showMessage('Please fill in all required fields', 'error');
+                return;
+            }
+
+            // Disable button and show loading
+            testBtn.disabled = true;
+            testBtn.innerHTML = '<span class="loading"></span> Testing...';
+
+            try {
+                const response = await fetch('api/config/test_connection.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        host: serverIp,
+                        port: port,
+                        database: database,
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('✓ Connection successful! You can now save and continue.', 'success');
+                    connectionTested = true;
+                    saveBtn.disabled = false;
+                } else {
+                    showMessage('✗ Connection failed: ' + result.message, 'error');
+                    connectionTested = false;
+                    saveBtn.disabled = true;
+                }
+            } catch (error) {
+                showMessage('✗ Error: ' + error.message, 'error');
+                connectionTested = false;
+                saveBtn.disabled = true;
+            } finally {
+                testBtn.disabled = false;
+                testBtn.textContent = 'Test Connection';
+            }
+        });
+
+        // Save Configuration
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!connectionTested) {
+                showMessage('Please test the connection first', 'error');
+                return;
+            }
+
+            const serverIp = document.getElementById('server-ip').value.trim();
+            const port = document.getElementById('port').value.trim();
+            const database = document.getElementById('database').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="loading"></span> Saving...';
+
+            try {
+                const response = await fetch('api/config/save_config.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        host: serverIp,
+                        port: port,
+                        database: database,
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('✓ Configuration saved successfully! Redirecting...', 'success');
+                    
+                    // Store configuration completion flag
+                    localStorage.setItem('dbConfigured', 'true');
+                    
+                    // Redirect to home page after 2 seconds
+                    setTimeout(() => {
+                        // Check if using PHP routing
+                        window.location.href = 'index.php';
+                    }, 2000);
+                } else {
+                    showMessage('✗ Failed to save: ' + result.message, 'error');
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save & Continue';
+                }
+            } catch (error) {
+                showMessage('✗ Error: ' + error.message, 'error');
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save & Continue';
+            }
+        });
+
+        function showMessage(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = 'status-message ' + type;
+        }
+
+        // Check if already configured
+        window.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('dbConfigured') === 'true') {
+                showMessage('ℹ️ Database already configured. Update settings if needed.', 'info');
+            }
+        });
+    </script>
+</body>
+</html>

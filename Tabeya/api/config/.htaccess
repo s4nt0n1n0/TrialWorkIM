@@ -1,0 +1,14 @@
+# Allow PHP files to be executed
+# File: api/config/.htaccess
+
+Order allow,deny
+Allow from all
+
+# Enable error display for debugging
+php_flag display_errors off
+php_value error_reporting E_ALL
+
+# Allow these specific PHP files
+<FilesMatch "(test_connection\.php|save_config\.php)$">
+    Allow from all
+</FilesMatch>

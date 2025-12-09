@@ -86,10 +86,9 @@
             <img src="Photo/Tabeya Name.png" alt="Tabeya Logo">
         </div>
         <nav>
-            <a href="index.html" >HOME</a> 
+            <a href="Home.html" >HOME</a> 
             <a href="Menu.html" >MENU</a>
             <a href="CaterReservation.html">CATER RESERVATION</a>
-            <a href="GALLERY.html">GALLERY</a>
             <a href="Review.html">TESTIMONY</a>
             <a href="About.html">ABOUT</a>
             <a href="Login.html" class="active">PROFILE</a>
@@ -381,7 +380,7 @@ async function handleSignup(e) {
 
             
             alert('Sign up successful! Welcome, ' + firstName);
-            window.location.href = 'index.html';
+            window.location.href = 'Home.html';
         } else {
             alert('Registration failed: ' + result.message);
         }
@@ -453,7 +452,7 @@ async function handleLogin(e) {
 
             
             alert('Welcome back, ' + result.customer.FirstName);
-            window.location.href = 'index.html';
+            window.location.href = 'Home.html';
         } else {
             alert('Login failed: ' + result.message);
         }
@@ -512,7 +511,7 @@ async function handleLogin(e) {
                         LOG OUT
                     </button>
                     <br>
-                    <a href="index.html" style="color: #444; text-decoration: underline;">Continue Browsing</a>
+                    <a href="Home.html" style="color: #444; text-decoration: underline;">Continue Browsing</a>
                 </div>
             `;
             
