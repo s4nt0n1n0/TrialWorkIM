@@ -19,7 +19,7 @@ ini_set('error_log', __DIR__ . '/../../error.log');
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'ateatoni');
+define('DB_NAME', 'tabeya_system');
 define('DB_PORT', '3306');
 
 // ----------------------
