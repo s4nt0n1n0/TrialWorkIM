@@ -263,7 +263,6 @@ $stats = $stats_result->fetch_assoc();
             <a href="index.html">HOME</a>
             <a href="Menu.html">MENU</a>
             <a href="CaterReservation.html">CATER RESERVATION</a>
-            <a href="GALLERY.html">GALLERY</a>
             <a href="Review.php" class="active">TESTIMONY</a>
             <a href="About.html">ABOUT</a>
             <a href="Login.html" id="account-link">PROFILE</a>
