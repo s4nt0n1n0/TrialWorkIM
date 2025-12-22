@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,23 +80,26 @@
         }
     </style>
 </head>
+
 <body>
 
     <header>
         <div class="logo">
             <img src="Photo/Tabeya Name.png" alt="Tabeya Logo">
         </div>
-        <nav>
-            <a href="Home.html" >HOME</a> 
-            <a href="Menu.html" >MENU</a>
+        <nav class="nav-links">
+            <a href="Home.html">HOME</a>
+            <a href="Menu.html">MENU</a>
             <a href="CaterReservation.html">CATER RESERVATION</a>
-            <a href="Review.html">TESTIMONY</a>
+            <a href="Review.php">TESTIMONY</a>
             <a href="About.html">ABOUT</a>
-            <a href="Login.html" class="active">PROFILE</a>
+        </nav>
+        <div class="header-right">
+            <a href="Login.html" id="account-link" class="active">PROFILE</a>
             <div class="cart-icon" id="view-cart-btn">
                 🛒 <span class="cart-count" id="cart-item-count">0</span>
             </div>
-        </nav>
+        </div>
     </header>
 
     <div class="login-container">
@@ -127,7 +131,8 @@
                             <img src="Photo/Facebook.png" alt="Facebook Icon" class="icon">
                             <div>
                                 <strong>Connect to us</strong>
-                                <a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank" class="no-underline">Tabeya, VCN</a>
+                                <a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank"
+                                    class="no-underline">Tabeya, VCN</a>
                             </div>
                         </div>
                     </div>
@@ -137,24 +142,24 @@
     </footer>
 
     <script>
-    const formContent = document.getElementById('form-content');
-    let isLoginMode = true;
+        const formContent = document.getElementById('form-content');
+        let isLoginMode = true;
 
-    // --- TOGGLE PASSWORD VISIBILITY ---
-    function togglePasswordVisibility(fieldId, button) {
-        const field = document.getElementById(fieldId);
-        if (field.type === 'password') {
-            field.type = 'text';
-            button.textContent = '🙈';
-        } else {
-            field.type = 'password';
-            button.textContent = '👁️';
+        // --- TOGGLE PASSWORD VISIBILITY ---
+        function togglePasswordVisibility(fieldId, button) {
+            const field = document.getElementById(fieldId);
+            if (field.type === 'password') {
+                field.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                field.type = 'password';
+                button.textContent = '👁️';
+            }
         }
-    }
 
-    // --- 1. RENDER LOGIN FORM HTML ---
-    function renderLoginForm() {
-        formContent.innerHTML = `
+        // --- 1. RENDER LOGIN FORM HTML ---
+        function renderLoginForm() {
+            formContent.innerHTML = `
             <h2>LOG IN</h2>
             <form id="login-form"> 
                 <div class="form-group">
@@ -176,23 +181,23 @@
                 Don't have an account? <a href="#" id="switch-to-signup">Sign Up</a>
             </div>
         `;
-        document.getElementById('login-form').addEventListener('submit', handleLogin);
-        
-        document.getElementById('toggle-login-password').addEventListener('click', function(e) {
-            e.preventDefault();
-            togglePasswordVisibility('login-password', this);
-        });
-        
-        document.getElementById('switch-to-signup').addEventListener('click', (e) => {
-            e.preventDefault();
-            isLoginMode = false;
-            renderSignupForm();
-        });
-    }
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
 
-    // --- 2. RENDER SIGN-UP FORM HTML ---
-    function renderSignupForm() {
-        formContent.innerHTML = `
+            document.getElementById('toggle-login-password').addEventListener('click', function (e) {
+                e.preventDefault();
+                togglePasswordVisibility('login-password', this);
+            });
+
+            document.getElementById('switch-to-signup').addEventListener('click', (e) => {
+                e.preventDefault();
+                isLoginMode = false;
+                renderSignupForm();
+            });
+        }
+
+        // --- 2. RENDER SIGN-UP FORM HTML ---
+        function renderSignupForm() {
+            formContent.innerHTML = `
             <h2>SIGN UP</h2>
             <form id="signup-form"> 
                 <div class="form-group-row">
@@ -241,267 +246,267 @@
                 Already have an account? <a href="#" id="switch-to-login">Log In</a>
             </div>
         `;
-        
-        document.getElementById('signup-form').addEventListener('submit', handleSignup);
-        
-        document.getElementById('toggle-signup-password').addEventListener('click', function(e) {
-            e.preventDefault();
-            togglePasswordVisibility('signup-password', this);
-        });
 
-        document.getElementById('toggle-confirm-password').addEventListener('click', function(e) {
-            e.preventDefault();
-            togglePasswordVisibility('signup-confirm-password', this);
-        });
-        
-        document.getElementById('switch-to-login').addEventListener('click', (e) => {
-            e.preventDefault();
-            isLoginMode = true;
-            renderLoginForm();
-        });
+            document.getElementById('signup-form').addEventListener('submit', handleSignup);
 
-        const passwordInput = document.getElementById('signup-password');
-        const confirmInput = document.getElementById('signup-confirm-password');
-        const messageElement = document.getElementById('password-match-message');
-        const signupButton = document.getElementById('signup-button');
+            document.getElementById('toggle-signup-password').addEventListener('click', function (e) {
+                e.preventDefault();
+                togglePasswordVisibility('signup-password', this);
+            });
 
-        function validatePasswords() {
-            const password = passwordInput.value;
-            const confirmPassword = confirmInput.value;
-            
-            if (password && confirmPassword) {
-                if (password === confirmPassword) {
-                    messageElement.style.display = 'block';
-                    messageElement.textContent = 'Passwords Match!';
-                    messageElement.style.backgroundColor = '#008000';
-                    messageElement.style.color = '#fff';
-                    messageElement.style.padding = '8px 10px';
-                    messageElement.style.borderRadius = '4px';
-                    messageElement.style.marginTop = '5px';
-                    signupButton.disabled = false;
+            document.getElementById('toggle-confirm-password').addEventListener('click', function (e) {
+                e.preventDefault();
+                togglePasswordVisibility('signup-confirm-password', this);
+            });
+
+            document.getElementById('switch-to-login').addEventListener('click', (e) => {
+                e.preventDefault();
+                isLoginMode = true;
+                renderLoginForm();
+            });
+
+            const passwordInput = document.getElementById('signup-password');
+            const confirmInput = document.getElementById('signup-confirm-password');
+            const messageElement = document.getElementById('password-match-message');
+            const signupButton = document.getElementById('signup-button');
+
+            function validatePasswords() {
+                const password = passwordInput.value;
+                const confirmPassword = confirmInput.value;
+
+                if (password && confirmPassword) {
+                    if (password === confirmPassword) {
+                        messageElement.style.display = 'block';
+                        messageElement.textContent = 'Passwords Match!';
+                        messageElement.style.backgroundColor = '#008000';
+                        messageElement.style.color = '#fff';
+                        messageElement.style.padding = '8px 10px';
+                        messageElement.style.borderRadius = '4px';
+                        messageElement.style.marginTop = '5px';
+                        signupButton.disabled = false;
+                    } else {
+                        messageElement.style.display = 'block';
+                        messageElement.textContent = 'Passwords do not match.';
+                        messageElement.style.backgroundColor = '#BC1823';
+                        messageElement.style.color = '#fff';
+                        messageElement.style.padding = '8px 10px';
+                        messageElement.style.borderRadius = '4px';
+                        messageElement.style.marginTop = '5px';
+                        signupButton.disabled = true;
+                    }
                 } else {
-                    messageElement.style.display = 'block';
-                    messageElement.textContent = 'Passwords do not match.';
-                    messageElement.style.backgroundColor = '#BC1823';
-                    messageElement.style.color = '#fff';
-                    messageElement.style.padding = '8px 10px';
-                    messageElement.style.borderRadius = '4px';
-                    messageElement.style.marginTop = '5px';
+                    messageElement.style.display = 'none';
                     signupButton.disabled = true;
                 }
-            } else {
-                messageElement.style.display = 'none';
-                signupButton.disabled = true;
+            }
+
+            passwordInput.addEventListener('input', validatePasswords);
+            confirmInput.addEventListener('input', validatePasswords);
+        }
+
+
+
+        // --- 4. HANDLE SIGNUP ---
+        async function handleSignup(e) {
+            e.preventDefault();
+
+            const firstName = document.getElementById('signup-firstname').value;
+            const lastName = document.getElementById('signup-lastname').value;
+            const email = document.getElementById('signup-email').value;
+            const contactNumber = document.getElementById('signup-contactnumber').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+            if (!firstName || !lastName) {
+                alert("Please enter first and last name");
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            try {
+                // ✅ FIX: Use absolute path from your project root
+                const apiUrl = window.location.origin + window.location.pathname.replace('Login.html', '') + 'api/auth/authentication.php?action=register';
+
+                console.log('Attempting registration to:', apiUrl); // Debug log
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        contactNumber: contactNumber,
+                        password: password
+                    }),
+                    credentials: 'include'
+                });
+
+                console.log('Response status:', response.status); // Debug log
+
+                // ✅ CHECK IF RESPONSE IS OK BEFORE PARSING JSON
+                if (!response.ok) {
+                    const text = await response.text();
+                    console.error('Server response:', text);
+                    alert('Server error: ' + response.status + '\n' + text.substring(0, 200));
+                    return;
+                }
+
+                // ✅ TRY TO GET TEXT FIRST, THEN PARSE
+                const text = await response.text();
+                console.log('Response text:', text); // Debug log
+
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    console.error('Response was:', text);
+                    alert('Server returned invalid JSON. Check console for details.');
+                    return;
+                }
+
+                if (result.success) {
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        name: firstName + ' ' + lastName,
+                        email: email,
+                        customerId: result.customerId,
+                        firstName: firstName,
+                        lastName: lastName,
+                        contactNumber: contactNumber
+                    }));
+
+
+                    alert('Sign up successful! Welcome, ' + firstName);
+                    window.location.href = 'Home.html';
+                } else {
+                    alert('Registration failed: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Check the console for details.');
             }
         }
-        
-        passwordInput.addEventListener('input', validatePasswords);
-        confirmInput.addEventListener('input', validatePasswords);
-    }
 
-    
-    
-  // --- 4. HANDLE SIGNUP ---
-async function handleSignup(e) {
-    e.preventDefault();
-    
-    const firstName = document.getElementById('signup-firstname').value;
-    const lastName = document.getElementById('signup-lastname').value;
-    const email = document.getElementById('signup-email').value;
-    const contactNumber = document.getElementById('signup-contactnumber').value;
-    const password = document.getElementById('signup-password').value;
-    const confirmPassword = document.getElementById('signup-confirm-password').value;
-    
-    if (!firstName || !lastName) {
-        alert("Please enter first and last name");
-        return;
-    }
-    
-    if (password !== confirmPassword) {
-        alert("Passwords do not match!");
-        return;
-    }
-    
-    try {
-        // ✅ FIX: Use absolute path from your project root
-        const apiUrl = window.location.origin + window.location.pathname.replace('Login.html', '') + 'api/auth/authentication.php?action=register';
-        
-        console.log('Attempting registration to:', apiUrl); // Debug log
-        
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                contactNumber: contactNumber,
-                password: password
-            }),
-            credentials: 'include'
-        });
-        
-        console.log('Response status:', response.status); // Debug log
-        
-        // ✅ CHECK IF RESPONSE IS OK BEFORE PARSING JSON
-        if (!response.ok) {
-            const text = await response.text();
-            console.error('Server response:', text);
-            alert('Server error: ' + response.status + '\n' + text.substring(0, 200));
-            return;
-        }
-        
-        // ✅ TRY TO GET TEXT FIRST, THEN PARSE
-        const text = await response.text();
-        console.log('Response text:', text); // Debug log
-        
-        let result;
-        try {
-            result = JSON.parse(text);
-        } catch (parseError) {
-            console.error('JSON parse error:', parseError);
-            console.error('Response was:', text);
-            alert('Server returned invalid JSON. Check console for details.');
-            return;
-        }
-        
-        if (result.success) {
-            localStorage.setItem('currentUser', JSON.stringify({
-                name: firstName + ' ' + lastName,
-                email: email,
-                customerId: result.customerId,
-                firstName: firstName,
-                lastName: lastName,
-                contactNumber: contactNumber
-            }));
+        // --- 3. HANDLE LOGIN ---
+        async function handleLogin(e) {
+            e.preventDefault();
 
-            
-            alert('Sign up successful! Welcome, ' + firstName);
-            window.location.href = 'Home.html';
-        } else {
-            alert('Registration failed: ' + result.message);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred. Check the console for details.');
-    }
-}
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
 
-// --- 3. HANDLE LOGIN ---
-async function handleLogin(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    
-    try {
-        // ✅ FIX: Use absolute path from your project root
-        const apiUrl = window.location.origin + window.location.pathname.replace('Login.html', '') + 'api/auth/authentication.php?action=login';
-        
-        console.log('Attempting login to:', apiUrl); // Debug log
-        
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
-            }),
-            credentials: 'include'
-        });
-        
-        console.log('Response status:', response.status); // Debug log
-        
-        // ✅ CHECK IF RESPONSE IS OK BEFORE PARSING JSON
-        if (!response.ok) {
-            const text = await response.text();
-            console.error('Server response:', text);
-            alert('Server error: ' + response.status + '\n' + text.substring(0, 200));
-            return;
-        }
-        
-        // ✅ TRY TO GET TEXT FIRST, THEN PARSE
-        const text = await response.text();
-        console.log('Response text:', text); // Debug log
-        
-        let result;
-        try {
-            result = JSON.parse(text);
-        } catch (parseError) {
-            console.error('JSON parse error:', parseError);
-            console.error('Response was:', text);
-            alert('Server returned invalid JSON. Check console for details.');
-            return;
-        }
-        
-        if (result.success) {
-            localStorage.setItem('currentUser', JSON.stringify({
-                name: result.customer.FirstName + ' ' + result.customer.LastName,
-                email: result.customer.Email,
-                customerId: result.customer.CustomerID,
-                firstName: result.customer.FirstName,
-                lastName: result.customer.LastName,
-                contactNumber: result.customer.ContactNumber
-            }));
+            try {
+                // ✅ FIX: Use absolute path from your project root
+                const apiUrl = window.location.origin + window.location.pathname.replace('Login.html', '') + 'api/auth/authentication.php?action=login';
 
-            
-            alert('Welcome back, ' + result.customer.FirstName);
-            window.location.href = 'Home.html';
-        } else {
-            alert('Login failed: ' + result.message);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred. Check the console for details.');
-    }
-}
+                console.log('Attempting login to:', apiUrl); // Debug log
 
-    // --- 5. HANDLE LOGOUT ---
-    function performLogout() {
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('redirectAfterLogin');
-        alert("You have been successfully logged out.");
-        window.location.href = 'Login.html';
-    }
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    }),
+                    credentials: 'include'
+                });
 
-    // --- 6. UPDATE HEADER LINK ---
-    function updateAccountLink() {
-        const accountLink = document.getElementById('account-link');
-        const user = JSON.parse(localStorage.getItem('currentUser'));
+                console.log('Response status:', response.status); // Debug log
 
-        if (user && accountLink) {
-            accountLink.textContent = user.firstName.toUpperCase();
-            accountLink.href = '#'; 
-            
-            accountLink.onclick = (e) => {
-                e.preventDefault();
-                if (confirm(`Are you sure you want to log out, ${user.firstName}?`)) {
-                    performLogout();
+                // ✅ CHECK IF RESPONSE IS OK BEFORE PARSING JSON
+                if (!response.ok) {
+                    const text = await response.text();
+                    console.error('Server response:', text);
+                    alert('Server error: ' + response.status + '\n' + text.substring(0, 200));
+                    return;
                 }
-            };
 
-        } else if (accountLink) {
-            accountLink.textContent = 'PROFILE';
-            accountLink.href = 'Login.html';
-            accountLink.onclick = null;
+                // ✅ TRY TO GET TEXT FIRST, THEN PARSE
+                const text = await response.text();
+                console.log('Response text:', text); // Debug log
+
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    console.error('Response was:', text);
+                    alert('Server returned invalid JSON. Check console for details.');
+                    return;
+                }
+
+                if (result.success) {
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        name: result.customer.FirstName + ' ' + result.customer.LastName,
+                        email: result.customer.Email,
+                        customerId: result.customer.CustomerID,
+                        firstName: result.customer.FirstName,
+                        lastName: result.customer.LastName,
+                        contactNumber: result.customer.ContactNumber
+                    }));
+
+
+                    alert('Welcome back, ' + result.customer.FirstName);
+                    window.location.href = 'Home.html';
+                } else {
+                    alert('Login failed: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Check the console for details.');
+            }
         }
-    }
 
-    // --- 7. INITIALIZATION ---
-    document.addEventListener('DOMContentLoaded', () => {
-        const currentUser = localStorage.getItem('currentUser');
-        updateAccountLink();
+        // --- 5. HANDLE LOGOUT ---
+        function performLogout() {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('redirectAfterLogin');
+            alert("You have been successfully logged out.");
+            window.location.href = 'Login.html';
+        }
 
-        if (currentUser) {
-            const user = JSON.parse(currentUser);
-            
-            formContent.innerHTML = `
+        // --- 6. UPDATE HEADER LINK ---
+        function updateAccountLink() {
+            const accountLink = document.getElementById('account-link');
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+
+            if (user && accountLink) {
+                accountLink.textContent = user.firstName.toUpperCase();
+                accountLink.href = '#';
+
+                accountLink.onclick = (e) => {
+                    e.preventDefault();
+                    if (confirm(`Are you sure you want to log out, ${user.firstName}?`)) {
+                        performLogout();
+                    }
+                };
+
+            } else if (accountLink) {
+                accountLink.textContent = 'PROFILE';
+                accountLink.href = 'Login.html';
+                accountLink.onclick = null;
+            }
+        }
+
+        // --- 7. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentUser = localStorage.getItem('currentUser');
+            updateAccountLink();
+
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+
+                formContent.innerHTML = `
                 <h2 style="color: #BC1823;">Welcome Back, ${user.firstName}!</h2>
                 <p style="text-align: center; margin-top: 20px; font-size: 1.1em;">
                     You are currently logged in as <strong>${user.email}</strong>.
@@ -514,17 +519,50 @@ async function handleLogin(e) {
                     <a href="Home.html" style="color: #444; text-decoration: underline;">Continue Browsing</a>
                 </div>
             `;
-            
-            document.getElementById('main-logout-btn').addEventListener('click', () => {
-                if (confirm(`Are you sure you want to log out, ${user.firstName}?`)) {
-                    performLogout(); 
-                }
-            });
 
-        } else {
-            renderLoginForm();
-        }
-    });
-</script>
+                document.getElementById('main-logout-btn').addEventListener('click', () => {
+                    if (confirm(`Are you sure you want to log out, ${user.firstName}?`)) {
+                        performLogout();
+                    }
+                });
+
+            } else {
+                renderLoginForm();
+            }
+        });
+    </script>
+    <footer>
+        <div class="contact-section">
+            <div class="contact-info">
+                <h2>Contact Us</h2>
+                <p style="margin-bottom: 25px; font-size: 14px;">Have any questions? We'd love to hear from you.</p>
+                <div class="info-group">
+                    <div class="info-item">
+                        <img src="Photo/VisitUs.png" alt="Location Icon">
+                        <div>
+                            <strong>Visit us</strong>
+                            <p>Poblacion 2, Vinzons Avenue,<br>Vinzons, Camarines Norte</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <img src="Photo/Selpon.png" alt="Phone Icon">
+                        <div>
+                            <strong>Call us</strong>
+                            <p>09380839641</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <img src="Photo/Facebook.png" alt="Facebook Icon">
+                        <div>
+                            <strong>Connect to us</strong>
+                            <a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank">Tabeya,
+                                VCN</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
+
 </html>
