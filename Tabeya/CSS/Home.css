@@ -134,11 +134,11 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80vh;
+    height: 90vh;
 }
 
 .logo-container img {
-    max-width: 90%;
+    max-width: 100%;
     height: auto;
     /* Adjust this filter if you want the logo to stand out against the background */
     filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.7));

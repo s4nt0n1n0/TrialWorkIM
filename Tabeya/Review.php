@@ -71,6 +71,7 @@ function getInitials($name) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Reviews - Tabeya</title>
     <link rel="stylesheet" href="CSS/ReviewDesign.css">
+    <link rel="stylesheet" href="CSS/Footer.css">
 </head>
 <body>
     <header>
@@ -246,7 +247,7 @@ function getInitials($name) {
                             echo '</div>'; // end review-card
                         }
                     } else {
-                        echo '<p style="text-align: center; color: #666; margin-top: 50px;">No reviews yet. Be the first to share your experience!</p>';
+                        echo '<p class="no-reviews-msg">No reviews yet. Be the first to share your experience!</p>';
                     }
                     ?>
                 </div>
@@ -262,7 +263,7 @@ function getInitials($name) {
     <div id="review-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" id="close-modal-btn">&times;</span>
-            <h2 style="margin-bottom: 20px; color: #bc1823;">Share Your Experience</h2>
+            <h2 class="modal-title">Share Your Experience</h2>
             
             <div id="user-info-section"></div>
             
@@ -285,14 +286,14 @@ function getInitials($name) {
                 <div id="reservations-list"></div>
             </div>
             
-            <div class="anonymous-option" style="margin: 15px 0; display: flex; align-items: center; gap: 10px;">
+            <div class="anonymous-option">
                 <input type="checkbox" id="anonymous-checkbox">
-                <label for="anonymous-checkbox" style="font-weight: 600; font-size: 14px; cursor: pointer;">Post anonymously</label>
+                <label for="anonymous-checkbox" class="anonymous-label">Post anonymously</label>
             </div>
             
-            <div class="overall-rating-input" style="text-align: center; padding: 20px; background: linear-gradient(135deg, #bc1823 0%, #e74c3c 100%); border-radius: 10px; margin-bottom: 20px; color: white;">
+            <div class="overall-rating-input">
                 <h3>Overall Rating</h3>
-                <div class="rating-stars" id="overall-stars" style="justify-content: center; display: flex; gap: 5px;">
+                <div class="rating-stars modal-rating-stars" id="overall-stars">
                     <span class="rating-star" data-rating="1">★</span>
                     <span class="rating-star" data-rating="2">★</span>
                     <span class="rating-star" data-rating="3">★</span>
@@ -302,10 +303,10 @@ function getInitials($name) {
             </div>
 
             <div class="review-form-section">
-                <h4 style="color: #bc1823; margin-bottom: 15px;">Rate Each Category</h4>
+                <h4 class="modal-subtitle">Rate Each Category</h4>
                 
                 <div class="rating-category">
-                    <label style="min-width: 150px; font-weight: 600;">🍽️ Food Taste</label>
+                    <label class="cat-label">🍽️ Food Taste</label>
                     <div class="category-stars" data-category="food">
                         <span class="star" data-rating="1">★</span>
                         <span class="star" data-rating="2">★</span>
@@ -317,7 +318,7 @@ function getInitials($name) {
                 <textarea class="comment-field" id="food-comment" placeholder="Tell us about the food..."></textarea>
 
                 <div class="rating-category">
-                    <label style="min-width: 150px; font-weight: 600;">📏 Portion Size</label>
+                    <label class="cat-label">📏 Portion Size</label>
                     <div class="category-stars" data-category="portion">
                         <span class="star" data-rating="1">★</span>
                         <span class="star" data-rating="2">★</span>
@@ -329,7 +330,7 @@ function getInitials($name) {
                 <textarea class="comment-field" id="portion-comment" placeholder="Was the portion satisfying?"></textarea>
 
                 <div class="rating-category">
-                    <label style="min-width: 150px; font-weight: 600;">👨‍💼 Customer Service</label>
+                    <label class="cat-label">👨‍💼 Customer Service</label>
                     <div class="category-stars" data-category="service">
                         <span class="star" data-rating="1">★</span>
                         <span class="star" data-rating="2">★</span>
@@ -341,7 +342,7 @@ function getInitials($name) {
                 <textarea class="comment-field" id="service-comment" placeholder="How was the service?"></textarea>
 
                 <div class="rating-category">
-                    <label style="min-width: 150px; font-weight: 600;">✨ Ambience</label>
+                    <label class="cat-label">✨ Ambience</label>
                     <div class="category-stars" data-category="ambience">
                         <span class="star" data-rating="1">★</span>
                         <span class="star" data-rating="2">★</span>
@@ -353,7 +354,7 @@ function getInitials($name) {
                 <textarea class="comment-field" id="ambience-comment" placeholder="Describe the atmosphere..."></textarea>
 
                 <div class="rating-category">
-                    <label style="min-width: 150px; font-weight: 600;">🧹 Cleanliness</label>
+                    <label class="cat-label">🧹 Cleanliness</label>
                     <div class="category-stars" data-category="cleanliness">
                         <span class="star" data-rating="1">★</span>
                         <span class="star" data-rating="2">★</span>
@@ -366,8 +367,8 @@ function getInitials($name) {
             </div>
 
             <div class="review-form-section">
-                <h4 style="color: #bc1823; margin-top: 15px;">General Comments (Optional)</h4>
-                <textarea class="comment-field" id="review-message" placeholder="Share your overall experience..." style="min-height: 80px;"></textarea>
+                <h4 class="modal-subtitle-margin">General Comments (Optional)</h4>
+                <textarea class="comment-field general-comment" id="review-message" placeholder="Share your overall experience..."></textarea>
             </div>
 
             <button id="submit-review-btn" class="write-btn">Submit Review</button>
@@ -376,34 +377,43 @@ function getInitials($name) {
 
     <!-- Cart Modal -->
     <div id="cart-modal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-content cart-modal-content">
             <span class="close-btn" onclick="document.getElementById('cart-modal').style.display='none'">&times;</span>
-            <h2 style="margin-bottom: 20px; color: #bc1823;">Your Cart</h2>
+            <h2 class="cart-title">Your Cart</h2>
             <div id="cart-items-list"></div>
-            <div class="cart-summary" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; text-align: right;">
+            <div class="cart-summary">
                 <strong>Total: ₱<span id="cart-total">0.00</span></strong>
             </div>
-            <button id="checkout-btn" class="write-btn" style="margin-top: 20px;">Proceed to Checkout</button>
+            <button id="checkout-btn" class="write-btn checkout-btn">Proceed to Checkout</button>
         </div>
     </div>
 
     <footer>
-        <div class="contact-section" style="padding: 50px 0; background: #fff; border-top: 1px solid #eee; margin-top: 50px;">
-            <div class="contact-info" style="text-align: center; max-width: 800px; margin: 0 auto;">
-                <h2 style="color: #bc1823; margin-bottom: 10px;">Contact Us</h2>
-                <p style="color: #666; margin-bottom: 30px;">Have any questions? We'd love to hear from you.</p>
-                <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
-                    <div style="display: flex; align-items: center; gap: 10px; text-align: left;">
-                        <img src="Photo/VisitUs.png" alt="Location" style="width: 30px;">
-                        <div><strong>Visit us</strong><p style="font-size: 13px; line-height: 1.4;">Poblacion 2, Vinzons Avenue,<br>Vinzons, CN</p></div>
+        <div class="contact-section">
+            <div class="contact-info">
+                <h2>Contact Us</h2>
+                <p>Have any questions? We'd love to hear from you.</p>
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <img src="Photo/VisitUs.png" alt="Location">
+                        <div class="contact-item-text">
+                            <strong>Visit us</strong>
+                            <p>Poblacion 2, Vinzons Avenue,<br>Vinzons, CN</p>
+                        </div>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 10px; text-align: left;">
-                        <img src="Photo/Selpon.png" alt="Phone" style="width: 30px;">
-                        <div><strong>Call us</strong><p style="font-size: 13px;">09380839641</p></div>
+                    <div class="contact-item">
+                        <img src="Photo/Selpon.png" alt="Phone">
+                        <div class="contact-item-text">
+                            <strong>Call us</strong>
+                            <p>09380839641</p>
+                        </div>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 10px; text-align: left;">
-                        <img src="Photo/Facebook.png" alt="Facebook" style="width: 30px;">
-                        <div><strong>Connect</strong><p style="font-size: 13px;"><a href="#" style="color: #bc1823; text-decoration: none;">Tabeya, VCN</a></p></div>
+                    <div class="contact-item">
+                        <img src="Photo/Facebook.png" alt="Facebook">
+                        <div class="contact-item-text">
+                            <strong>Connect</strong>
+                            <p><a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank">Tabeya, VCN</a></p>
+                        </div>
                     </div>
                 </div>
             </div>

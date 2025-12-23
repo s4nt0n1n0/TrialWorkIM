@@ -11,8 +11,7 @@
 body {
 
   background-color: #f8f9fa;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: #333;
+  font-family: Arial, sans-serif;
   line-height: 1.6;
 }
 
@@ -128,10 +127,11 @@ nav a.active {
 }
 
 .page-titles h1 {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 800;
-  color: #1a1a1a;
+  color: yellow;
   margin-bottom: 8px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .page-titles p {
@@ -652,4 +652,89 @@ nav a.active {
   .sidebar {
     position: static;
   }
+}
+
+
+
+/* =========================================== */
+/* === ADDITIONAL UTILITIES & MODAL STYLES === */
+/* =========================================== */
+
+.no-reviews-msg {
+  text-align: center;
+  color: #666;
+  margin-top: 50px;
+}
+
+.modal-title {
+  margin-bottom: 20px;
+  color: #bc1823;
+}
+
+.modal-subtitle {
+  color: #bc1823;
+  margin-bottom: 15px;
+}
+
+.modal-subtitle-margin {
+  color: #bc1823;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.anonymous-option {
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.anonymous-label {
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.overall-rating-input {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #bc1823 0%, #e74c3c 100%);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.modal-rating-stars {
+  justify-content: center;
+  display: flex;
+  gap: 5px;
+}
+
+.cat-label {
+  min-width: 150px;
+  font-weight: 600;
+}
+
+.general-comment {
+  min-height: 80px;
+}
+
+.cart-modal-content {
+  max-width: 500px !important;
+}
+
+.cart-title {
+  margin-bottom: 20px;
+  color: #bc1823;
+}
+
+.cart-summary {
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+  text-align: right;
+}
+
+.checkout-btn {
+  margin-top: 20px;
 }

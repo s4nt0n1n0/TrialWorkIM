@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Server Configuration - Tabeya System</title>
+    <link rel="stylesheet" href="CSS/Footer.css">
     <style>
         * {
             margin: 0;
@@ -15,6 +17,14 @@
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-wrapper {
+            flex: 1 0 auto;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -191,7 +201,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         @media (max-width: 600px) {
@@ -213,57 +225,94 @@
         }
     </style>
 </head>
+
 <body>
-    <div class="config-container">
-        <div class="header">
-            <div class="icon">🗄️</div>
-            <h1>Server Configuration</h1>
-            <p>Configure your database connection settings to continue</p>
+    <div class="main-wrapper">
+        <div class="config-container">
+            <div class="header">
+                <div class="icon">🗄️</div>
+                <h1>Server Configuration</h1>
+                <p>Configure your database connection settings to continue</p>
+            </div>
+
+            <form id="config-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="server-ip">Server IP</label>
+                        <input type="text" id="server-ip" name="server-ip" value="localhost" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="port">Port</label>
+                        <input type="text" id="port" name="port" value="3306" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="database">Database Name</label>
+                    <input type="text" id="database" name="database" value="tabeya_system" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="root" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Leave blank if no password">
+                </div>
+
+                <div class="note">
+                    <p><strong>📝 Note:</strong> Enter the database username (default: <strong>root</strong>). For XAMPP
+                        installations, the default password is usually empty.</p>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-test" id="test-connection-btn">
+                        Test Connection
+                    </button>
+                    <button type="submit" class="btn btn-save" id="save-continue-btn" disabled>
+                        Save & Continue
+                    </button>
+                </div>
+
+                <div class="status-message" id="status-message"></div>
+            </form>
         </div>
-
-        <form id="config-form">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="server-ip">Server IP</label>
-                    <input type="text" id="server-ip" name="server-ip" value="localhost" required>
-                </div>
-                <div class="form-group">
-                    <label for="port">Port</label>
-                    <input type="text" id="port" name="port" value="3306" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="database">Database Name</label>
-                <input type="text" id="database" name="database" value="tabeya_system" required>
-            </div>
-
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" value="root" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Leave blank if no password">
-            </div>
-
-            <div class="note">
-                <p><strong>📝 Note:</strong> Enter the database username (default: <strong>root</strong>). For XAMPP installations, the default password is usually empty.</p>
-            </div>
-
-            <div class="button-group">
-                <button type="button" class="btn btn-test" id="test-connection-btn">
-                    Test Connection
-                </button>
-                <button type="submit" class="btn btn-save" id="save-continue-btn" disabled>
-                    Save & Continue
-                </button>
-            </div>
-
-            <div class="status-message" id="status-message"></div>
-        </form>
     </div>
+
+    <footer>
+        <div class="contact-section">
+            <div class="contact-info">
+                <h2>Contact Us</h2>
+                <p>Have any questions? We'd love to hear from you.</p>
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <img src="Photo/VisitUs.png" alt="Location">
+                        <div class="contact-item-text">
+                            <strong>Visit us</strong>
+                            <p>Poblacion 2, Vinzons Avenue,<br>Vinzons, CN</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <img src="Photo/Selpon.png" alt="Phone">
+                        <div class="contact-item-text">
+                            <strong>Call us</strong>
+                            <p>09380839641</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <img src="Photo/Facebook.png" alt="Facebook">
+                        <div class="contact-item-text">
+                            <strong>Connect</strong>
+                            <p><a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank">Tabeya,
+                                    VCN</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const form = document.getElementById('config-form');
@@ -274,7 +323,7 @@
         let connectionTested = false;
 
         // Test Connection
-        testBtn.addEventListener('click', async function() {
+        testBtn.addEventListener('click', async function () {
             const serverIp = document.getElementById('server-ip').value.trim();
             const port = document.getElementById('port').value.trim();
             const database = document.getElementById('database').value.trim();
@@ -327,7 +376,7 @@
         });
 
         // Save Configuration
-        form.addEventListener('submit', async function(e) {
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             if (!connectionTested) {
@@ -363,7 +412,7 @@
 
                 if (result.success) {
                     showMessage('✓ Configuration saved successfully! Redirecting...', 'success');
-                    
+
                     // Redirect to index.php (which will then redirect to Home.html)
                     setTimeout(() => {
                         window.location.href = 'index.php';
@@ -386,4 +435,5 @@
         }
     </script>
 </body>
+
 </html>
