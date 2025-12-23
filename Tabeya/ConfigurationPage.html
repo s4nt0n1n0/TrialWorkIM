@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Server Configuration - Tabeya System</title>
-    <link rel="stylesheet" href="CSS/Footer.css">
     <style>
         * {
             margin: 0;
@@ -14,8 +13,11 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', Arial, sans-serif;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('Photo/Background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -32,12 +34,14 @@
         }
 
         .config-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            padding: 40px;
-            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            max-width: 550px;
             width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .header {
@@ -54,6 +58,7 @@
         .header .icon {
             font-size: 60px;
             margin-bottom: 15px;
+            color: #ffc107;
         }
 
         .header p {
@@ -76,11 +81,13 @@
 
         .form-group input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
+            padding: 14px 18px;
+            border: 2px solid #eee;
+            border-radius: 8px;
             font-size: 14px;
-            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: #fdfdfd;
         }
 
         .form-group input:focus {
@@ -96,10 +103,10 @@
         }
 
         .note {
-            background: #f0f8ff;
+            background: #fff9e6;
             padding: 12px 15px;
-            border-radius: 6px;
-            border-left: 4px solid #BC1823;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
             margin-bottom: 20px;
         }
 
@@ -132,14 +139,14 @@
         }
 
         .btn-test {
-            background: #2196F3;
-            color: white;
+            background: #ffc107;
+            color: #333;
         }
 
         .btn-test:hover {
-            background: #1976D2;
+            background: #e0a800;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
         }
 
         .btn-save {
@@ -230,7 +237,8 @@
     <div class="main-wrapper">
         <div class="config-container">
             <div class="header">
-                <div class="icon">🗄️</div>
+                <img src="Photo/Tabeya Name.png" alt="Tabeya Logo"
+                    style="max-width: 150px; margin-bottom: 15px; filter: brightness(0) saturate(100%) invert(77%) sepia(85%) saturate(1352%) hue-rotate(359deg) brightness(102%) contrast(104%);">
                 <h1>Server Configuration</h1>
                 <p>Configure your database connection settings to continue</p>
             </div>
@@ -262,11 +270,6 @@
                     <input type="password" id="password" name="password" placeholder="Leave blank if no password">
                 </div>
 
-                <div class="note">
-                    <p><strong>📝 Note:</strong> Enter the database username (default: <strong>root</strong>). For XAMPP
-                        installations, the default password is usually empty.</p>
-                </div>
-
                 <div class="button-group">
                     <button type="button" class="btn btn-test" id="test-connection-btn">
                         Test Connection
@@ -281,38 +284,6 @@
         </div>
     </div>
 
-    <footer>
-        <div class="contact-section">
-            <div class="contact-info">
-                <h2>Contact Us</h2>
-                <p>Have any questions? We'd love to hear from you.</p>
-                <div class="contact-grid">
-                    <div class="contact-item">
-                        <img src="Photo/VisitUs.png" alt="Location">
-                        <div class="contact-item-text">
-                            <strong>Visit us</strong>
-                            <p>Poblacion 2, Vinzons Avenue,<br>Vinzons, CN</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <img src="Photo/Selpon.png" alt="Phone">
-                        <div class="contact-item-text">
-                            <strong>Call us</strong>
-                            <p>09380839641</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <img src="Photo/Facebook.png" alt="Facebook">
-                        <div class="contact-item-text">
-                            <strong>Connect</strong>
-                            <p><a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank">Tabeya,
-                                    VCN</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <script>
         const form = document.getElementById('config-form');
