@@ -1,7 +1,7 @@
 <?php
 /**
- * ENHANCED ORDER PROCESSING - With GCash Receipt Upload
- * Handles both COD and GCash payment methods
+ * ENHANCED ORDER PROCESSING - FIXED VERSION
+ * Properly handles delivery options and order status
  */
 
 require_once(__DIR__ . '/api/config/db_config.php');
@@ -36,9 +36,34 @@ try {
         die(json_encode(["success" => false, "message" => "Missing customer ID or empty cart"]));
     }
 
-    // Map order type
-    $order_type_db = ($order_type_raw === 'DELIVERY') ? 'Online' : 'Online';
+    // ============================================================
+    // FIX 1: Properly map order type to database enum
+    // ============================================================
+    // OrderType enum: 'Dine-in','Takeout','Online'
+    // We'll use 'Online' for all web orders
+    $order_type_db = 'Online';
+    
+    // OrderSource enum: 'POS','Website'
     $order_source_db = 'Website';
+    
+    // ============================================================
+    // FIX 2: Properly set DeliveryOption enum
+    // ============================================================
+    // DeliveryOption enum: 'Delivery','Pickup'
+    // Map frontend values to database enum values
+    $delivery_option_db = null;
+    if (strtoupper($order_type_raw) === 'DELIVERY') {
+        $delivery_option_db = 'Delivery';
+        
+        // Validate delivery address is provided
+        if (empty($delivery_address)) {
+            http_response_code(400);
+            die(json_encode(["success" => false, "message" => "Delivery address required for delivery orders"]));
+        }
+    } else {
+        $delivery_option_db = 'Pickup';
+        $delivery_address = null; // Clear address for pickup orders
+    }
 
     // Map payment method
     $payment_method_db = ($payment_method_raw === 'GCASH') ? 'GCash' : 'COD';
@@ -89,31 +114,39 @@ try {
     $conn->begin_transaction();
 
     try {
-        // Insert into orders table
+        // ============================================================
+        // FIX 3: Set OrderStatus to 'Pending' for all new orders
+        // ============================================================
+        $order_status = 'Pending';
+        
+        // Insert into orders table with proper delivery option
         $items_count = count($cart_items);
         $sql_order = "INSERT INTO orders 
                       (CustomerID, OrderType, OrderSource, TotalAmount, OrderStatus, 
                        OrderDate, OrderTime, ItemsOrderedCount, Remarks, 
-                       DeliveryAddress, SpecialRequests) 
-                      VALUES (?, ?, ?, ?, 'Preparing', CURDATE(), CURTIME(), ?, ?, ?, ?)";
+                       DeliveryAddress, SpecialRequests, DeliveryOption) 
+                      VALUES (?, ?, ?, ?, ?, CURDATE(), CURTIME(), ?, ?, ?, ?, ?)";
         
         $stmt_order = $conn->prepare($sql_order);
         if ($stmt_order === false) {
             throw new Exception("SQL Prepare Failed for orders: " . $conn->error);
         }
 
-        $order_remarks = ($order_type_raw === 'DELIVERY') ? 'Delivery Order' : 'Pickup Order';
+        // Create appropriate remarks based on delivery option
+        $order_remarks = ($delivery_option_db === 'Delivery') ? 'Delivery Order' : 'Pickup Order';
         
         $stmt_order->bind_param(
-            "issdisss",
+            "issdsissss",
             $customer_id,
-            $order_type_db,
-            $order_source_db,
+            $order_type_db,        // 'Online'
+            $order_source_db,      // 'Website'
             $total_amount,
+            $order_status,         // 'Pending'
             $items_count,
             $order_remarks,
-            $delivery_address,
-            $special_requests
+            $delivery_address,     // NULL for pickup, address for delivery
+            $special_requests,
+            $delivery_option_db    // 'Delivery' or 'Pickup'
         );
         
         if (!$stmt_order->execute()) {
@@ -156,8 +189,8 @@ try {
             throw new Exception("SQL Prepare Failed for payments: " . $conn->error);
         }
 
-        $payment_status = ($payment_method_raw === 'GCASH') ? 'Pending' : 'Pending';
-        $payment_notes = ($payment_method_raw === 'GCASH') ? 'GCash receipt uploaded' : 'Cash on Delivery';
+        $payment_status = 'Pending'; // Always Pending for new orders
+        $payment_notes = ($payment_method_raw === 'GCASH') ? 'GCash receipt uploaded - awaiting verification' : 'Cash on Delivery';
 
         $stmt_payment->bind_param(
             "isdsssss",
@@ -176,7 +209,7 @@ try {
         }
         $stmt_payment->close();
         
-        // Update customer order count (with fallback)
+        // Update customer order count
         try {
             $stmt_proc = $conn->prepare("CALL IncrementCustomerOrderCount(?)");
             if ($stmt_proc) {
@@ -199,8 +232,7 @@ try {
                 $update_stmt->close();
             }
         } catch (Exception $e) {
-            // Fallback if stored procedure fails
-            error_log("Stored procedure failed: " . $e->getMessage());
+            error_log("Customer count update failed: " . $e->getMessage());
             
             $update_sql = "UPDATE customers 
                           SET TotalOrdersCount = TotalOrdersCount + 1,
@@ -215,7 +247,7 @@ try {
         // Commit transaction
         $conn->commit();
         
-        error_log("SUCCESS: Order #$order_id created for customer $customer_id");
+        error_log("SUCCESS: Order #$order_id created - Status: $order_status, Delivery: $delivery_option_db");
 
         ob_clean();
         http_response_code(201);
@@ -224,7 +256,9 @@ try {
             "message" => "Order placed successfully!",
             "order_id" => $order_id,
             "total_amount" => $total_amount,
-            "payment_method" => $payment_method_db
+            "payment_method" => $payment_method_db,
+            "order_status" => $order_status,
+            "delivery_option" => $delivery_option_db
         ]);
         
     } catch (Exception $e) {

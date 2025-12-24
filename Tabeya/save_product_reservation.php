@@ -1,7 +1,7 @@
 <?php
 /**
- * SAVE PRODUCT RESERVATION - COMPLETE FIX
- * Fixes: Multiple reservations, special requests, payment source, product selection
+ * SAVE PRODUCT RESERVATION - UNIFIED PAYMENT TABLE
+ * Now uses the unified 'payments' table instead of 'reservation_payments'
  */
 
 error_reporting(E_ALL);
@@ -19,7 +19,7 @@ try {
     }
 
     // Database connection
-      require_once(__DIR__ . '/api/config/db_config.php');
+    require_once(__DIR__ . '/api/config/db_config.php');
 
     // Parse input data
     $customer_id = isset($_POST['customer_id']) ? intval($_POST['customer_id']) : 0;
@@ -41,6 +41,7 @@ try {
     $products = @json_decode($products_json, true);
     if (!is_array($products)) $products = [];
 
+    // Validation
     if ($customer_id <= 0) {
         http_response_code(400);
         die(json_encode(["status" => "error", "message" => "Invalid customer ID"]));
@@ -65,7 +66,7 @@ try {
     }
     $product_selection_text = implode(', ', $product_selection_array);
 
-    // Handle file upload
+    // Handle file upload (GCash receipt)
     $receipt_path = null;
     $receipt_filename = null;
 
@@ -101,7 +102,7 @@ try {
 
     try {
         // =====================================================
-        // ALWAYS CREATE A NEW RESERVATION (not update existing)
+        // STEP 1: INSERT RESERVATION
         // =====================================================
         $sql = "INSERT INTO reservations 
                 (CustomerID, ReservationType, EventType, EventDate, EventTime, 
@@ -123,8 +124,8 @@ try {
             $event_date,
             $event_time,
             $guests,
-            $product_selection_text,  // ProductSelection field populated
-            $special_requests,         // SpecialRequests field populated
+            $product_selection_text,
+            $special_requests,
             $customer_phone,
             $status,
             $delivery_option,
@@ -137,7 +138,7 @@ try {
         $stmt->close();
 
         // =====================================================
-        // INSERT RESERVATION ITEMS
+        // STEP 2: INSERT RESERVATION ITEMS
         // =====================================================
         $sql = "INSERT INTO reservation_items (ReservationID, ProductName, Quantity, UnitPrice, TotalPrice) 
                 VALUES (?, ?, ?, ?, ?)";
@@ -158,36 +159,59 @@ try {
         $stmt->close();
 
         // =====================================================
-        // INSERT PAYMENT RECORD (with PaymentSource)
+        // STEP 3: INSERT INTO UNIFIED PAYMENTS TABLE
         // =====================================================
-        $sql = "INSERT INTO reservation_payments 
-                (ReservationID, PaymentMethod, PaymentStatus, AmountPaid, PaymentSource, ProofOfPayment, ReceiptFileName)
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        // Using the unified 'payments' table structure:
+        // PaymentID, OrderID, ReservationID, PaymentDate, PaymentMethod, 
+        // PaymentStatus, AmountPaid, PaymentSource, ProofOfPayment, 
+        // ReceiptFileName, TransactionID, Notes
+        
+        $sql = "INSERT INTO payments 
+                (ReservationID, PaymentMethod, PaymentStatus, AmountPaid, 
+                 PaymentSource, ProofOfPayment, ReceiptFileName, Notes, PaymentDate)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         
         $stmt = $conn->prepare($sql);
         if (!$stmt) throw new Exception("Prepare payment error: " . $conn->error);
 
+        // Map payment method to database enum ('Cash','GCash','COD')
+        $payment_method_db = ($payment_method === 'GCash') ? 'GCash' : 'Cash';
+        
+        // Payment status enum: 'Pending','Completed','Refunded','Failed'
         $payment_status = 'Pending';
-        $payment_source = 'Website';  // FIX: Now properly set
+        
+        // Payment source enum: 'POS','Website'
+        $payment_source = 'Website';
+        
+        // Create notes based on payment method
+        $payment_notes = ($payment_method === 'GCash') 
+            ? 'Catering reservation - GCash receipt uploaded, awaiting verification' 
+            : 'Catering reservation - Payment pending';
 
         $stmt->bind_param(
-            "issdsss",
-            $reservation_id,
-            $payment_method,
-            $payment_status,
-            $total_price,
-            $payment_source,
-            $receipt_path,
-            $receipt_filename
+            "issdssss",
+            $reservation_id,      // ReservationID
+            $payment_method_db,   // PaymentMethod (GCash/Cash)
+            $payment_status,      // PaymentStatus (Pending)
+            $total_price,         // AmountPaid
+            $payment_source,      // PaymentSource (Website)
+            $receipt_path,        // ProofOfPayment (path to image)
+            $receipt_filename,    // ReceiptFileName
+            $payment_notes        // Notes
         );
 
         if (!$stmt->execute()) throw new Exception("Insert payment error: " . $stmt->error);
+        
+        $payment_id = $conn->insert_id;
         $stmt->close();
 
         // =====================================================
-        // UPDATE CUSTOMER RESERVATION COUNT
+        // STEP 4: UPDATE CUSTOMER RESERVATION COUNT
         // =====================================================
-        $sql = "UPDATE customers SET ReservationCount = ReservationCount + 1, LastTransactionDate = NOW() WHERE CustomerID = ?";
+        $sql = "UPDATE customers 
+                SET ReservationCount = ReservationCount + 1, 
+                    LastTransactionDate = NOW() 
+                WHERE CustomerID = ?";
         $stmt = $conn->prepare($sql);
         if ($stmt) {
             $stmt->bind_param("i", $customer_id);
@@ -195,10 +219,10 @@ try {
             $stmt->close();
         }
 
-        // COMMIT
+        // COMMIT TRANSACTION
         $conn->commit();
 
-        error_log("SUCCESS: New reservation #$reservation_id created for customer $customer_id");
+        error_log("SUCCESS: Reservation #$reservation_id created with Payment #$payment_id for customer $customer_id");
 
         ob_clean();
         http_response_code(201);
@@ -206,7 +230,10 @@ try {
             "status" => "success",
             "message" => "Reservation saved successfully!",
             "reservation_id" => $reservation_id,
-            "total_amount" => $total_price
+            "payment_id" => $payment_id,
+            "total_amount" => $total_price,
+            "payment_method" => $payment_method_db,
+            "payment_status" => $payment_status
         ]);
 
     } catch (Exception $e) {
