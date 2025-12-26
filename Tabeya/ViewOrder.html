@@ -255,6 +255,43 @@
             border-bottom: none;
         }
 
+        /* Cancel Button */
+        .cancel-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 2px solid var(--tabeya-red);
+            background-color: white;
+            color: var(--tabeya-red);
+            font-weight: 600;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .cancel-btn:hover:not(:disabled) {
+            background-color: var(--tabeya-red);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(188, 24, 35, 0.3);
+        }
+
+        .cancel-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: var(--border-light);
+            color: var(--text-medium);
+        }
+
+        .cancel-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -358,7 +395,7 @@
         <nav class="nav-links">
             <a href="Home.html">HOME</a>
             <a href="Menu.html">MENU</a>
-            <a href="#" id="cater-reservation-link">CATER RESERVATION</a>
+            <a href="CaterReservation.html" >CATER RESERVATION</a>
             <a href="Review.php">TESTIMONY</a>
             <a href="About.html">ABOUT</a>
         </nav>
@@ -439,8 +476,7 @@
                         <img src="Photo/Facebook.png" alt="Facebook">
                         <div class="contact-item-text">
                             <strong>Connect</strong>
-                            <p><a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank">Tabeya,
-                                    VCN</a></p>
+                            <p><a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank">Tabeya, VCN</a></p>
                         </div>
                     </div>
                 </div>
@@ -458,7 +494,6 @@
         let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
         let currentUser = null;
 
-        // --- Core Login Check ---
         function checkUserLoginStatus() {
             return localStorage.getItem(USER_KEY) !== null;
         }
@@ -488,7 +523,6 @@
             }
         }
 
-        // --- Cart Display Logic ---
         function updateCartDisplay() {
             const count = cart.reduce((sum, item) => sum + item.quantity, 0);
             document.getElementById('cart-item-count').textContent = count;
@@ -600,17 +634,14 @@
             });
         }
 
-        // --- Tab Switching ---
         function setupTabNavigation() {
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const targetTab = btn.dataset.tab;
 
-                    // Update active button
                     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
 
-                    // Update active content
                     document.querySelectorAll('.tab-content').forEach(content => {
                         content.classList.remove('active');
                     });
@@ -619,7 +650,68 @@
             });
         }
 
-        // --- Fetch Orders ---
+        async function cancelOrder(orderId) {
+            if (!confirm('Are you sure you want to cancel this order?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('cancel_order.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        order_id: orderId,
+                        customer_id: currentUser.customerId || currentUser.CustomerID || currentUser.id
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Order cancelled successfully!');
+                    fetchOrders(currentUser.customerId || currentUser.CustomerID || currentUser.id);
+                } else {
+                    alert(result.message || 'Failed to cancel order');
+                }
+            } catch (error) {
+                console.error('Cancel Error:', error);
+                alert('An error occurred while cancelling the order');
+            }
+        }
+
+        async function cancelReservation(reservationId) {
+            if (!confirm('Are you sure you want to cancel this reservation?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('cancel_reservation.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        reservation_id: reservationId,
+                        customer_id: currentUser.customerId || currentUser.CustomerID || currentUser.id
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Reservation cancelled successfully!');
+                    fetchReservations(currentUser.customerId || currentUser.CustomerID || currentUser.id);
+                } else {
+                    alert(result.message || 'Failed to cancel reservation');
+                }
+            } catch (error) {
+                console.error('Cancel Error:', error);
+                alert('An error occurred while cancelling the reservation');
+            }
+        }
+
         async function fetchOrders(customerId) {
             try {
                 const response = await fetch(`get_user_orders.php?customer_id=${customerId}`);
@@ -643,63 +735,76 @@
         }
 
         function renderOrders(orders) {
-            const container = document.getElementById('order-list-container');
-            container.innerHTML = '';
-
-            if (orders.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <p>No orders found.</p>
-                        <p>Start ordering from our <a href="Menu.html">MENU</a> today! 😊</p>
-                    </div>
-                `;
-                return;
-            }
-
-            orders.forEach(order => {
-                const statusClass = getStatusClass(order.WebsiteStatus);
-                const statusText = order.WebsiteStatus || 'Pending';
-
-                // Parse items
-                let itemsHtml = '';
-                if (order.items) {
-                    try {
-                        const items = JSON.parse(order.items);
-                        itemsHtml = items.map(item =>
-                            `<li><span>${item.quantity}x ${item.name}</span> <span class="detail-value">₱${(item.quantity * item.price).toFixed(2)}</span></li>`
-                        ).join('');
-                    } catch (e) {
-                        itemsHtml = '<li>Unable to load items</li>';
-                    }
+                const container = document.getElementById('order-list-container');
+                container.innerHTML = '';
+                
+                if (orders.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <p>No orders found.</p>
+                            <p>Start ordering from our <a href="Menu.html">MENU</a> today! 😊</p>
+                        </div>
+                    `;
+                    return;
                 }
 
-                const card = document.createElement('div');
-                card.className = 'order-card';
-                card.innerHTML = `
-                    <div class="card-header">
-                        <h4>Order #${order.OrderID}</h4>
-                        <span class="status-badge ${statusClass}">${statusText}</span>
-                    </div>
-                    <div class="card-details">
-                        <span class="detail-label">Order Date:</span>
-                        <span class="detail-value">${order.OrderDate || 'N/A'}</span>
-                        
-                        <span class="detail-label">Order Type:</span>
-                        <span class="detail-value">${order.OrderType || 'N/A'}</span>
-                        
-                        <span class="detail-label">Total Amount:</span>
-                        <span class="detail-value total">₱${parseFloat(order.TotalAmount || 0).toFixed(2)}</span>
-                    </div>
-                    <div>
-                        <span class="item-list-title">Items Ordered:</span>
-                        <ul class="item-list">${itemsHtml || '<li>No items listed</li>'}</ul>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
+                orders.forEach(order => {
+                    const statusClass = getStatusClass(order.WebsiteStatus);
+                    const statusText = order.WebsiteStatus || 'Pending';
+                    const isPending = statusText.toLowerCase() === 'pending';
 
-        // --- Fetch Reservations ---
+                    let itemsHtml = '';
+                    let totalAmount = 0;
+                    
+                    if (order.items) {
+                        try {
+                            const items = JSON.parse(order.items);
+                            itemsHtml = items.map(item => {
+                                const itemTotal = item.quantity * item.price;
+                                totalAmount += itemTotal;
+                                return `<li><span>${item.quantity}x ${item.name}</span> <span class="detail-value">₱${itemTotal.toFixed(2)}</span></li>`;
+                            }).join('');
+                        } catch (e) {
+                            itemsHtml = '<li>Unable to load items</li>';
+                        }
+                    }
+                    
+                    // Fallback to TotalAmount if items calculation fails
+                    if (totalAmount === 0 && order.TotalAmount) {
+                        totalAmount = parseFloat(order.TotalAmount);
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'order-card';
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <h4>Order #${order.OrderID}</h4>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="card-details">
+                            <span class="detail-label">Order Date:</span>
+                            <span class="detail-value">${order.OrderDate || 'N/A'}</span>
+                            
+                            <span class="detail-label">Order Type:</span>
+                            <span class="detail-value">${order.OrderType || 'N/A'}</span>
+                            
+                            <span class="detail-label">Total Amount:</span>
+                            <span class="detail-value total">₱${totalAmount.toFixed(2)}</span>
+                        </div>
+                        <div>
+                            <span class="item-list-title">Items Ordered:</span>
+                            <ul class="item-list">${itemsHtml || '<li>No items listed</li>'}</ul>
+                        </div>
+                        <button class="cancel-btn" 
+                                onclick="cancelOrder(${order.OrderID})" 
+                                ${!isPending ? 'disabled' : ''}>
+                            ${isPending ? '✕ Cancel Order' : 'Cannot Cancel'}
+                        </button>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
         async function fetchReservations(customerId) {
             try {
                 const response = await fetch(`get_user_reservations.php?customer_id=${customerId}`);
@@ -739,18 +844,27 @@
             reservations.forEach(reservation => {
                 const statusClass = getStatusClass(reservation.ReservationStatus);
                 const statusText = reservation.ReservationStatus || 'Pending';
+                const isPending = statusText.toLowerCase() === 'pending';
 
-                // Parse items
                 let itemsHtml = '';
+                let totalAmount = 0;
+                
                 if (reservation.items) {
                     try {
                         const items = JSON.parse(reservation.items);
-                        itemsHtml = items.map(item =>
-                            `<li><span>${item.quantity}x ${item.name}</span> <span class="detail-value">₱${(item.quantity * item.price).toFixed(2)}</span></li>`
-                        ).join('');
+                        itemsHtml = items.map(item => {
+                            const itemTotal = item.quantity * item.price;
+                            totalAmount += itemTotal;
+                            return `<li><span>${item.quantity}x ${item.name}</span> <span class="detail-value">₱${itemTotal.toFixed(2)}</span></li>`;
+                        }).join('');
                     } catch (e) {
                         itemsHtml = '<li>Unable to load items</li>';
                     }
+                }
+                
+                // Fallback to TotalPrice if items calculation fails
+                if (totalAmount === 0 && reservation.TotalPrice) {
+                    totalAmount = parseFloat(reservation.TotalPrice);
                 }
 
                 const card = document.createElement('div');
@@ -774,19 +888,22 @@
                         <span class="detail-value">${reservation.NumberOfGuests || 'N/A'}</span>
                         
                         <span class="detail-label">Total Amount:</span>
-                        <span class="detail-value total">₱${parseFloat(reservation.TotalPrice || 0).toFixed(2)}</span>
+                        <span class="detail-value total">₱${totalAmount.toFixed(2)}</span>
                     </div>
                     <div>
                         <span class="item-list-title">Items Ordered:</span>
                         <ul class="item-list">${itemsHtml || '<li>No items listed</li>'}</ul>
                     </div>
+                    <button class="cancel-btn" 
+                            onclick="cancelReservation(${reservation.ReservationID})" 
+                            ${!isPending ? 'disabled' : ''}>
+                        ${isPending ? '✕ Cancel Reservation' : 'Cannot Cancel'}
+                    </button>
                 `;
                 container.appendChild(card);
             });
         }
-
-        // --- Helper: Get Status Class ---
-        function getStatusClass(status) {
+                function getStatusClass(status) {
             if (!status) return 'status-pending';
             const statusLower = status.toLowerCase();
             if (statusLower === 'confirmed') return 'status-confirmed';
@@ -794,7 +911,6 @@
             return 'status-pending';
         }
 
-        // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
             if (checkLoginAndProceed('ViewOrder.html')) {
                 currentUser = JSON.parse(localStorage.getItem(USER_KEY));
