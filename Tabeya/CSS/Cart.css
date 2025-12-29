@@ -1,0 +1,403 @@
+/* Cart.css - Shopee-like Layout */
+
+body {
+    background-color: #f5f5f5;
+    /* Light gray page background */
+}
+
+/* Page Container */
+.cart-page-container {
+    max-width: 1200px;
+    margin: 20px auto 120px;
+    /* Bottom margin for sticky footer */
+    padding: 0 10px;
+}
+
+.cart-icon {
+    font-size: 1.2em;
+    cursor: pointer;
+    position: relative;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    line-height: 1;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: yellow;
+    color: #BC1823;
+    border-radius: 50%;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 0 4px;
+    box-sizing: border-box;
+}
+
+.add-to-cart-btn {
+    background-color: #BC1823;
+    color: white;
+    border: 2px solid #BC1823;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.add-to-cart-btn:hover:not(:disabled) {
+    background-color: #e5535b;
+    border-color: #e5535b;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.add-to-cart-btn:disabled {
+    background-color: #cccccc;
+    border-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+
+.cart-page-container h1 {
+    display: none;
+    /* Hide old generic title if needed, or style it simpler */
+}
+
+/* --- Header & Rows Layout --- */
+
+.cart-header-row,
+.cart-item-row {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 3px;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .05);
+    margin-bottom: 12px;
+}
+
+.cart-header-row {
+    color: #888;
+    background: #fff;
+    height: 55px;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+/* Columns */
+.col-checkbox {
+    width: 45px;
+    text-align: center;
+}
+
+.col-product {
+    flex: 1;
+    /* Grows */
+    color: #222;
+}
+
+.col-unit-price {
+    width: 120px;
+    text-align: center;
+    color: #888;
+}
+
+.col-quantity {
+    width: 150px;
+    text-align: center;
+}
+
+.col-total-price {
+    width: 120px;
+    text-align: center;
+    color: #ee4d2d;
+}
+
+.col-actions {
+    width: 120px;
+    text-align: center;
+}
+
+/* Product Info in Row */
+.product-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.product-wrapper img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 1px solid #e1e1e1;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.product-name {
+    font-size: 14px;
+    color: #222;
+    line-height: 1.2;
+    max-height: 40px;
+    /* Limit 2 lines roughly */
+    overflow: hidden;
+}
+
+/* Price & Inputs */
+.col-unit-price {
+    font-size: 14px;
+}
+
+.col-total-price {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Quantity Controls */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 0, 0, .09);
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.quantity-controls button {
+    border: none;
+    background: transparent;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 16px;
+    color: rgba(0, 0, 0, .8);
+    border-right: 1px solid rgba(0, 0, 0, .09);
+}
+
+.quantity-controls button:last-child {
+    border-right: none;
+    border-left: 1px solid rgba(0, 0, 0, .09);
+}
+
+.quantity-controls input {
+    width: 50px;
+    height: 32px;
+    border: none;
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Delete Button */
+.delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #222;
+    font-size: 14px;
+}
+
+.delete-btn:hover {
+    color: #ee4d2d;
+}
+
+/* --- Sticky Footer --- */
+.cart-sticky-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    /* White background */
+    color: #333;
+    /* Dark text */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 999;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding-left: 40px;
+}
+
+.footer-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.footer-checkbox label {
+    cursor: pointer;
+}
+
+.footer-delete-btn {
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.footer-delete-btn:hover {
+    color: #BC1823;
+    /* Hover Red */
+    text-decoration: underline;
+}
+
+.footer-right {
+    display: flex;
+    align-items: center;
+}
+
+.footer-total-info {
+    font-size: 16px;
+    color: #333;
+    margin-right: 20px;
+}
+
+.footer-price {
+    font-size: 24px;
+    color: #BC1823;
+    /* Red Price */
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.footer-checkout-btn {
+    background-color: #BC1823;
+    /* Tabeya Red Button */
+    color: white;
+    /* White Text */
+    border: none;
+    width: 200px;
+    height: 60px;
+    /* Big button height */
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.footer-checkout-btn:hover {
+    background-color: #a0151e;
+    /* Darker red hover */
+}
+
+.footer-checkout-btn:disabled {
+    background-color: #ccc;
+    color: #fff;
+    cursor: not-allowed;
+}
+
+/* --- Stock Status --- */
+.stock-warning {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.global-warning {
+    color: #d73211;
+    background: #fff2f0;
+    border: 1px solid #ffccba;
+    padding: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* --- Responsive Helpers --- */
+@media (max-width: 768px) {
+    .cart-header-row {
+        display: none;
+        /* Hide header on mobile */
+    }
+
+    .cart-item-row {
+        flex-wrap: wrap;
+        position: relative;
+        padding-bottom: 50px;
+        /* space for quantity/actions */
+    }
+
+    .col-checkbox {
+        position: absolute;
+        top: 15px;
+        left: 10px;
+    }
+
+    .col-product {
+        margin-left: 30px;
+        /* space for checkbox */
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .col-unit-price,
+    .col-total-price {
+        display: none;
+        /* Simplify for mobile, just show total or price in details */
+    }
+
+    .col-quantity {
+        position: absolute;
+        bottom: 15px;
+        left: 20px;
+        text-align: left;
+    }
+
+    .col-actions {
+        position: absolute;
+        bottom: 15px;
+        right: 20px;
+        text-align: right;
+    }
+
+    .footer-checkout-btn {
+        width: 140px;
+        font-size: 16px;
+        height: 50px;
+    }
+
+    .footer-left {
+        padding-left: 20px;
+        gap: 15px;
+    }
+
+    .footer-total-info {
+        font-size: 14px;
+        margin-right: 10px;
+    }
+
+    .footer-price {
+        font-size: 18px;
+    }
+}

@@ -673,7 +673,7 @@ body.blur-background {
     width: 100%;
     text-align: center;
     padding: 10px 0;
-     z-index: 10;
+    z-index: 10;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -687,8 +687,9 @@ body.blur-background {
     letter-spacing: 1px;
     padding: 8px 16px;
     border-radius: 4px;
-    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background for text */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Semi-transparent black background for text */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .availability-overlay.low-stock span {
@@ -697,7 +698,8 @@ body.blur-background {
 }
 
 .availability-overlay.unavailable span {
-    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker for unavailable if desired, or keep consistent */
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Slightly darker for unavailable if desired, or keep consistent */
     color: #fff;
     font-size: 20px;
 }

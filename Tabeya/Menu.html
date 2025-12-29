@@ -25,7 +25,15 @@
         <div class="header-right">
             <a href="Login.html" id="account-link">PROFILE</a>
             <div class="cart-icon" id="view-cart-btn">
-                🛒 <span class="cart-count" id="cart-item-count">0</span>
+                <a href="Cart.html" style="text-decoration: none; color: inherit;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count" id="cart-item-count">0</span>
+                </a>
             </div>
         </div>
     </header>
@@ -45,18 +53,7 @@
         </div>
     </section>
 
-    <div id="cart-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Your Cart</h2>
-            <div id="cart-items-list">
-            </div>
-            <div class="cart-summary">
-                <strong>Total: ₱<span id="cart-total">0.00</span></strong>
-            </div>
-            <button id="checkout-btn">Proceed to Checkout</button>
-        </div>
-    </div>
+    <!-- Cart Modal Removed -->
 
     <footer>
         <div class="contact-section">
@@ -212,9 +209,6 @@
         function saveCart() {
             localStorage.setItem(CART_KEY, JSON.stringify(cart));
             updateCartDisplay();
-            if (document.getElementById('cart-modal').style.display === "block") {
-                renderCartModal();
-            }
         }
 
         function addToCart(itemDetails) {
@@ -250,117 +244,13 @@
             alert(`${itemDetails.name} added to cart!`);
         }
 
-        window.updateCartItemQuantity = function (itemId, change) {
-            if (!checkUserLoginStatus()) {
-                alert("You must log in to modify the cart.");
-                return;
-            }
-
-            const itemIndex = cart.findIndex(item => String(item.id) === String(itemId));
-            if (itemIndex > -1) {
-                let newQuantity = cart[itemIndex].quantity + change;
-                if (newQuantity <= 0) {
-                    if (confirm("Remove this item from cart?")) {
-                        cart.splice(itemIndex, 1);
-                    } else {
-                        return; // Do nothing if canceled
-                    }
-                } else {
-                    cart[itemIndex].quantity = newQuantity;
-                }
-                saveCart();
-            }
-        }
-
-        window.setCartItemQuantity = function (itemId, newQuantity) {
-            if (!checkUserLoginStatus()) {
-                alert("You must log in to modify the cart.");
-                renderCartModal(); // Reset view
-                return;
-            }
-
-            const itemIndex = cart.findIndex(item => String(item.id) === String(itemId));
-            if (itemIndex > -1) {
-                let parsedQty = parseInt(newQuantity);
-
-                if (isNaN(parsedQty) || parsedQty < 1) {
-                    parsedQty = 1; // Default to 1 if invalid
-                }
-
-                cart[itemIndex].quantity = parsedQty;
-                saveCart();
-            }
-        }
-
-        function calculateTotal() {
-            return cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
-        }
+        // Cart modification functions removed (moved to Cart.html)
 
         // ====================================================================
         // === RENDERING FUNCTIONS ===
         // ====================================================================
 
-        function renderCartModal() {
-            const listContainer = document.getElementById('cart-items-list');
-            const totalElement = document.getElementById('cart-total');
-            const checkoutBtn = document.getElementById('checkout-btn');
-            let itemsHtml = '';
-
-            if (cart.length === 0) {
-                itemsHtml = '<p style="text-align: center; color: #777; padding: 15px 0;">Your cart is empty.</p>';
-                checkoutBtn.disabled = true;
-            } else {
-                // Check if any items are out of stock
-                const hasOutOfStock = cart.some(item =>
-                    item.stockStatus === 'out_of_stock' || item.stockStatus === 'low_stock'
-                );
-
-                cart.forEach(item => {
-                    const itemTotal = (item.price * item.quantity).toFixed(2);
-                    const safeId = String(item.id).replace(/'/g, "\\'");
-
-                    // Add warning for out of stock items
-                    const stockWarning = (item.stockStatus === 'out_of_stock' || item.stockStatus === 'low_stock')
-                        ? '<span style="color: red; font-size: 0.8em;">⚠️ Unavailable</span>'
-                        : '';
-
-                    itemsHtml += `
-                        <div class="cart-item">
-                            <div class="cart-item-image-container">
-                                <img src="${item.image || 'Photo/default-image.jpg'}" alt="${item.name}" class="cart-item-image" onerror="this.src='Photo/default-image.jpg'">
-                            </div>
-                            <div class="cart-item-info"> 
-                                <span class="cart-item-name">${item.name} ${stockWarning}</span>
-                                <span class="cart-item-price">₱${parseFloat(item.price).toFixed(2)}</span>
-                            </div>
-                            
-                            <div class="cart-item-controls">
-                                <button onclick="window.updateCartItemQuantity('${safeId}', -1)">-</button>
-                                <input type="number" 
-                                       class="cart-item-quantity-input" 
-                                       value="${item.quantity}" 
-                                       min="1" 
-                                       onchange="window.setCartItemQuantity('${safeId}', this.value)"
-                                       onkeypress="return event.charCode >= 48 && event.charCode <= 57" 
-                                >
-                                <button onclick="window.updateCartItemQuantity('${safeId}', 1)">+</button>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                // Disable checkout if any items are unavailable
-                if (hasOutOfStock) {
-                    checkoutBtn.disabled = true;
-                    itemsHtml += '<p style="color: red; text-align: center; padding: 10px;">⚠️ Some items are unavailable. Please remove them to checkout.</p>';
-                } else {
-                    checkoutBtn.disabled = false;
-                }
-            }
-
-            listContainer.innerHTML = itemsHtml;
-            totalElement.textContent = calculateTotal();
-        }
+        // renderCartModal removed
 
         function renderBestSellers(products) {
             const container = document.getElementById('bestsellers-content');
@@ -582,47 +472,12 @@
         }
 
         function setupGlobalListeners() {
-            const modal = document.getElementById('cart-modal');
+            // setupGlobalListeners simplified
             const btn = document.getElementById("view-cart-btn");
-            const span = document.getElementsByClassName("close-btn")[0];
-            const checkoutBtn = document.getElementById('checkout-btn');
 
-            btn.onclick = function () {
-                if (checkLoginAndProceed('Menu.html')) {
-                    renderCartModal();
-                    modal.style.display = "block";
-                }
-            }
-
-            span.onclick = function () {
-                modal.style.display = "none";
-            }
-
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-
-            checkoutBtn.addEventListener('click', () => {
-                if (cart.length > 0) {
-                    // Verify all items are available before checkout
-                    const hasUnavailable = cart.some(item =>
-                        item.stockStatus === 'out_of_stock' || item.stockStatus === 'low_stock'
-                    );
-
-                    if (hasUnavailable) {
-                        alert("Some items in your cart are unavailable. Please remove them before checkout.");
-                        return;
-                    }
-
-                    if (checkLoginAndProceed('Checkout.html')) {
-                        // Redirect handled inside checkLoginAndProceed
-                    }
-                } else {
-                    alert("Your cart is empty!");
-                }
-            });
+            // No modal listeners needed anymore
+            // Cart button is now a link, but we can intercept it if needed
+            // Currently it wraps an <a> tag so it works natively
 
             const caterLink = document.getElementById('cater-reservation-link');
             if (caterLink) {
