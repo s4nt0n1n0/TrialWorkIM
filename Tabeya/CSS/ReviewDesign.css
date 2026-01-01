@@ -8,12 +8,22 @@
   box-sizing: border-box;
 }
 
+html,
 body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
-  background-color: #f8f9fa;
+body {
+  background: url('../Photo/Background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   font-family: Arial, sans-serif;
-  min-height: 100vh;
   padding-top: 60px;
+  /* Match About page */
+  min-height: 100vh;
 }
 
 header {
@@ -71,18 +81,21 @@ nav.nav-links {
 nav a {
   color: white;
   font-size: 13px;
-  /* Smaller font size */
   font-weight: bold;
   text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 nav a:hover,
-nav a:active {
+nav a:active,
+.header-right a:hover {
   color: yellow;
+  text-shadow: 0 0 8px rgba(255, 255, 0, 0.4);
 }
 
-nav a.active {
-  color: yellow;
+nav a.active,
+.header-right a.active {
+  color: yellow !important;
 }
 
 /* =========================================== */
@@ -156,8 +169,11 @@ nav a.active {
 
 .testimony-container {
   max-width: 1200px;
-  margin: 100px auto 50px;
+  margin: 0 auto 50px;
+  /* Removed 40px top margin */
   padding: 0 20px;
+  flex: 1;
+  /* Allow container to grow and push footer down */
 }
 
 .testimony-layout {
@@ -175,36 +191,51 @@ nav a.active {
 }
 
 .page-titles {
-  margin-bottom: 10px;
+  margin-bottom: 40px;
+  text-align: center;
 }
 
 .page-titles h1 {
-  font-size: 26px;
-  font-weight: 800;
   color: yellow;
-  margin-bottom: 8px;
+  margin-top: 50px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-family: 'Arial Black', sans-serif;
+  font-size: 3em;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .page-titles p {
-  color: #666;
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 20px;
+  margin-bottom: 0;
+  /* Handled by container margin-bottom */
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Stats Cards */
 .stats-card {
-  background: white;
-  border-radius: 16px;
-  padding: 25px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid #edf2f7;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
 }
 
 .stats-card h3 {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 20px;
-  color: #2d3748;
+  margin-bottom: 24px;
+  color: #1e293b;
 }
 
 /* Overall Card */
@@ -213,27 +244,31 @@ nav a.active {
 }
 
 .huge-rating {
-  font-size: 64px;
+  font-size: 84px;
   font-weight: 800;
-  color: #1a202c;
+  color: #0f172a;
   line-height: 1;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .main-stars {
-  font-size: 24px;
-  color: #cbd5e0;
-  margin-bottom: 8px;
+  font-size: 32px;
+  color: #e2e8f0;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
 }
 
 .main-stars .star.filled {
-  color: #f6ad55;
+  color: #fbbf24;
+  /* Amber/Yellow Stars */
 }
 
 .based-on {
-  color: #718096;
-  font-size: 13px;
-  margin-bottom: 25px;
+  color: #64748b;
+  font-size: 15px;
+  margin-bottom: 30px;
 }
 
 .rating-bars {
@@ -341,24 +376,25 @@ nav a.active {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 0px;
 }
 
 .content-header h2 {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
-  color: #2d3748;
+  color: #ffffff;
 }
 
 .sort-select {
-  padding: 8px 15px;
-  border-radius: 8px;
-  border: 1px solid #edf2f7;
-  background: white;
-  font-size: 13px;
-  color: #4a5568;
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(45, 55, 72, 0.8);
+  font-size: 14px;
+  color: #ffffff;
   cursor: pointer;
   outline: none;
+  backdrop-filter: blur(4px);
 }
 
 /* Review Cards */
@@ -369,12 +405,19 @@ nav a.active {
 }
 
 .review-card {
-  background: white;
-  border-radius: 16px;
-  padding: 25px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  border: 1px solid #edf2f7;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   position: relative;
+  transition: all 0.3s ease;
+}
+
+.review-card:hover {
+  transform: translateX(10px);
+  background: #ffffff;
 }
 
 .review-card-header {
@@ -384,16 +427,18 @@ nav a.active {
 }
 
 .avatar {
-  width: 45px;
-  height: 45px;
-  background: #fff5f5;
-  color: #bc1823;
+  width: 56px;
+  height: 56px;
+  background: #ffe4e6;
+  /* Light Pink */
+  color: #e11d48;
+  /* Pink/Red text */
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 16px;
+  font-weight: 700;
+  font-size: 20px;
   flex-shrink: 0;
 }
 
@@ -415,13 +460,14 @@ nav a.active {
 }
 
 .type-badge {
-  background: #edf2f7;
-  color: #718096;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 20px;
+  background: #f1f5f9;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 6px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .review-date {
@@ -439,7 +485,7 @@ nav a.active {
 }
 
 .card-main-stars .star.filled {
-  color: #f6ad55;
+  color: #fbbf24;
 }
 
 .category-badges {
@@ -465,11 +511,13 @@ nav a.active {
 }
 
 .review-text {
-  font-size: 15px;
-  color: #4a5568;
+  font-size: 16px;
+  color: #334155;
   font-style: italic;
-  margin-bottom: 15px;
-  line-height: 1.6;
+  margin-bottom: 20px;
+  line-height: 1.7;
+  padding-left: 15px;
+  border-left: 3px solid #fbbf24;
 }
 
 .accordion-btn {
@@ -524,16 +572,24 @@ nav a.active {
 }
 
 .load-more-btn {
-  background: none;
-  border: none;
-  color: #718096;
+  background: rgba(188, 24, 35, 0.1);
+  border: 1px solid rgba(188, 24, 35, 0.3);
+  color: #bc1823;
+  padding: 12px 30px;
+  border-radius: 30px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .load-more-btn:hover {
-  color: #2d3748;
+  background: #bc1823;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(188, 24, 35, 0.3);
 }
 
 /* =========================================== */
@@ -682,6 +738,11 @@ nav a.active {
 .star.active,
 .star:hover {
   color: #FFD700;
+}
+
+.rating-star.read-only {
+  cursor: default !important;
+  pointer-events: none;
 }
 
 .comment-field {

@@ -83,18 +83,21 @@ nav.nav-links {
 nav a {
     color: white;
     font-size: 13px;
-    /* Smaller font size */
     font-weight: bold;
     text-decoration: none;
+    transition: all 0.3s ease;
 }
 
 nav a:hover,
-nav a:active {
+nav a:active,
+.header-right a:hover {
     color: yellow;
+    text-shadow: 0 0 8px rgba(255, 255, 0, 0.4);
 }
 
-nav a.active {
-    color: yellow;
+nav a.active,
+.header-right a.active {
+    color: yellow !important;
 }
 
 /* =========================================== */

@@ -1,14 +1,21 @@
 /* Cart.css - Shopee-like Layout */
 
 body {
-    background-color: #f5f5f5;
-    /* Light gray page background */
+    background: url('../Photo/Background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    padding-top: 60px;
+    /* Match About page */
+    min-height: 100vh;
 }
 
 /* Page Container */
 .cart-page-container {
     max-width: 1200px;
-    margin: 20px auto 120px;
+    margin: 0 auto 120px;
+    /* Removed 20px top margin */
     /* Bottom margin for sticky footer */
     padding: 0 10px;
 }
@@ -76,8 +83,15 @@ body {
 
 
 .cart-page-container h1 {
-    display: none;
-    /* Hide old generic title if needed, or style it simpler */
+    color: yellow;
+    margin-top: 50px;
+    margin-bottom: 10px;
+    /* Match About page */
+    text-align: center;
+    font-family: 'Arial Black', sans-serif;
+    font-size: 3em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    display: block;
 }
 
 /* --- Header & Rows Layout --- */
@@ -400,4 +414,40 @@ body {
     .footer-price {
         font-size: 18px;
     }
+}
+
+/* --- Empty Cart Styling --- */
+.empty-cart-message {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-cart-message p {
+    color: white !important;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.browse-menu-btn {
+    display: inline-block;
+    background-color: #BC1823;
+    color: white !important;
+    padding: 14px 40px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(188, 24, 35, 0.4);
+    border: 2px solid transparent;
+}
+
+.browse-menu-btn:hover {
+    background-color: #a0151e;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(188, 24, 35, 0.6);
+    border-color: rgba(255, 255, 255, 0.2);
 }
