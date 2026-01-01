@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Tabeya Restaurant</title>
+    <link rel="stylesheet" href="CSS/Menu.css">
+    <link rel="stylesheet" href="CSS/Footer.css">
+    <link rel="stylesheet" href="CSS/Cart.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="Photo/Tabeya Name.png" alt="Tabeya Logo">
+        </div>
+        <nav class="nav-links">
+            <a href="Home.html">HOME</a>
+            <a href="Menu.html">MENU</a>
+            <a href="#" id="cater-reservation-link">CATER RESERVATION</a>
+            <a href="Review.php">TESTIMONY</a>
+            <a href="About.html">ABOUT</a>
+        </nav>
+        <div class="header-right">
+            <a href="Login.html" id="account-link">PROFILE</a>
+            <div class="cart-icon" id="view-cart-btn" style="cursor: default;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-count" id="cart-item-count">0</span>
+            </div>
+        </div>
+    </header>
+    <div class="cart-page-container">
+        <h1>Your Shopping Cart</h1>
+
+        <div class="cart-content-wrapper">
+            <div id="cart-items-container">
+                <!-- Cart items will be injected here -->
+                <p style="text-align: center; color: white;">Loading cart...</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Sticky Footer Bar -->
+    <div class="cart-sticky-footer">
+        <div class="footer-left">
+            <div class="footer-checkbox">
+                <input type="checkbox" id="footer-select-all" checked disabled>
+                <label for="footer-select-all">Select All (<span id="footer-total-count">0</span>)</label>
+            </div>
+            <button class="footer-delete-btn" onclick="alert('Batch delete not implemented yet')">Delete</button>
+        </div>
+        <div class="footer-right">
+            <div class="footer-total-info">
+                Total (<span id="selected-quantity-display">0</span> item): <span class="footer-price">₱<span
+                        id="footer-total-amount">0.00</span></span>
+            </div>
+            <button id="footer-checkout-btn" class="footer-checkout-btn">Check Out</button>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <footer>
+        <div class="contact-section">
+            <div class="contact-info">
+                <h2>Contact Us</h2>
+                <p>Have any questions? We'd love to hear from you.</p>
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <img src="Photo/VisitUs.png" alt="Location">
+                        <div class="contact-item-text">
+                            <strong>Visit us</strong>
+                            <p>Poblacion 2, Vinzons Avenue,<br>Vinzons, CN</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <img src="Photo/Selpon.png" alt="Phone">
+                        <div class="contact-item-text">
+                            <strong>Call us</strong>
+                            <p>09380839641</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <img src="Photo/Facebook.png" alt="Facebook">
+                        <div class="contact-item-text">
+                            <strong>Connect</strong>
+                            <p><a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank">Tabeya,
+                                    VCN</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ====================================================================
+        // === CONFIGURATION & DATA ===
+        // ====================================================================
+        const CART_KEY = 'tabeyaCart';
+        const USER_KEY = 'currentUser';
+        const LOGIN_PAGE = 'Login.html';
+        const CATER_RESERVATION_PAGE = 'CaterReservation.html';
+        const PROFILE_PAGE = 'Profile.html';
+
+        let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+
+        // Initialize 'selected' property if missing
+        cart.forEach(item => {
+            if (typeof item.selected === 'undefined') {
+                item.selected = true;
+            }
+        });
+
+        // --- Core Login Check ---
+        function checkUserLoginStatus() {
+            return localStorage.getItem(USER_KEY) !== null;
+        }
+
+        function checkLoginAndProceed(redirectTarget) {
+            if (!checkUserLoginStatus()) {
+                alert("You must log in to perform this action.");
+                if (redirectTarget) {
+                    localStorage.setItem('redirectAfterLogin', redirectTarget);
+                }
+                window.location.href = LOGIN_PAGE;
+                return false;
+            }
+            if (redirectTarget && redirectTarget !== 'Cart.html') {
+                window.location.href = redirectTarget;
+            }
+            return true;
+        }
+
+        function updateCartDisplay() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-item-count').textContent = count;
+        }
+
+        function saveCart() {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            updateCartDisplay();
+            renderCartPage();
+        }
+
+        // Global functions for inline interaction
+        window.updateCartItemQuantity = function (itemId, change) {
+            const itemIndex = cart.findIndex(item => String(item.id) === String(itemId));
+            if (itemIndex > -1) {
+                let newQuantity = cart[itemIndex].quantity + change;
+                if (newQuantity <= 0) {
+                    if (confirm("Remove this item from cart?")) {
+                        cart.splice(itemIndex, 1);
+                    } else {
+                        return; // Canceled
+                    }
+                } else {
+                    cart[itemIndex].quantity = newQuantity;
+                }
+                saveCart();
+            }
+        }
+
+        window.setCartItemQuantity = function (itemId, newQuantity) {
+            const itemIndex = cart.findIndex(item => String(item.id) === String(itemId));
+            if (itemIndex > -1) {
+                let parsedQty = parseInt(newQuantity);
+                if (isNaN(parsedQty) || parsedQty < 1) {
+                    parsedQty = 1;
+                }
+                cart[itemIndex].quantity = parsedQty;
+                saveCart();
+            }
+        }
+
+        window.removeCartItem = function (itemId) {
+            if (confirm("Are you sure you want to remove this item?")) {
+                const itemIndex = cart.findIndex(item => String(item.id) === String(itemId));
+                if (itemIndex > -1) {
+                    cart.splice(itemIndex, 1);
+                    saveCart();
+                }
+            }
+        }
+
+        function calculateTotal() {
+            return cart
+                .filter(item => item.selected)
+                .reduce((total, item) => total + (item.price * item.quantity), 0)
+                .toFixed(2);
+        }
+
+        // --- Selection Logic ---
+        window.toggleItemSelection = function (itemId) {
+            const item = cart.find(i => String(i.id) === String(itemId));
+            if (item) {
+                item.selected = !item.selected;
+                saveCart();
+            }
+        }
+
+        window.toggleAllItems = function (isChecked) {
+            cart.forEach(item => item.selected = isChecked);
+            saveCart();
+        }
+
+        function renderCartPage() {
+            const listContainer = document.getElementById('cart-items-container');
+
+            // Elements for the sticky footer
+            const footerTotalElement = document.getElementById('footer-total-amount');
+            const footerCountElement = document.getElementById('footer-total-count');
+            const footerCheckoutBtn = document.getElementById('footer-checkout-btn');
+            const footerSelectAll = document.getElementById('footer-select-all');
+            const selectedQuantityElement = document.getElementById('selected-quantity-display');
+
+            if (!listContainer) return;
+
+            let itemsHtml = '';
+
+            if (cart.length === 0) {
+                listContainer.innerHTML = `
+                        <div class="empty-cart-message">
+                            <p>Your cart is empty.</p>
+                            <a href="Menu.html" class="browse-menu-btn">Browse Menu</a>
+                        </div>`;
+
+                // Disable footer elements
+                if (footerCheckoutBtn) footerCheckoutBtn.disabled = true;
+                if (footerTotalElement) footerTotalElement.textContent = "0.00";
+                if (footerCountElement) footerCountElement.textContent = "0";
+                if (selectedQuantityElement) selectedQuantityElement.textContent = "0";
+                if (footerSelectAll) { footerSelectAll.checked = false; footerSelectAll.disabled = true; }
+                return;
+            }
+
+            // Calculate Selection State
+            const allSelected = cart.every(item => item.selected);
+            const selectedItems = cart.filter(item => item.selected);
+
+            // Update Header/Footer Checkboxes
+            if (footerSelectAll) {
+                footerSelectAll.checked = allSelected;
+                footerSelectAll.disabled = false;
+                footerSelectAll.onchange = (e) => window.toggleAllItems(e.target.checked);
+            }
+
+            // Table Header
+            itemsHtml += `
+                    <div class="cart-header-row">
+                        <div class="col-checkbox">
+                            <input type="checkbox" onchange="window.toggleAllItems(this.checked)" ${allSelected ? 'checked' : ''}>
+                        </div>
+                        <div class="col-product">Product</div>
+                        <div class="col-unit-price">Unit Price</div>
+                        <div class="col-quantity">Quantity</div>
+                        <div class="col-total-price">Total Price</div>
+                        <div class="col-actions">Actions</div>
+                    </div>
+                `;
+
+            // Check if any *selected* items are out of stock
+            const hasOutOfStockSelected = selectedItems.some(item =>
+                item.stockStatus === 'out_of_stock' || item.stockStatus === 'low_stock'
+            );
+
+            cart.forEach(item => {
+                const itemTotal = (item.price * item.quantity).toFixed(2);
+                const safeId = String(item.id).replace(/'/g, "\\'");
+                const unitPrice = parseFloat(item.price).toFixed(2);
+
+                // Stock warning
+                let stockWarning = '';
+                if (item.stockStatus === 'out_of_stock') {
+                    stockWarning = '<div class="stock-warning">⚠️ Out of Stock</div>';
+                } else if (item.stockStatus === 'low_stock') {
+                    stockWarning = '<div class="stock-warning" style="color: orange;">⚠️ Low Stock</div>';
+                } else {
+                    stockWarning = '<div class="stock-warning" style="color: green;">Available</div>';
+                }
+
+                itemsHtml += `
+                        <div class="cart-item-row">
+                            <div class="col-checkbox">
+                                 <input type="checkbox" onchange="window.toggleItemSelection('${safeId}')" ${item.selected ? 'checked' : ''}>
+                            </div>
+                            <div class="col-product">
+                                <div class="product-wrapper">
+                                    <img src="${item.image || 'Photo/default-image.jpg'}" alt="${item.name}" onerror="this.src='Photo/default-image.jpg'">
+                                    <div class="product-info">
+                                        <span class="product-name">${item.name}</span>
+                                        ${stockWarning}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-unit-price">₱${unitPrice}</div>
+                            <div class="col-quantity">
+                                 <div class="quantity-controls">
+                                    <button onclick="window.updateCartItemQuantity('${safeId}', -1)" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+                                    <input type="text"
+                                           value="${item.quantity}"
+                                           onchange="window.setCartItemQuantity('${safeId}', this.value)"
+                                           onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                    >
+                                    <button onclick="window.updateCartItemQuantity('${safeId}', 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="col-total-price">₱${itemTotal}</div>
+                            <div class="col-actions">
+                                <button class="delete-btn" onclick="window.removeCartItem('${safeId}')">Delete</button>
+                            </div>
+                        </div>
+                    `;
+            });
+
+            // Footer / Checkout Button State
+            if (footerCheckoutBtn) {
+                if (selectedItems.length === 0) {
+                    footerCheckoutBtn.disabled = true;
+                    footerCheckoutBtn.style.backgroundColor = '#ccc';
+                    footerCheckoutBtn.textContent = 'Check Out';
+                } else if (hasOutOfStockSelected) {
+                    footerCheckoutBtn.disabled = true;
+                    footerCheckoutBtn.style.backgroundColor = '#ccc';
+                    footerCheckoutBtn.textContent = 'Unavailable Items';
+                } else {
+                    footerCheckoutBtn.disabled = false;
+                    footerCheckoutBtn.style.backgroundColor = ''; // Reset to CSS default
+                    footerCheckoutBtn.textContent = 'Check Out';
+                }
+            }
+
+            listContainer.innerHTML = itemsHtml;
+
+            // Update sticky footer totals
+            const totalAmount = calculateTotal();
+            const totalSelectedQty = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
+
+            if (footerTotalElement) footerTotalElement.textContent = totalAmount;
+            if (footerCountElement) footerCountElement.textContent = cart.length; // Count of distinct items for 'Select All'
+            if (selectedQuantityElement) selectedQuantityElement.textContent = totalSelectedQty;
+        }
+
+        function updateAccountLink() {
+            const accountLink = document.getElementById('account-link');
+            const user = JSON.parse(localStorage.getItem(USER_KEY));
+
+            if (user) {
+                accountLink.textContent = user.name.split(' ')[0].toUpperCase();
+                accountLink.href = PROFILE_PAGE;
+            } else {
+                accountLink.textContent = 'PROFILE';
+                accountLink.href = LOGIN_PAGE;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHeaderElements();
+            renderCartPage();
+
+            const caterLink = document.getElementById('cater-reservation-link');
+            if (caterLink) {
+                caterLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (checkLoginAndProceed(CATER_RESERVATION_PAGE));
+                });
+            }
+
+            document.getElementById('footer-checkout-btn').addEventListener('click', () => {
+                const selectedItems = cart.filter(item => item.selected);
+
+                if (selectedItems.length === 0) {
+                    alert("Please select at least one item to checkout.");
+                    return;
+                }
+
+                const hasUnavailable = selectedItems.some(item =>
+                    item.stockStatus === 'out_of_stock' || item.stockStatus === 'low_stock'
+                );
+
+                if (hasUnavailable) {
+                    alert("Some selected items are unavailable. Please remove or deselect them before checkout.");
+                    return;
+                }
+
+                if (checkLoginAndProceed('Checkout.html')) {
+                    // Redirect handled inside checkLoginAndProceed
+                }
+            });
+        });
+
+        function updateHeaderElements() {
+            updateCartDisplay();
+            updateAccountLink();
+        }
+
+        // Hide sticky footer when main footer is visible (prevents overlap)
+        const footerObserver = new IntersectionObserver((entries) => {
+            const stickyFooter = document.querySelector('.cart-sticky-footer');
+            if (!stickyFooter) return;
+
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Footer is visible, hide sticky bar
+                    stickyFooter.style.opacity = '0';
+                    stickyFooter.style.pointerEvents = 'none'; // Prevent clicks when hidden
+                    stickyFooter.style.transition = 'opacity 0.3s ease';
+                } else {
+                    // Footer is not visible, show sticky bar
+                    stickyFooter.style.opacity = '1';
+                    stickyFooter.style.pointerEvents = 'auto';
+                }
+            });
+        }, {
+            threshold: 0.1 // Trigger when 10% of footer is visible
+        });
+
+        const mainFooter = document.querySelector('footer');
+        if (mainFooter) {
+            footerObserver.observe(mainFooter);
+        }
+    </script>
+</body>
+
+</html>

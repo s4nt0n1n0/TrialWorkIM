@@ -116,6 +116,22 @@
             font-size: 1.1em;
         }
 
+        .checkout-item-img {
+            width: 60px;
+            height: 60px;
+            margin-right: 15px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            flex-shrink: 0;
+        }
+
+        .checkout-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .summary-total {
             text-align: right;
             margin-top: 15px;
@@ -534,7 +550,13 @@
         <div class="header-right">
             <a href="Login.html" id="account-link">PROFILE</a>
             <div class="cart-icon" id="view-cart-btn">
-                🛒 <span class="cart-count" id="cart-item-count">0</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span class="cart-count" id="cart-item-count">0</span>
             </div>
         </div>
     </header>
@@ -675,6 +697,10 @@
         const CATER_RESERVATION_PAGE = 'CaterReservation.html';
 
         let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        let allCartItems = [...cart]; // Keep copy of full cart
+        // Filter to use only selected items for checkout
+        cart = cart.filter(item => item.selected);
+
         let currentUser = JSON.parse(localStorage.getItem(USER_KEY));
         let uploadedFile = null;
 
@@ -704,6 +730,9 @@
 
                 itemsHtml += `
                     <div class="checkout-item">
+                        <div class="checkout-item-img">
+                            <img src="${item.image || 'Photo/default-image.jpg'}" alt="${item.name}" onerror="this.src='Photo/default-image.jpg'">
+                        </div>
                         <div class="item-details-co">
                             <div class="item-name-co">${item.name}</div>
                             <div class="item-qty-price-co">${item.quantity} x ₱${item.price.toFixed(2)}</div>
@@ -828,8 +857,9 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    // Clear cart
-                    localStorage.removeItem(CART_KEY);
+                    // Update main cart: Remove only the items we just bought
+                    allCartItems = allCartItems.filter(item => !item.selected);
+                    localStorage.setItem(CART_KEY, JSON.stringify(allCartItems));
 
                     // Show success popup
                     document.getElementById('success-popup').style.display = 'flex';

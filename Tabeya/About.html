@@ -25,7 +25,15 @@
         <div class="header-right">
             <a href="Login.html" id="account-link">PROFILE</a>
             <div class="cart-icon" id="view-cart-btn">
-                🛒 <span class="cart-count" id="cart-item-count">0</span>
+                <a href="Cart.html" style="text-decoration: none; color: inherit;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count" id="cart-item-count">0</span>
+                </a>
             </div>
         </div>
     </header>
@@ -74,20 +82,7 @@
         </div>
     </div>
 
-    <div id="cart-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Your Cart</h2>
-            <div id="cart-items">
-                <p id="empty-cart-message" style="text-align: center; color: #888; margin-top: 20px;">Your cart is
-                    empty.</p>
-            </div>
-            <div class="cart-summary">
-                <p>Total: <span id="cart-total">₱0.00</span></p>
-            </div>
-            <button id="checkout-btn" disabled>Proceed to Checkout</button>
-        </div>
-    </div>
+    <!-- Cart Modal Removed -->
 
     <footer>
         <div class="contact-section">
@@ -269,121 +264,28 @@
             }
         }
 
-        // ====================================================================
-        // === CART MANAGEMENT LOGIC (Secured) ===
-        // ====================================================================
-        const cartModal = document.getElementById('cart-modal');
-        const viewCartBtn = document.getElementById('view-cart-btn');
-        const closeBtn = document.querySelector('#cart-modal .close-btn');
+        // Cart display logic simplified
         const cartCountElement = document.getElementById('cart-item-count');
-        const cartItemsContainer = document.getElementById('cart-items');
-        const cartTotalElement = document.getElementById('cart-total');
-        const checkoutBtn = document.getElementById('checkout-btn');
-
         let cart = JSON.parse(localStorage.getItem('tabeyaCart')) || [];
-
-        function saveCart() {
-            localStorage.setItem('tabeyaCart', JSON.stringify(cart));
-        }
 
         function updateCartCount() {
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            cartCountElement.textContent = totalItems;
+            if (cartCountElement) cartCountElement.textContent = totalItems;
         }
 
-        function updateCartTotal() {
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            cartTotalElement.textContent = `₱${total.toFixed(2)}`;
-            checkoutBtn.disabled = cart.length === 0 || !getCurrentUser();
-        }
+        // Add to Cart logic (kept for potential future use or if hidden buttons exist)
+        function addToCart(itemDetails) {
+            const existingItem = cart.find(item => item.id === itemDetails.id);
 
-        function renderCart() {
-            cartItemsContainer.innerHTML = '';
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = '<p id="empty-cart-message" style="text-align: center; color: #888; margin-top: 20px;">Your cart is empty.</p>';
+            if (existingItem) {
+                existingItem.quantity += 1;
             } else {
-                cart.forEach((item, index) => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.classList.add('cart-item');
-                    itemDiv.innerHTML = `
-                    <div class="item-details">
-                        <span class="item-name">${item.name}</span>
-                        <span class="item-price">₱${(item.price * item.quantity).toFixed(2)}</span>
-                    </div>
-                    <div class="item-controls">
-                        <button class="qty-btn" data-index="${index}" data-action="decrease">-</button>
-                        <span class="item-quantity">${item.quantity}</span>
-                        <button class="qty-btn" data-index="${index}" data-action="increase">+</button>
-                        <button class="remove-btn" data-index="${index}">Remove</button>
-                    </div>
-                `;
-                    cartItemsContainer.appendChild(itemDiv);
-                });
+                cart.push({ ...itemDetails, quantity: 1 });
             }
-            updateCartTotal();
-            saveCart();
+
+            localStorage.setItem('tabeyaCart', JSON.stringify(cart));
+            updateCartCount();
         }
-
-        // --- Event Handlers (Secured) ---
-
-        viewCartBtn.addEventListener('click', () => {
-            if (!getCurrentUser()) {
-                alert("You must log in to view your cart.");
-                localStorage.setItem('redirectAfterLogin', CURRENT_PAGE);
-                window.location.href = LOGIN_PAGE;
-                return;
-            }
-            renderCart();
-            cartModal.style.display = 'block';
-        });
-
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                cartModal.style.display = 'none';
-            });
-        }
-
-        window.addEventListener('click', (event) => {
-            if (event.target === cartModal) {
-                cartModal.style.display = 'none';
-            }
-        });
-
-        checkoutBtn.addEventListener('click', () => {
-            if (!getCurrentUser()) {
-                alert("You must log in to proceed to checkout.");
-                localStorage.setItem('redirectAfterLogin', CURRENT_PAGE);
-                window.location.href = LOGIN_PAGE;
-                return;
-            }
-            if (cart.length > 0) {
-                alert("Redirecting to checkout page...");
-            }
-        });
-
-        cartItemsContainer.addEventListener('click', (e) => {
-            const target = e.target;
-            const index = parseInt(target.getAttribute('data-index'));
-
-            if (!isNaN(index) && getCurrentUser()) {
-                const item = cart[index];
-
-                if (target.classList.contains('qty-btn')) {
-                    const action = target.getAttribute('data-action');
-                    if (action === 'increase') {
-                        item.quantity += 1;
-                    } else if (action === 'decrease' && item.quantity > 1) {
-                        item.quantity -= 1;
-                    } else if (action === 'decrease' && item.quantity === 1) {
-                        cart.splice(index, 1);
-                    }
-                    renderCart();
-                } else if (target.classList.contains('remove-btn')) {
-                    cart.splice(index, 1);
-                    renderCart();
-                }
-            }
-        });
 
         function addToCart(itemDetails) {
             const existingItem = cart.find(item => item.id === itemDetails.id);

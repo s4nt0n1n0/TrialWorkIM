@@ -24,7 +24,15 @@
         <div class="header-right">
             <a href="Login.html" id="account-link">PROFILE</a>
             <div class="cart-icon" id="view-cart-btn">
-                🛒 <span class="cart-count" id="cart-item-count">0</span>
+                <a href="Cart.html" style="text-decoration: none; color: inherit;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count" id="cart-item-count">0</span>
+                </a>
             </div>
         </div>
     </header>
@@ -110,18 +118,7 @@
         </section>
     </main>
 
-    <div id="cart-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Your Cart</h2>
-            <div id="cart-items-list">
-            </div>
-            <div class="cart-summary">
-                <strong>Total: ₱<span id="cart-total">0.00</span></strong>
-            </div>
-            <button id="checkout-btn">Proceed to Checkout</button>
-        </div>
-    </div>
+    <!-- Cart Modal Removed -->
 
     <footer>
         <div class="contact-section">
@@ -163,13 +160,7 @@
         const PROFILE_PAGE = 'Profile.html';
         const CATER_RESERVATION_PAGE = 'CaterReservation.html';
 
-        const cartModal = document.getElementById('cart-modal');
-        const viewCartBtn = document.getElementById('view-cart-btn');
-        const closeBtn = document.getElementsByClassName('close-btn')[0];
         const cartCountElement = document.getElementById('cart-item-count');
-        const cartItemsList = document.getElementById('cart-items-list');
-        const cartTotalElement = document.getElementById('cart-total');
-        const checkoutBtn = document.getElementById('checkout-btn');
 
         let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
 
@@ -219,122 +210,13 @@
         function saveCart() {
             localStorage.setItem(CART_KEY, JSON.stringify(cart));
             updateCartDisplay();
-            // renderCartModal is called by the modal click event, but we call it here to re-render dynamically
-            if (cartModal.style.display === "block") {
-                renderCartModal();
-            }
         }
 
-        // Global function for buttons inside the modal to work
-        window.changeQuantity = function (itemId, delta) {
-            // Ensure itemId is treated as string for consistency with array items
-            const itemIdString = String(itemId);
+        // Modal rendering logic removed
 
-            if (!checkUserLoginStatus()) {
-                alert("You must log in to modify the cart.");
-                return;
-            }
-
-            // Use item.id === itemIdString for strict comparison
-            const itemIndex = cart.findIndex(item => String(item.id) === itemIdString);
-            if (itemIndex === -1) return;
-
-            cart[itemIndex].quantity += delta;
-
-            if (cart[itemIndex].quantity <= 0) {
-                cart.splice(itemIndex, 1);
-            }
-
-            saveCart();
-        }
-
-        // Renders the content inside the cart modal
-        function renderCartModal() {
-            let cartHtml = '';
-            let total = 0;
-
-            if (cart.length === 0) {
-                cartItemsList.innerHTML = '<p style="text-align: center; color: #555; padding: 20px 0;">Your cart is empty.</p>';
-                cartTotalElement.textContent = '0.00';
-                checkoutBtn.disabled = true;
-                return;
-            }
-
-            checkoutBtn.disabled = false;
-
-            cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
-
-                // Escape quotes for safe HTML attribute usage
-                const safeId = String(item.id).replace(/'/g, "\\'");
-
-                cartHtml += `
-                cartHtml += `
-                    < div class="cart-item" >
-                        <div class="item-details">
-                            <span class="item-name">${item.name}</span>
-                            <span class="item-price">₱${(item.price * item.quantity).toFixed(2)}</span>
-                        </div>
-                        <div class="cart-item-controls">
-                            <button onclick="changeQuantity('${safeId}', -1)">-</button>
-                            <span class="cart-item-quantity">${item.quantity}</span>
-                            <button onclick="changeQuantity('${safeId}', 1)">+</button>
-                        </div>
-                    </div >
-                    `;
-                `;
-            });
-
-            cartItemsList.innerHTML = cartHtml;
-            cartTotalElement.textContent = total.toFixed(2);
-        }
-
-        // --- Attach Modal Event Listeners ---
+        // --- Attach Global Listeners (Simplified) ---
         function attachGlobalListeners() {
-
-            // View Cart Button
-            if (viewCartBtn) {
-                viewCartBtn.onclick = function () {
-                    // Current page URL for redirect, in case of login requirement
-                    if (checkLoginAndProceed('index.html')) {
-                        renderCartModal();
-                        cartModal.style.display = "block";
-                    }
-                }
-            }
-
-            // Close Button (X)
-            if (closeBtn) {
-                closeBtn.onclick = function () {
-                    cartModal.style.display = "none";
-                }
-            }
-
-            // Click outside the modal
-            window.onclick = function (event) {
-                if (event.target == cartModal) {
-                    cartModal.style.display = "none";
-                }
-            }
-
-            // Checkout Button
-            if (checkoutBtn) {
-                checkoutBtn.onclick = function () {
-                    if (!checkLoginAndProceed('Checkout.html')) {
-                        return;
-                    }
-
-                    if (cart.length > 0) {
-                        // TODO: Implement the actual redirect to Checkout.html
-                        alert("Proceeding to checkout!");
-                        cartModal.style.display = "none";
-                        // window.location.href = 'Checkout.html'; 
-                    } else {
-                        alert("Your cart is empty!");
-                    }
-                }
-            }
+            // Cart button is now a direct link, no JS needed for it.
 
             // Cater Reservation link (FIXED)
             document.getElementById('cater-reservation-link').addEventListener('click', function (event) {

@@ -62,7 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartDisplay();
     setupRatingStars();
     setupModalHandlers();
-    setupCartListeners();
+    setupModalHandlers();
+    // setupCartListeners removed as cart is now a separate page
+    setupFeedbackTypeButtons();
     setupFeedbackTypeButtons();
     setupSorting();
 });
@@ -474,117 +476,10 @@ function updateCartDisplay() {
     cartCountElement.textContent = totalItems;
 }
 
-function calculateCartTotal() {
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
-}
-
-function renderCartModal() {
-    const listContainer = document.getElementById('cart-items-list');
-    const totalElement = document.getElementById('cart-total');
-    const checkoutBtn = document.getElementById('checkout-btn');
-    if (!listContainer || !totalElement || !checkoutBtn) return;
-
-    let itemsHtml = '';
-
-    if (cart.length === 0) {
-        itemsHtml = '<p style="text-align: center; color: #777; padding: 15px 0;">Your cart is empty.</p>';
-        checkoutBtn.disabled = true;
-    } else {
-        cart.forEach(item => {
-            const itemTotal = (item.price * item.quantity).toFixed(2);
-            const safeId = String(item.id).replace(/'/g, "\\'");
-
-            itemsHtml += `
-                <div class="cart-item">
-                    <div class="item-details">
-                        <span class="cart-item-name">${item.name}</span>
-                        <span class="cart-item-price">₱${(item.price * item.quantity).toFixed(2)}</span>
-                    </div>
-                    
-                    <div class="cart-item-controls">
-                        <button onclick="window.updateCartItemQuantity('${safeId}', -1)">-</button>
-                        <span class="cart-item-quantity">${item.quantity}</span> 
-                        <button onclick="window.updateCartItemQuantity('${safeId}', 1)">+</button>
-                    </div>
-                </div>
-            `;
-        });
-        checkoutBtn.disabled = false;
-    }
-
-    listContainer.innerHTML = itemsHtml;
-    totalElement.textContent = calculateCartTotal();
-}
+// Cart modal logic removed (renderCartModal, saveCart, item quantity updates, setupCartListeners)
+// Handled by Cart.html now.
 
 function saveCart() {
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
     updateCartDisplay();
-    const modal = document.getElementById('cart-modal');
-    if (modal && modal.style.display === 'block') {
-        renderCartModal();
-    }
-}
-
-window.updateCartItemQuantity = function (itemId, change) {
-    if (!ensureUserLoggedIn()) {
-        return;
-    }
-
-    const itemIndex = cart.findIndex(item => String(item.id) === String(itemId));
-    if (itemIndex > -1) {
-        cart[itemIndex].quantity += change;
-        if (cart[itemIndex].quantity <= 0) {
-            cart.splice(itemIndex, 1);
-        }
-        saveCart();
-    }
-};
-
-function setupCartListeners() {
-    const modal = document.getElementById('cart-modal');
-    const viewCartBtn = document.getElementById('view-cart-btn');
-    const closeBtn = document.querySelector('#cart-modal .close-btn');
-    const checkoutBtn = document.getElementById('checkout-btn');
-
-    if (viewCartBtn && modal) {
-        const openCart = () => {
-            if (!ensureUserLoggedIn(REVIEW_PAGE)) {
-                return;
-            }
-            renderCartModal();
-            modal.style.display = 'block';
-        };
-
-        viewCartBtn.addEventListener('click', openCart);
-        viewCartBtn.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                openCart();
-            }
-        });
-    }
-
-    if (closeBtn && modal) {
-        closeBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-    }
-
-    window.addEventListener('click', (event) => {
-        if (modal && event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
-            if (cart.length === 0) {
-                alert("Your cart is empty!");
-                return;
-            }
-            if (ensureUserLoggedIn(CHECKOUT_PAGE)) {
-                window.location.href = CHECKOUT_PAGE;
-            }
-        });
-    }
 }

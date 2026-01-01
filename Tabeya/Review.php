@@ -88,7 +88,14 @@ function getInitials($name) {
         <div class="header-right">
             <a href="Login.html" id="account-link">PROFILE</a>
             <div class="cart-icon" id="view-cart-btn" role="button" tabindex="0">
-                🛒 <span class="cart-count" id="cart-item-count">0</span>
+                <a href="Cart.html" style="text-decoration: none; color: inherit;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count" id="cart-item-count">0</span>
+                </a>
             </div>
         </div>
     </header>
@@ -375,18 +382,7 @@ function getInitials($name) {
         </div>
     </div>
 
-    <!-- Cart Modal -->
-    <div id="cart-modal" class="modal">
-        <div class="modal-content cart-modal-content">
-            <span class="close-btn" onclick="document.getElementById('cart-modal').style.display='none'">&times;</span>
-            <h2 class="cart-title">Your Cart</h2>
-            <div id="cart-items-list"></div>
-            <div class="cart-summary">
-                <strong>Total: ₱<span id="cart-total">0.00</span></strong>
-            </div>
-            <button id="checkout-btn" class="write-btn checkout-btn">Proceed to Checkout</button>
-        </div>
-    </div>
+    <!-- Cart Modal Removed -->
 
     <footer>
         <div class="contact-section">
