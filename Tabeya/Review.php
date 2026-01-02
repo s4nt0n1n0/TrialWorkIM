@@ -70,8 +70,8 @@ function getInitials($name) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Reviews - Tabeya</title>
-    <link rel="stylesheet" href="CSS/ReviewDesign.css">
-    <link rel="stylesheet" href="CSS/Footer.css">
+    <link rel="stylesheet" href="CSS/ReviewDesign.css?v=1.5">
+    <link rel="stylesheet" href="CSS/Footer.css?v=1.4">
 </head>
 <body>
     <header>
@@ -101,13 +101,13 @@ function getInitials($name) {
     </header>
 
     <div class="testimony-container">
+        <div class="page-titles">
+            <h1>Customer Reviews</h1>
+            <p>See what our customers are saying about their dining experience.</p>
+        </div>
         <div class="testimony-layout">
             <!-- Left Sidebar -->
             <aside class="sidebar">
-                <div class="page-titles">
-                    <h1>Customer Reviews</h1>
-                    <p>See what our customers are saying about their dining experience.</p>
-                </div>
 
                 <div class="stats-card overall-card">
                     <h3>Overall Rating</h3>
@@ -307,6 +307,9 @@ function getInitials($name) {
                     <span class="rating-star" data-rating="4">★</span>
                     <span class="rating-star" data-rating="5">★</span>
                 </div>
+                <div class="overall-score-display" style="margin-top: 10px; font-weight: bold; font-size: 1.2rem;">
+                    Score: <span id="overall-rating-value-modal">0.0</span> / 5.0
+                </div>
             </div>
 
             <div class="review-form-section">
@@ -416,7 +419,7 @@ function getInitials($name) {
         </div>
     </footer>
 
-    <script src="review_enhanced.js"></script>
+    <script src="review_enhanced.js?v=1.4"></script>
 </body>
 </html>
 <?php $conn->close(); ?>

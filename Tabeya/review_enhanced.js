@@ -18,6 +18,7 @@ let selectedOrderId = null;
 let selectedReservationId = null;
 let reviewableOrders = [];
 let reviewableReservations = [];
+let reviewsVisible = 3; // Initial number of reviews to show
 
 function getCurrentUser() {
     try {
@@ -62,11 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartDisplay();
     setupRatingStars();
     setupModalHandlers();
-    setupModalHandlers();
-    // setupCartListeners removed as cart is now a separate page
-    setupFeedbackTypeButtons();
     setupFeedbackTypeButtons();
     setupSorting();
+    setupLoadMore();
 });
 
 function setupSorting() {
@@ -92,7 +91,76 @@ function setupSorting() {
         // Clear and re-append in new order
         container.innerHTML = '';
         cards.forEach(card => container.appendChild(card));
+        updateReviewVisibility();
     });
+}
+
+function setupLoadMore() {
+    const loadMoreBtn = document.querySelector('.load-more-btn');
+    if (!loadMoreBtn) return;
+
+    loadMoreBtn.addEventListener('click', () => {
+        const cards = document.querySelectorAll('.review-card');
+
+        if (reviewsVisible >= cards.length) {
+            // If already showing all, reset to initial 3
+            reviewsVisible = 3;
+        } else {
+            // Otherwise, load 3 more
+            reviewsVisible += 3;
+        }
+
+        updateReviewVisibility();
+
+        // If showing less, scroll back to reviews top
+        if (reviewsVisible === 3) {
+            const container = document.getElementById('reviews-container');
+            if (container) {
+                container.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
+
+    updateReviewVisibility();
+}
+
+function updateReviewVisibility() {
+    const cards = document.querySelectorAll('.review-card');
+    const loadMoreContainer = document.querySelector('.load-more');
+
+    if (cards.length === 0) {
+        if (loadMoreContainer) loadMoreContainer.style.display = 'none';
+        return;
+    }
+
+    cards.forEach((card, index) => {
+        if (index < reviewsVisible) {
+            card.style.display = 'block';
+            // Optional: add a small fade-in effect
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 10);
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    if (loadMoreContainer) {
+        const loadMoreBtn = loadMoreContainer.querySelector('.load-more-btn');
+
+        if (cards.length <= 3) {
+            // Hide if 3 or fewer total
+            loadMoreContainer.style.display = 'none';
+        } else {
+            loadMoreContainer.style.display = 'block';
+            if (reviewsVisible >= cards.length) {
+                loadMoreBtn.textContent = 'Show less reviews';
+            } else {
+                loadMoreBtn.textContent = 'Load more reviews';
+            }
+        }
+    }
 }
 
 function setupFeedbackTypeButtons() {
@@ -273,17 +341,16 @@ function capitalizeFirst(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// ✅ FIXED: Proper star rating setup with active class
+// ✅ FIXED: Proper star rating setup with automatic Overall calculation
 function setupRatingStars() {
-    // Overall rating
-    document.querySelectorAll('#overall-stars .rating-star').forEach(star => {
-        star.addEventListener('click', function () {
-            ratings.overall = parseInt(this.dataset.rating);
-            updateStars('#overall-stars .rating-star', ratings.overall);
-        });
+    // Overall rating is now read-only and system-generated
+    const overallStars = document.querySelectorAll('#overall-stars .rating-star');
+    overallStars.forEach(star => {
+        star.style.cursor = 'default';
+        star.classList.add('read-only');
     });
 
-    // Category ratings - FIXED to properly toggle active class
+    // Category ratings
     document.querySelectorAll('.category-stars').forEach(container => {
         const category = container.dataset.category;
         container.querySelectorAll('.star').forEach(star => {
@@ -300,9 +367,46 @@ function setupRatingStars() {
                         s.classList.remove('active');
                     }
                 });
+
+                // Automatically calculate overall rating
+                calculateOverallRating();
             });
         });
     });
+}
+
+function calculateOverallRating() {
+    const categories = ['food', 'portion', 'service', 'ambience', 'cleanliness'];
+    let total = 0;
+    let counted = 0;
+
+    categories.forEach(cat => {
+        if (ratings[cat] > 0) {
+            total += ratings[cat];
+            counted++;
+        }
+    });
+
+    if (counted > 0) {
+        const avg = total / counted;
+        ratings.overall = Math.round(avg);
+
+        // Update the visual stars for Overall Rating
+        updateStars('#overall-stars .rating-star', ratings.overall);
+
+        // Update the numerical display
+        const scoreDisplay = document.getElementById('overall-rating-value-modal');
+        if (scoreDisplay) {
+            scoreDisplay.textContent = avg.toFixed(1);
+        }
+    } else {
+        ratings.overall = 0;
+        updateStars('#overall-stars .rating-star', 0);
+        const scoreDisplay = document.getElementById('overall-rating-value-modal');
+        if (scoreDisplay) {
+            scoreDisplay.textContent = '0.0';
+        }
+    }
 }
 
 function updateStars(selector, rating) {
@@ -359,6 +463,12 @@ function resetForm() {
     document.querySelectorAll('.rating-star, .category-stars .star').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.comment-field').forEach(f => f.value = '');
     document.getElementById('anonymous-checkbox').checked = false;
+
+    // Reset numerical display
+    const scoreDisplay = document.getElementById('overall-rating-value-modal');
+    if (scoreDisplay) {
+        scoreDisplay.textContent = '0.0';
+    }
 
     // Reset feedback type to General
     selectedFeedbackType = 'General';
