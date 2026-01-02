@@ -5,6 +5,7 @@
  */
 
 require_once(__DIR__ . '/api/config/db_config.php');
+require_once(__DIR__ . '/api/functions/activity_logger.php');
 
 ob_start();
 error_reporting(E_ALL);
@@ -42,10 +43,10 @@ try {
     // OrderType enum: 'Dine-in','Takeout','Online'
     // We'll use 'Online' for all web orders
     $order_type_db = 'Online';
-    
+
     // OrderSource enum: 'POS','Website'
     $order_source_db = 'Website';
-    
+
     // ============================================================
     // FIX 2: Properly set DeliveryOption enum
     // ============================================================
@@ -54,7 +55,7 @@ try {
     $delivery_option_db = null;
     if (strtoupper($order_type_raw) === 'DELIVERY') {
         $delivery_option_db = 'Delivery';
-        
+
         // Validate delivery address is provided
         if (empty($delivery_address)) {
             http_response_code(400);
@@ -74,7 +75,7 @@ try {
 
     if ($payment_method_raw === 'GCASH' && isset($_FILES['gcash_receipt']) && $_FILES['gcash_receipt']['error'] === UPLOAD_ERR_OK) {
         $file = $_FILES['gcash_receipt'];
-        
+
         // Validate file type
         $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -118,7 +119,7 @@ try {
         // FIX 3: Set OrderStatus to 'Pending' for all new orders
         // ============================================================
         $order_status = 'Pending';
-        
+
         // Insert into orders table with proper delivery option
         $items_count = count($cart_items);
         $sql_order = "INSERT INTO orders 
@@ -126,7 +127,7 @@ try {
                        OrderDate, OrderTime, ItemsOrderedCount, Remarks, 
                        DeliveryAddress, SpecialRequests, DeliveryOption) 
                       VALUES (?, ?, ?, ?, ?, CURDATE(), CURTIME(), ?, ?, ?, ?, ?)";
-        
+
         $stmt_order = $conn->prepare($sql_order);
         if ($stmt_order === false) {
             throw new Exception("SQL Prepare Failed for orders: " . $conn->error);
@@ -134,7 +135,7 @@ try {
 
         // Create appropriate remarks based on delivery option
         $order_remarks = ($delivery_option_db === 'Delivery') ? 'Delivery Order' : 'Pickup Order';
-        
+
         $stmt_order->bind_param(
             "issdsissss",
             $customer_id,
@@ -148,14 +149,14 @@ try {
             $special_requests,
             $delivery_option_db    // 'Delivery' or 'Pickup'
         );
-        
+
         if (!$stmt_order->execute()) {
             throw new Exception("Order insert failed: " . $stmt_order->error);
         }
-        
+
         $order_id = $conn->insert_id;
         $stmt_order->close();
-        
+
         // Insert order items
         $sql_item = "INSERT INTO order_items (OrderID, ProductName, Quantity, UnitPrice, SpecialInstructions) 
                      VALUES (?, ?, ?, ?, ?)";
@@ -169,21 +170,21 @@ try {
             $name = $item['name'] ?? 'Unknown Product';
             $quantity = $item['quantity'] ?? 1;
             $price = $item['price'] ?? 0.00;
-            
+
             $stmt_item->bind_param("isids", $order_id, $name, $quantity, $price, $special_requests);
-            
+
             if (!$stmt_item->execute()) {
                 throw new Exception("Order item insert failed: " . $stmt_item->error);
             }
         }
         $stmt_item->close();
-        
+
         // Insert payment record
         $sql_payment = "INSERT INTO payments 
                         (OrderID, PaymentMethod, AmountPaid, PaymentStatus, PaymentSource, 
                          ProofOfPayment, ReceiptFileName, Notes) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
         $stmt_payment = $conn->prepare($sql_payment);
         if ($stmt_payment === false) {
             throw new Exception("SQL Prepare Failed for payments: " . $conn->error);
@@ -203,12 +204,12 @@ try {
             $receipt_filename,
             $payment_notes
         );
-        
+
         if (!$stmt_payment->execute()) {
             throw new Exception("Payment insert failed: " . $stmt_payment->error);
         }
         $stmt_payment->close();
-        
+
         // Update customer order count
         try {
             $stmt_proc = $conn->prepare("CALL IncrementCustomerOrderCount(?)");
@@ -216,7 +217,7 @@ try {
                 $stmt_proc->bind_param("i", $customer_id);
                 $stmt_proc->execute();
                 $stmt_proc->close();
-                
+
                 while ($conn->more_results()) {
                     $conn->next_result();
                 }
@@ -233,7 +234,7 @@ try {
             }
         } catch (Exception $e) {
             error_log("Customer count update failed: " . $e->getMessage());
-            
+
             $update_sql = "UPDATE customers 
                           SET TotalOrdersCount = TotalOrdersCount + 1,
                               LastTransactionDate = NOW()
@@ -243,10 +244,21 @@ try {
             $update_stmt->execute();
             $update_stmt->close();
         }
-        
+
         // Commit transaction
         $conn->commit();
-        
+
+        // Log order activity
+        $customer_name = $_POST['name'] ?? 'Customer';
+        logCustomerOrderPlaced(
+            $conn,
+            $customer_id,
+            $customer_name,
+            $order_id,
+            $total_amount,
+            $delivery_option_db
+        );
+
         error_log("SUCCESS: Order #$order_id created - Status: $order_status, Delivery: $delivery_option_db");
 
         ob_clean();
@@ -260,11 +272,11 @@ try {
             "order_status" => $order_status,
             "delivery_option" => $delivery_option_db
         ]);
-        
+
     } catch (Exception $e) {
         $conn->rollback();
         error_log("TRANSACTION ERROR: " . $e->getMessage());
-        
+
         ob_clean();
         http_response_code(500);
         echo json_encode([
@@ -277,7 +289,7 @@ try {
 
 } catch (Exception $e) {
     error_log("FATAL ERROR: " . $e->getMessage());
-    
+
     ob_clean();
     http_response_code(500);
     echo json_encode([

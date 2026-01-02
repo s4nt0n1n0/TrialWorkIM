@@ -32,6 +32,7 @@ set_exception_handler(function($e) {
 
 // Database connection
 require_once(__DIR__ . '/api/config/db_config.php');
+require_once(__DIR__ . '/api/functions/activity_logger.php');
 
 try {
     // Check method
@@ -145,6 +146,18 @@ try {
 
     $feedbackId = $stmt->insert_id;
     $stmt->close();
+
+    // Log the activity
+    $customerName = $customer['FirstName'] . ' ' . $customer['LastName'];
+    logCustomerReview(
+        $conn, 
+        $customerId, 
+        $customerName, 
+        $feedbackId, 
+        $feedbackType, 
+        $overallRating, 
+        $isAnonymous
+    );
     
     // ✅ Manually close connection before output
     if (isset($conn) && $conn instanceof mysqli) {

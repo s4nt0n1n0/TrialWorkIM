@@ -102,8 +102,8 @@
         #order-list-container,
         #reservation-list-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
             margin-top: 30px;
         }
 
@@ -202,8 +202,8 @@
         /* Card Details Grid */
         .card-details {
             display: grid;
-            grid-template-columns: repeat(2, minmax(180px, 1fr));
-            gap: 12px 25px;
+            grid-template-columns: auto 1fr;
+            gap: 12px 15px;
             margin-bottom: 25px;
             padding-bottom: 18px;
             border-bottom: 1px dashed var(--border-light);
@@ -219,7 +219,7 @@
         .detail-value {
             font-weight: 600;
             color: var(--text-dark);
-            text-align: right;
+            text-align: left;
         }
 
         .detail-value.total {
@@ -402,13 +402,7 @@
         <div class="header-right">
             <a href="Profile.html" id="account-link">PROFILE</a>
             <div class="cart-icon" id="view-cart-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-                <span class="cart-count" id="cart-item-count">0</span>
+                🛒 <span class="cart-count" id="cart-item-count">0</span>
             </div>
         </div>
     </header>
@@ -634,11 +628,6 @@
                     modal.style.display = "none";
                 }
             }
-
-            document.getElementById('cater-reservation-link').addEventListener('click', (e) => {
-                e.preventDefault();
-                checkLoginAndProceed(CATER_RESERVATION_PAGE);
-            });
         }
 
         function setupTabNavigation() {
@@ -719,6 +708,16 @@
             }
         }
 
+        // Convert 24-hour time to 12-hour format
+        function convertTo12Hour(time24) {
+            if (!time24) return 'N/A';
+            const [hours, minutes] = time24.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const hour12 = hour % 12 || 12;
+            return `${hour12}:${minutes} ${ampm}`;
+        }
+
         async function fetchOrders(customerId) {
             try {
                 const response = await fetch(`get_user_orders.php?customer_id=${customerId}`);
@@ -785,7 +784,7 @@
                 card.className = 'order-card';
                 card.innerHTML = `
                         <div class="card-header">
-                            <h4>Order #${order.OrderID}</h4>
+                            <h4>Order</h4>
                             <span class="status-badge ${statusClass}">${statusText}</span>
                         </div>
                         <div class="card-details">
@@ -878,7 +877,7 @@
                 card.className = 'reservation-card';
                 card.innerHTML = `
                     <div class="card-header">
-                        <h4>Reservation #${reservation.ReservationID}</h4>
+                        <h4>Reservation</h4>
                         <span class="status-badge ${statusClass}">${statusText}</span>
                     </div>
                     <div class="card-details">
@@ -886,7 +885,7 @@
                         <span class="detail-value">${reservation.EventDate || 'N/A'}</span>
                         
                         <span class="detail-label">Event Time:</span>
-                        <span class="detail-value">${reservation.EventTime || 'N/A'}</span>
+                        <span class="detail-value">${convertTo12Hour(reservation.EventTime)}</span>
                         
                         <span class="detail-label">Event Type:</span>
                         <span class="detail-value">${reservation.EventType || 'N/A'}</span>

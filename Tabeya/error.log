@@ -305,3 +305,326 @@ Stack trace:
 #1 D:\New folder\htdocs\TrialWorkIM\Tabeya\fetch_products.php(14): require_once('D:\\New folder\\h...')
 #2 {main}
   thrown in D:\New folder\htdocs\TrialWorkIM\Tabeya\api\config\db_config.php on line 28
+[02-Jan-2026 08:25:13 Europe/Berlin] Exception: The number of elements in the type definition string must match the number of bind variables
+[02-Jan-2026 08:25:20 Europe/Berlin] Exception: The number of elements in the type definition string must match the number of bind variables
+[02-Jan-2026 08:47:07 Europe/Berlin] SUCCESS: Reservation #12001 created with Payment #0 for customer 2
+[02-Jan-2026 11:08:31 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:27
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(27): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 27
+[02-Jan-2026 11:08:34 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:27
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(27): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 27
+[02-Jan-2026 11:08:34 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:27
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(27): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 27
+[02-Jan-2026 11:14:33 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:26
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(26): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 26
+[02-Jan-2026 11:14:34 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:26
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(26): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 26
+[02-Jan-2026 11:14:35 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:26
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(26): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 26
+[02-Jan-2026 11:14:35 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:26
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(26): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 26
+[02-Jan-2026 11:14:36 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:26
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(26): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 26
+[02-Jan-2026 11:14:37 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:26
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(26): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 26
+[02-Jan-2026 11:14:40 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:26
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(26): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 26
+[02-Jan-2026 11:19:27 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:29 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:29 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:29 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:30 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:30 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:30 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:31 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:31 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:31 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:31 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:31 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:31 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:32 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:32 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:32 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:33 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:33 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:19:34 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:22:58 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:22:59 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:22:59 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:00 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:26 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:28 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:28 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:28 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:28 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:30 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:31 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:33 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:33 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:34 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:35 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:36 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:36 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:37 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:37 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:37 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:38 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:23:38 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:24:51 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:24:53 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:24:53 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:25:10 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:26:42 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'field list' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php:15
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php(15): mysqli->query('SELECT OrderID,...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php on line 15
+[02-Jan-2026 11:26:58 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'field list' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php:15
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php(15): mysqli->query('SELECT OrderID,...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php on line 15
+[02-Jan-2026 11:27:19 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'field list' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php:15
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php(15): mysqli->query('SELECT OrderID,...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php on line 15
+[02-Jan-2026 11:29:05 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'field list' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php:15
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php(15): mysqli->query('SELECT OrderID,...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php on line 15
+[02-Jan-2026 11:29:15 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'field list' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php:15
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php(15): mysqli->query('SELECT OrderID,...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php on line 15
+[02-Jan-2026 11:29:45 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'field list' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php:15
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php(15): mysqli->query('SELECT OrderID,...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\debug_orders.php on line 15
+[02-Jan-2026 11:33:23 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:33:24 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:33:24 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30

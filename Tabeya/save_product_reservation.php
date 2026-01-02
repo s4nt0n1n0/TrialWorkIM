@@ -20,6 +20,7 @@ try {
 
     // Database connection
     require_once(__DIR__ . '/api/config/db_config.php');
+    require_once(__DIR__ . '/api/functions/activity_logger.php');
 
     // Parse input data
     $customer_id = isset($_POST['customer_id']) ? intval($_POST['customer_id']) : 0;
@@ -39,7 +40,8 @@ try {
 
     // Parse and validate products
     $products = @json_decode($products_json, true);
-    if (!is_array($products)) $products = [];
+    if (!is_array($products))
+        $products = [];
 
     // Validation
     if ($customer_id <= 0) {
@@ -87,9 +89,10 @@ try {
         }
 
         $upload_dir = __DIR__ . '/uploads/gcash_receipts/' . date('Y') . '/' . date('m') . '/';
-        if (!is_dir($upload_dir)) @mkdir($upload_dir, 0755, true);
+        if (!is_dir($upload_dir))
+            @mkdir($upload_dir, 0755, true);
 
-        $receipt_filename = 'receipt_' . $customer_id . '_' . time() . '_' . rand(1000,9999) . '.jpg';
+        $receipt_filename = 'receipt_' . $customer_id . '_' . time() . '_' . rand(1000, 9999) . '.jpg';
         $full_path = $upload_dir . $receipt_filename;
 
         if (move_uploaded_file($file['tmp_name'], $full_path)) {
@@ -109,9 +112,10 @@ try {
                  NumberOfGuests, ProductSelection, SpecialRequests, 
                  ContactNumber, ReservationStatus, DeliveryOption, DeliveryAddress)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
         $stmt = $conn->prepare($sql);
-        if (!$stmt) throw new Exception("Prepare reservation error: " . $conn->error);
+        if (!$stmt)
+            throw new Exception("Prepare reservation error: " . $conn->error);
 
         $reservation_type = 'Online';
         $status = 'Pending';
@@ -132,8 +136,9 @@ try {
             $delivery_address
         );
 
-        if (!$stmt->execute()) throw new Exception("Insert reservation error: " . $stmt->error);
-        
+        if (!$stmt->execute())
+            throw new Exception("Insert reservation error: " . $stmt->error);
+
         $reservation_id = $conn->insert_id;
         $stmt->close();
 
@@ -143,7 +148,8 @@ try {
         $sql = "INSERT INTO reservation_items (ReservationID, ProductName, Quantity, UnitPrice, TotalPrice) 
                 VALUES (?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        if (!$stmt) throw new Exception("Prepare items error: " . $conn->error);
+        if (!$stmt)
+            throw new Exception("Prepare items error: " . $conn->error);
 
         foreach ($products as $product) {
             $name = isset($product['name']) ? trim($product['name']) : '';
@@ -151,10 +157,12 @@ try {
             $price = isset($product['price']) ? floatval($product['price']) : 0;
             $item_total = $qty * $price;
 
-            if (empty($name) || $qty <= 0) continue;
+            if (empty($name) || $qty <= 0)
+                continue;
 
             $stmt->bind_param("isidd", $reservation_id, $name, $qty, $price, $item_total);
-            if (!$stmt->execute()) throw new Exception("Insert item error: " . $stmt->error);
+            if (!$stmt->execute())
+                throw new Exception("Insert item error: " . $stmt->error);
         }
         $stmt->close();
 
@@ -165,27 +173,28 @@ try {
         // PaymentID, OrderID, ReservationID, PaymentDate, PaymentMethod, 
         // PaymentStatus, AmountPaid, PaymentSource, ProofOfPayment, 
         // ReceiptFileName, TransactionID, Notes
-        
+
         $sql = "INSERT INTO payments 
                 (ReservationID, PaymentMethod, PaymentStatus, AmountPaid, 
                  PaymentSource, ProofOfPayment, ReceiptFileName, Notes, PaymentDate)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        
+
         $stmt = $conn->prepare($sql);
-        if (!$stmt) throw new Exception("Prepare payment error: " . $conn->error);
+        if (!$stmt)
+            throw new Exception("Prepare payment error: " . $conn->error);
 
         // Map payment method to database enum ('Cash','GCash','COD')
         $payment_method_db = ($payment_method === 'GCash') ? 'GCash' : 'Cash';
-        
+
         // Payment status enum: 'Pending','Completed','Refunded','Failed'
         $payment_status = 'Pending';
-        
+
         // Payment source enum: 'POS','Website'
         $payment_source = 'Website';
-        
+
         // Create notes based on payment method
-        $payment_notes = ($payment_method === 'GCash') 
-            ? 'Catering reservation - GCash receipt uploaded, awaiting verification' 
+        $payment_notes = ($payment_method === 'GCash')
+            ? 'Catering reservation - GCash receipt uploaded, awaiting verification'
             : 'Catering reservation - Payment pending';
 
         $stmt->bind_param(
@@ -200,8 +209,9 @@ try {
             $payment_notes        // Notes
         );
 
-        if (!$stmt->execute()) throw new Exception("Insert payment error: " . $stmt->error);
-        
+        if (!$stmt->execute())
+            throw new Exception("Insert payment error: " . $stmt->error);
+
         $payment_id = $conn->insert_id;
         $stmt->close();
 
@@ -222,6 +232,17 @@ try {
         // COMMIT TRANSACTION
         $conn->commit();
 
+        // Log reservation activity
+        logCustomerReservation(
+            $conn,
+            $customer_id,
+            $customer_name,
+            $reservation_id,
+            $event_type,
+            $event_date,
+            $guests
+        );
+
         error_log("SUCCESS: Reservation #$reservation_id created with Payment #$payment_id for customer $customer_id");
 
         ob_clean();
@@ -239,7 +260,7 @@ try {
     } catch (Exception $e) {
         $conn->rollback();
         error_log("TRANSACTION ERROR: " . $e->getMessage());
-        
+
         ob_clean();
         http_response_code(500);
         echo json_encode([
@@ -252,7 +273,7 @@ try {
 
 } catch (Exception $e) {
     error_log("FATAL ERROR: " . $e->getMessage());
-    
+
     ob_clean();
     http_response_code(500);
     echo json_encode([

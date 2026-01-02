@@ -126,7 +126,9 @@
         async function fetchUserTotalOrders(customerId) {
             try {
                 // Backend expects `customer_id` (aligned with get_user_orders.php)
-                const response = await fetch(`get_user_orders_count.php?customer_id=${customerId}`);
+                // Add timestamp to prevent caching
+                const timestamp = new Date().getTime();
+                const response = await fetch(`get_user_orders_count.php?customer_id=${customerId}&_=${timestamp}`);
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
