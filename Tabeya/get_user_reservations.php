@@ -27,9 +27,10 @@ if ($customer_id <= 0) {
 }
 
 try {
-    // Fetch reservations for this customer
+    // Fetch reservations for this customer - FIXED: Use COALESCE to handle NULL status
     $sql = "SELECT ReservationID, EventDate, EventTime, EventType, NumberOfGuests, 
-                   ReservationStatus, DeliveryOption, DeliveryAddress
+                   COALESCE(ReservationStatus, 'Pending') as ReservationStatus, 
+                   DeliveryOption, DeliveryAddress
             FROM reservations 
             WHERE CustomerID = ?
             ORDER BY EventDate DESC, EventTime DESC";
@@ -86,15 +87,20 @@ try {
     $stmt->close();
     $conn->close();
 
+    error_log("DEBUG: Found " . count($reservations) . " reservations for customer ID: " . $customer_id);
+
     echo json_encode([
         'success' => true,
-        'reservations' => $reservations
+        'reservations' => $reservations,
+        'count' => count($reservations)
     ]);
 
 } catch (Exception $e) {
     if (isset($conn)) {
         $conn->close();
     }
+
+    error_log("ERROR fetching reservations: " . $e->getMessage());
 
     http_response_code(500);
     echo json_encode([

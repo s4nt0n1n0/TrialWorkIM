@@ -45,10 +45,6 @@
             <div class="detail-item"><strong>Name:</strong> <span id="profile-name"></span></div>
             <div class="detail-item"><strong>Email:</strong> <span id="profile-email"></span></div>
             <div class="detail-item"><strong>Contact:</strong> <span id="profile-contact"></span></div>
-            <div class="detail-item"><strong>Total Orders:</strong> <span id="profile-orders-count">Loading...</span>
-            </div>
-            <div class="detail-item"><strong>Account Status:</strong> <span id="profile-status"
-                    style="color: green;">Active</span></div>
         </div>
 
         <div class="profile-actions">
@@ -57,8 +53,6 @@
             <button class="logout-btn" id="logout-btn">Logout</button>
         </div>
     </div>
-
-
 
     <footer>
         <div class="contact-section">
@@ -122,10 +116,9 @@
             return true;
         }
 
-        // --- Fetch Total Orders from Server ---
+        // --- Fetch Total Orders + Reservations from Server ---
         async function fetchUserTotalOrders(customerId) {
             try {
-                // Backend expects `customer_id` (aligned with get_user_orders.php)
                 // Add timestamp to prevent caching
                 const timestamp = new Date().getTime();
                 const response = await fetch(`get_user_orders_count.php?customer_id=${customerId}&_=${timestamp}`);
@@ -137,14 +130,19 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    return result.total_orders || 0;
+                    // Return the full result object with breakdown
+                    return {
+                        total: result.total_orders || 0,
+                        orders: result.orders_count || 0,
+                        reservations: result.reservations_count || 0
+                    };
                 } else {
                     console.error('Error fetching orders:', result.message);
-                    return 0;
+                    return { total: 0, orders: 0, reservations: 0 };
                 }
             } catch (error) {
                 console.error('Fetch Error:', error);
-                return 0;
+                return { total: 0, orders: 0, reservations: 0 };
             }
         }
 
@@ -155,12 +153,13 @@
             const contactNumber = user.contactNumber || user.contact || user.contactNo || 'N/A';
             document.getElementById('profile-contact').textContent = contactNumber;
 
-            // Fetch actual total orders from server
-            // Prefer `customerId` which is how we store it at login/signup
+            // Fetch actual total orders + reservations from server
             const customerId = user.customerId || user.CustomerID || user.id || user.userId;
             if (customerId) {
-                const totalOrders = await fetchUserTotalOrders(customerId);
-                document.getElementById('profile-orders-count').textContent = totalOrders;
+                const orderStats = await fetchUserTotalOrders(customerId);
+
+                // Display total only
+                document.getElementById('profile-orders-count').textContent = orderStats.total;
             } else {
                 document.getElementById('profile-orders-count').textContent = '0';
             }
@@ -178,7 +177,7 @@
             }
         }
 
-        // --- FIXED Logout Function ---
+        // --- Logout Function ---
         function logoutUser() {
             // Remove all user-related data
             localStorage.removeItem(USER_KEY);
@@ -194,8 +193,6 @@
             const count = cart.reduce((sum, item) => sum + item.quantity, 0);
             document.getElementById('cart-item-count').textContent = count;
         }
-
-
 
         function updateAccountLink() {
             const accountLink = document.getElementById('account-link');
@@ -218,7 +215,7 @@
                 checkLoginAndProceed(CATER_RESERVATION_PAGE);
             });
 
-            // *** Logout Button Listener ***
+            // Logout Button Listener
             document.getElementById('logout-btn').addEventListener('click', logoutUser);
         }
 

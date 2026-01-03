@@ -2,6 +2,7 @@
 /**
  * Get User Orders
  * Fetches all orders for a specific customer with their items
+ * Uses OrderStatus only (WebsiteStatus removed)
  */
 
 header('Content-Type: application/json; charset=utf-8');
@@ -27,8 +28,10 @@ if ($customer_id <= 0) {
 }
 
 try {
-    // Fetch orders for this customer
-    $sql = "SELECT OrderID, OrderDate, OrderTime, TotalAmount, OrderStatus, WebsiteStatus, OrderType, DeliveryOption
+    // Fetch orders for this customer - Using OrderStatus only
+    $sql = "SELECT OrderID, OrderDate, OrderTime, TotalAmount, 
+                   COALESCE(OrderStatus, 'Pending') as OrderStatus, 
+                   OrderType, DeliveryOption, DeliveryAddress
             FROM orders 
             WHERE CustomerID = ? AND OrderSource = 'Website'
             ORDER BY OrderDate DESC, OrderTime DESC";
@@ -80,15 +83,20 @@ try {
     $stmt->close();
     $conn->close();
 
+    error_log("DEBUG: Found " . count($orders) . " orders for customer ID: " . $customer_id);
+
     echo json_encode([
         'success' => true,
-        'orders' => $orders
+        'orders' => $orders,
+        'count' => count($orders)
     ]);
 
 } catch (Exception $e) {
     if (isset($conn)) {
         $conn->close();
     }
+
+    error_log("ERROR fetching orders: " . $e->getMessage());
 
     http_response_code(500);
     echo json_encode([

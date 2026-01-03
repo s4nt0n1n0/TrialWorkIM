@@ -755,8 +755,9 @@
             }
 
             orders.forEach(order => {
-                const statusClass = getStatusClass(order.WebsiteStatus);
-                const statusText = order.WebsiteStatus || 'Pending';
+                // FIXED: Use OrderStatus instead of WebsiteStatus
+                const statusClass = getStatusClass(order.OrderStatus);
+                const statusText = order.OrderStatus || 'Pending';
                 const isPending = statusText.toLowerCase() === 'pending';
 
                 let itemsHtml = '';
@@ -784,7 +785,7 @@
                 card.className = 'order-card';
                 card.innerHTML = `
                         <div class="card-header">
-                            <h4>Order</h4>
+                            <h4>Order #${order.OrderID}</h4>
                             <span class="status-badge ${statusClass}">${statusText}</span>
                         </div>
                         <div class="card-details">
@@ -793,6 +794,9 @@
                             
                             <span class="detail-label">Order Type:</span>
                             <span class="detail-value">${order.OrderType || 'N/A'}</span>
+                            
+                            <span class="detail-label">Delivery:</span>
+                            <span class="detail-value">${order.DeliveryOption || 'N/A'}</span>
                             
                             <span class="detail-label">Total Amount:</span>
                             <span class="detail-value total">₱${totalAmount.toFixed(2)}</span>
@@ -877,7 +881,7 @@
                 card.className = 'reservation-card';
                 card.innerHTML = `
                     <div class="card-header">
-                        <h4>Reservation</h4>
+                        <h4>Reservation #${reservation.ReservationID}</h4>
                         <span class="status-badge ${statusClass}">${statusText}</span>
                     </div>
                     <div class="card-details">
@@ -909,6 +913,7 @@
                 container.appendChild(card);
             });
         }
+
         function getStatusClass(status) {
             if (!status) return 'status-pending';
             const statusLower = status.toLowerCase();

@@ -2,6 +2,7 @@
 /**
  * ENHANCED ORDER PROCESSING - FIXED VERSION
  * Properly handles delivery options and order status
+ * Uses OrderStatus only (WebsiteStatus column removed)
  */
 
 require_once(__DIR__ . '/api/config/db_config.php');
@@ -37,21 +38,14 @@ try {
         die(json_encode(["success" => false, "message" => "Missing customer ID or empty cart"]));
     }
 
-    // ============================================================
-    // FIX 1: Properly map order type to database enum
-    // ============================================================
+    // Map order type to database enum
     // OrderType enum: 'Dine-in','Takeout','Online'
-    // We'll use 'Online' for all web orders
     $order_type_db = 'Online';
 
     // OrderSource enum: 'POS','Website'
     $order_source_db = 'Website';
 
-    // ============================================================
-    // FIX 2: Properly set DeliveryOption enum
-    // ============================================================
-    // DeliveryOption enum: 'Delivery','Pickup'
-    // Map frontend values to database enum values
+    // Set DeliveryOption enum: 'Delivery','Pickup'
     $delivery_option_db = null;
     if (strtoupper($order_type_raw) === 'DELIVERY') {
         $delivery_option_db = 'Delivery';
@@ -115,15 +109,13 @@ try {
     $conn->begin_transaction();
 
     try {
-        // ============================================================
-        // FIX 3: Set OrderStatus to 'Pending' for all new orders
-        // ============================================================
+        // Set OrderStatus to 'Pending' for all new orders
         $order_status = 'Pending';
 
-        // Insert into orders table with proper delivery option
+        // Insert into orders table (NO WebsiteStatus column)
         $items_count = count($cart_items);
         $sql_order = "INSERT INTO orders 
-                      (CustomerID, OrderType, OrderSource, TotalAmount, OrderStatus, 
+                      (CustomerID, OrderType, OrderSource, TotalAmount, OrderStatus,
                        OrderDate, OrderTime, ItemsOrderedCount, Remarks, 
                        DeliveryAddress, SpecialRequests, DeliveryOption) 
                       VALUES (?, ?, ?, ?, ?, CURDATE(), CURTIME(), ?, ?, ?, ?, ?)";
@@ -137,7 +129,7 @@ try {
         $order_remarks = ($delivery_option_db === 'Delivery') ? 'Delivery Order' : 'Pickup Order';
 
         $stmt_order->bind_param(
-            "issdsissss",
+            "issdsisss",
             $customer_id,
             $order_type_db,        // 'Online'
             $order_source_db,      // 'Website'
