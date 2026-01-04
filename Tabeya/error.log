@@ -628,6 +628,8 @@ Stack trace:
 #0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
 #1 {main}
   thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 12:51:23 Europe/Berlin] Database connection successful to: tabeya_system
+[02-Jan-2026 12:51:24 Europe/Berlin] Database connection successful to: tabeya_system
 [02-Jan-2026 11:52:47 Europe/Berlin] DEBUG: Found 1 reservations for customer ID: 2
 [02-Jan-2026 11:52:48 Europe/Berlin] DEBUG: Found 3 orders for customer ID: 2
 [02-Jan-2026 11:52:58 Europe/Berlin] DEBUG: Found 1 reservations for customer ID: 2

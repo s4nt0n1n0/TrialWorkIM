@@ -347,7 +347,7 @@
 
             for (const categoryName in groupedProducts) {
                 menuHtml += `
-                    <div class="menu-category-container menu-category">
+                    <div class="menu-category-container menu-category" id="${categoryName.replace(/\s+/g, '-')}">
                         <h3>${categoryName}</h3>
                         <div class="menu-grid2">
                 `;
@@ -423,6 +423,46 @@
 
             container.innerHTML = menuHtml;
             setupMenuListeners();
+
+            // Scroll to category if hash exists in URL
+            const hash = window.location.hash;
+            if (hash) {
+                const targetId = decodeURIComponent(hash.substring(1));
+                console.log("Searching for target category ID:", targetId);
+
+                // Try exact match first, then case-insensitive match
+                let targetElement = document.getElementById(targetId);
+
+                if (!targetElement) {
+                    console.log("Exact ID match not found, searching with fuzzy logic...");
+                    const containers = document.querySelectorAll('.menu-category-container');
+                    const normalizedSearch = targetId.toLowerCase().replace(/s$/, ''); // Remove trailing 's'
+
+                    for (const container of containers) {
+                        const normalizedContainer = container.id.toLowerCase().replace(/s$/, '');
+                        if (normalizedContainer === normalizedSearch ||
+                            container.id.toLowerCase().includes(normalizedSearch) ||
+                            normalizedSearch.includes(normalizedContainer)) {
+                            targetElement = container;
+                            console.log("Found fuzzy match:", container.id);
+                            break;
+                        }
+                    }
+                }
+
+                if (targetElement) {
+                    console.log("Target element found, scrolling in 800ms...");
+                    setTimeout(() => {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        console.log("Scrolled to:", targetElement.id);
+                    }, 800);
+                } else {
+                    console.warn("Category element not found for hash:", targetId);
+                    // Log available IDs for easier debugging
+                    const availableIds = Array.from(document.querySelectorAll('.menu-category-container')).map(el => el.id);
+                    console.log("Available category IDs:", availableIds);
+                }
+            }
         }
 
         function updateAccountLink() {

@@ -225,6 +225,7 @@ main {
     overflow: hidden;
     text-align: left;
     transition: transform 0.3s;
+    cursor: pointer;
 }
 
 .item:hover {
