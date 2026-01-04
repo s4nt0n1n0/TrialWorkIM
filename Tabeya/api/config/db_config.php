@@ -14,13 +14,27 @@ ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/../../error.log');
 
 // ----------------------
-// Database credentials
+// Load credentials from INI
 // ----------------------
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'tabeya_system');
-define('DB_PORT', '3306');
+$ini_file = __DIR__ . '/db_config.ini';
+
+if (!file_exists($ini_file)) {
+    error_log("Database configuration file not found: " . $ini_file);
+    die("Configuration error. Please contact support.");
+}
+
+$config = parse_ini_file($ini_file);
+
+if (!$config) {
+    error_log("Failed to parse database configuration file: " . $ini_file);
+    die("Configuration error. Please contact support.");
+}
+
+define('DB_HOST', $config['server']);
+define('DB_USER', $config['username']);
+define('DB_PASS', $config['password']);
+define('DB_NAME', $config['database']);
+define('DB_PORT', $config['port']);
 
 // ----------------------
 // Create connection
@@ -35,8 +49,10 @@ if ($conn->connect_error) {
     error_log("Database connection failed: " . $conn->connect_error);
 
     // For AJAX requests: return JSON error
-    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-        strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+    if (
+        !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+        strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
+    ) {
 
         header('Content-Type: application/json');
         http_response_code(500);
