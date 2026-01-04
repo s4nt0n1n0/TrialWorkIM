@@ -1,4 +1,11 @@
 <?php
+/**
+ * Get User Orders Count
+ * Counts BOTH orders and reservations (excluding cancelled ones)
+ * Returns combined total for display in Profile
+ * Uses OrderStatus only (WebsiteStatus removed)
+ */
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET');
@@ -16,16 +23,15 @@ if ($customerId <= 0) {
     exit();
 }
 
+// ============================================================
 // Count orders (excluding cancelled ones)
-// Using case-insensitive comparison
+// FIXED: Only check OrderStatus (WebsiteStatus removed)
+// ============================================================
 $sql_orders = "SELECT COUNT(*) AS total_orders
                FROM orders
                WHERE CustomerID = ?
                  AND OrderSource = 'Website'
-                 AND (
-                     (WebsiteStatus IS NULL OR LOWER(WebsiteStatus) != 'cancelled')
-                     AND (OrderStatus IS NULL OR LOWER(OrderStatus) != 'cancelled')
-                 )";
+                 AND (OrderStatus IS NULL OR LOWER(OrderStatus) != 'cancelled')";
 
 $stmt_orders = $conn->prepare($sql_orders);
 
@@ -48,8 +54,9 @@ if ($result_orders && $result_orders->num_rows > 0) {
 }
 $stmt_orders->close();
 
+// ============================================================
 // Count reservations (excluding cancelled ones)
-// Using case-insensitive comparison
+// ============================================================
 $sql_reservations = "SELECT COUNT(*) AS total_reservations
                      FROM reservations
                      WHERE CustomerID = ?
@@ -76,8 +83,12 @@ if ($result_reservations && $result_reservations->num_rows > 0) {
 }
 $stmt_reservations->close();
 
+// ============================================================
 // Total is orders + reservations (both excluding cancelled)
+// ============================================================
 $total_count = $orders_count + $reservations_count;
+
+error_log("DEBUG: Customer #$customerId - Orders: $orders_count, Reservations: $reservations_count, Total: $total_count");
 
 echo json_encode([
     'success' => true,

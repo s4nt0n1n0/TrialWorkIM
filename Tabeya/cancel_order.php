@@ -2,6 +2,7 @@
 /**
  * Cancel Order
  * Updates order status to 'Cancelled' and payment status to 'Refunded' if current status is 'Pending'
+ * Uses OrderStatus only (WebsiteStatus removed)
  */
 
 header('Content-Type: application/json; charset=utf-8');
@@ -44,7 +45,8 @@ try {
     $conn->begin_transaction();
     
     // First, verify the order belongs to the customer and check current status
-    $checkSql = "SELECT WebsiteStatus, OrderStatus FROM orders 
+    // FIXED: Only check OrderStatus (WebsiteStatus removed)
+    $checkSql = "SELECT OrderStatus, OrderDate FROM orders 
                  WHERE OrderID = ? AND CustomerID = ? AND OrderSource = 'Website'";
     $checkStmt = $conn->prepare($checkSql);
     
@@ -71,7 +73,8 @@ try {
     $checkStmt->close();
     
     // Check if order can be cancelled (must be Pending)
-    $currentStatus = !empty($order['WebsiteStatus']) ? $order['WebsiteStatus'] : $order['OrderStatus'];
+    // FIXED: Only use OrderStatus
+    $currentStatus = $order['OrderStatus'];
     
     if (strtolower($currentStatus) !== 'pending') {
         $conn->rollback();
@@ -83,10 +86,27 @@ try {
         exit;
     }
     
+    // Optional: Check if order is not too old (uncomment if needed)
+    /*
+    $orderDate = new DateTime($order['OrderDate']);
+    $today = new DateTime();
+    $daysDiff = $today->diff($orderDate)->days;
+    
+    if ($daysDiff > 1) {
+        $conn->rollback();
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Cannot cancel orders older than 1 day'
+        ]);
+        exit;
+    }
+    */
+    
     // Update order status to Cancelled
+    // FIXED: Only update OrderStatus (WebsiteStatus removed)
     $updateOrderSql = "UPDATE orders 
-                       SET WebsiteStatus = 'Cancelled', 
-                           OrderStatus = 'Cancelled',
+                       SET OrderStatus = 'Cancelled',
                            UpdatedDate = NOW()
                        WHERE OrderID = ? AND CustomerID = ?";
     $updateOrderStmt = $conn->prepare($updateOrderSql);
@@ -120,6 +140,9 @@ try {
     
     // Commit transaction
     $conn->commit();
+    
+    error_log("SUCCESS: Order #$orderId cancelled by customer #$customerId");
+    
     $conn->close();
     
     http_response_code(200);
@@ -133,6 +156,8 @@ try {
         $conn->rollback();
         $conn->close();
     }
+    
+    error_log("ERROR cancelling order: " . $e->getMessage());
     
     http_response_code(500);
     echo json_encode([

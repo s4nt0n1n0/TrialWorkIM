@@ -135,6 +135,9 @@ try {
     
     // Commit transaction
     $conn->commit();
+    
+    error_log("SUCCESS: Reservation #$reservationId cancelled by customer #$customerId");
+    
     $conn->close();
     
     http_response_code(200);
@@ -148,6 +151,8 @@ try {
         $conn->rollback();
         $conn->close();
     }
+    
+    error_log("ERROR cancelling reservation: " . $e->getMessage());
     
     http_response_code(500);
     echo json_encode([

@@ -630,3 +630,97 @@ Stack trace:
   thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
 [02-Jan-2026 12:51:23 Europe/Berlin] Database connection successful to: tabeya_system
 [02-Jan-2026 12:51:24 Europe/Berlin] Database connection successful to: tabeya_system
+[02-Jan-2026 11:52:47 Europe/Berlin] DEBUG: Found 1 reservations for customer ID: 2
+[02-Jan-2026 11:52:48 Europe/Berlin] DEBUG: Found 3 orders for customer ID: 2
+[02-Jan-2026 11:52:58 Europe/Berlin] DEBUG: Found 1 reservations for customer ID: 2
+[02-Jan-2026 11:52:58 Europe/Berlin] DEBUG: Found 3 orders for customer ID: 2
+[02-Jan-2026 11:53:11 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:53:12 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:53:13 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:53:13 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:53:13 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:53:14 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:53:14 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 11:53:17 Europe/Berlin] DEBUG: Found 1 reservations for customer ID: 2
+[02-Jan-2026 11:53:17 Europe/Berlin] DEBUG: Found 3 orders for customer ID: 2
+[02-Jan-2026 11:58:13 Europe/Berlin] DEBUG: Found 1 reservations for customer ID: 2
+[02-Jan-2026 11:58:13 Europe/Berlin] DEBUG: Found 3 orders for customer ID: 2
+[02-Jan-2026 11:58:16 Europe/Berlin] SUCCESS: Order #13002 cancelled by customer #2
+[02-Jan-2026 11:58:18 Europe/Berlin] DEBUG: Found 3 orders for customer ID: 2
+[02-Jan-2026 11:58:36 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'WebsiteStatus' in 'where clause' in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php:30
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php(30): mysqli->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\get_user_orders_count.php on line 30
+[02-Jan-2026 12:15:34 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 12:20:12 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:22:49 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:22:51 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:22:51 Europe/Berlin] DEBUG: Found 3 orders for customer ID: 2
+[02-Jan-2026 13:22:51 Europe/Berlin] DEBUG: Found 1 reservations for customer ID: 2
+[02-Jan-2026 13:23:12 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:25:15 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:25:16 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:25:17 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:25:17 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:25:18 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:25:23 Europe/Berlin] DEBUG: Found 1 reservations for customer ID: 2
+[02-Jan-2026 13:25:23 Europe/Berlin] DEBUG: Found 3 orders for customer ID: 2
+[02-Jan-2026 13:25:41 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:26:07 Europe/Berlin] DEBUG: Found 1 reservations for customer ID: 2
+[02-Jan-2026 13:26:07 Europe/Berlin] DEBUG: Found 3 orders for customer ID: 2
+[02-Jan-2026 13:26:44 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:27:16 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:27:18 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:28:01 Europe/Berlin] DEBUG: Found 1 reservations for customer ID: 2
+[02-Jan-2026 13:28:01 Europe/Berlin] DEBUG: Found 3 orders for customer ID: 2
+[02-Jan-2026 13:28:02 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:31:36 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:31:36 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:31:37 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:31:40 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:31:40 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:31:40 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:31:40 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:31:41 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:32:36 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:32:37 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:32:39 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:32:39 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:32:39 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:32:45 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:33:08 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:33:13 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:33:21 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 13:33:44 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 18:11:50 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[02-Jan-2026 20:00:10 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[03-Jan-2026 16:05:14 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
