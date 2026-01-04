@@ -113,11 +113,20 @@
         let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
 
         // Initialize 'selected' property if missing
+        // Initialize 'selected' property if missing or invalid type
+        let cartDirty = false;
         cart.forEach(item => {
-            if (typeof item.selected === 'undefined') {
+            if (typeof item.selected !== 'boolean') {
+                // Default to true if undefined, null, or weird type
                 item.selected = true;
+                cartDirty = true;
             }
         });
+
+        // If we fixed any items, save immediately so state is consistent
+        if (cartDirty) {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        }
 
         // --- Core Login Check ---
         function checkUserLoginStatus() {

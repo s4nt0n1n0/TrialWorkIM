@@ -14,9 +14,10 @@ ini_set('error_log', __DIR__ . '/error.log');
 header('Content-Type: application/json; charset=utf-8');
 
 // Custom error handlers
-set_error_handler(function($errno, $errstr, $errfile, $errline) {
+set_error_handler(function ($errno, $errstr, $errfile, $errline) {
     error_log("PHP Error: $errstr in " . basename($errfile) . " line $errline");
-    if (ob_get_level()) ob_clean();
+    if (ob_get_level())
+        ob_clean();
     http_response_code(500);
     echo json_encode(["success" => false, "message" => "An error occurred"]);
     exit;
@@ -86,7 +87,7 @@ try {
                     LEFT JOIN reservation_items ri ON r.ReservationID = ri.ReservationID
                     LEFT JOIN customer_feedback cf ON r.ReservationID = cf.ReservationID AND cf.CustomerID = ?
                     WHERE r.CustomerID = ? 
-                    AND r.ReservationStatus = 'Confirmed'
+                    AND r.ReservationStatus = 'Completed'
                     AND r.EventDate >= DATE_SUB(NOW(), INTERVAL 90 DAY)
                     GROUP BY r.ReservationID
                     ORDER BY r.EventDate DESC
@@ -110,14 +111,15 @@ try {
         ];
     }
     $stmt->close();
-    
+
     // ✅ Close connection before output
     if (isset($conn) && $conn instanceof mysqli) {
         $conn->close();
     }
 
     // Clean output and send response
-    if (ob_get_level()) ob_clean();
+    if (ob_get_level())
+        ob_clean();
     echo json_encode([
         'success' => true,
         'orders' => $orders,
@@ -129,8 +131,9 @@ try {
     if (isset($conn) && $conn instanceof mysqli) {
         $conn->close();
     }
-    
-    if (ob_get_level()) ob_clean();
+
+    if (ob_get_level())
+        ob_clean();
     http_response_code(500);
     echo json_encode([
         'success' => false,

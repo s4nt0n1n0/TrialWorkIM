@@ -219,7 +219,7 @@ async function loadReviewableOrders() {
 
             div.innerHTML = `
                 <div class="item-header">
-                    <strong>Order #${order.id}</strong>
+                    <strong>Order</strong>
                     <span class="item-badge ${order.hasReview ? 'reviewed' : ''}">${order.hasReview ? 'Reviewed' : 'Not Reviewed'}</span>
                 </div>
                 <div>Date: ${formatDate(order.date)}</div>
@@ -269,7 +269,7 @@ async function loadReviewableReservations() {
 
             div.innerHTML = `
                 <div class="item-header">
-                    <strong>Reservation #${reservation.id}</strong>
+                    <strong>Reservation</strong>
                     <span class="item-badge ${reservation.hasReview ? 'reviewed' : ''}">${reservation.hasReview ? 'Reviewed' : 'Not Reviewed'}</span>
                 </div>
                 <div>Date: ${formatDate(reservation.date)}</div>

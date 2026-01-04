@@ -30,6 +30,7 @@ try {
     $cart_data_json = $_POST['cart_data'] ?? '[]';
     $special_requests = $_POST['special_requests'] ?? null;
     $delivery_address = $_POST['address'] ?? null;
+    $transaction_id = $_POST['transaction_id'] ?? null;
 
     // Validate cart data
     $cart_items = json_decode($cart_data_json, true);
@@ -129,7 +130,7 @@ try {
         $order_remarks = ($delivery_option_db === 'Delivery') ? 'Delivery Order' : 'Pickup Order';
 
         $stmt_order->bind_param(
-            "issdsisss",
+            "issdsissss",
             $customer_id,
             $order_type_db,        // 'Online'
             $order_source_db,      // 'Website'
@@ -174,8 +175,8 @@ try {
         // Insert payment record
         $sql_payment = "INSERT INTO payments 
                         (OrderID, PaymentMethod, AmountPaid, PaymentStatus, PaymentSource, 
-                         ProofOfPayment, ReceiptFileName, Notes) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                         ProofOfPayment, ReceiptFileName, Notes, TransactionID) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt_payment = $conn->prepare($sql_payment);
         if ($stmt_payment === false) {
@@ -186,7 +187,7 @@ try {
         $payment_notes = ($payment_method_raw === 'GCASH') ? 'GCash receipt uploaded - awaiting verification' : 'Cash on Delivery';
 
         $stmt_payment->bind_param(
-            "isdsssss",
+            "isdssssss",
             $order_id,
             $payment_method_db,
             $total_amount,
@@ -194,7 +195,8 @@ try {
             $order_source_db,
             $receipt_path,
             $receipt_filename,
-            $payment_notes
+            $payment_notes,
+            $transaction_id
         );
 
         if (!$stmt_payment->execute()) {

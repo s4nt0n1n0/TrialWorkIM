@@ -25,7 +25,9 @@ $sql = "SELECT
             cf.AmbienceComment,
             cf.CleanlinessComment,
             cf.ReviewMessage,
-            cf.CreatedDate
+            cf.CreatedDate,
+            (SELECT GROUP_CONCAT(CONCAT(Quantity, 'x ', ProductName) SEPARATOR ', ') FROM order_items WHERE OrderID = cf.OrderID) AS OrderItems,
+            (SELECT GROUP_CONCAT(CONCAT(Quantity, 'x ', ProductName) SEPARATOR ', ') FROM reservation_items WHERE ReservationID = cf.ReservationID) AS ReservationItems
         FROM customer_feedback cf
         JOIN customers c ON cf.CustomerID = c.CustomerID
         WHERE cf.Status = 'Approved'
@@ -54,18 +56,22 @@ $stats = $stats_result->fetch_assoc();
 ?>
 <?php
 // Helper Function for Initials
-function getInitials($name) {
-    if (!$name || $name === 'Anonymous') return 'A';
+function getInitials($name)
+{
+    if (!$name || $name === 'Anonymous')
+        return 'A';
     $words = explode(' ', $name);
     $initials = '';
     foreach ($words as $w) {
-        if (!empty($w)) $initials .= strtoupper($w[0]);
+        if (!empty($w))
+            $initials .= strtoupper($w[0]);
     }
     return substr($initials, 0, 1);
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -73,6 +79,7 @@ function getInitials($name) {
     <link rel="stylesheet" href="CSS/ReviewDesign.css?v=1.5">
     <link rel="stylesheet" href="CSS/Footer.css?v=1.4">
 </head>
+
 <body>
     <header>
         <div class="logo">
@@ -89,7 +96,8 @@ function getInitials($name) {
             <a href="Login.html" id="account-link">PROFILE</a>
             <div class="cart-icon" id="view-cart-btn" role="button" tabindex="0">
                 <a href="Cart.html" style="text-decoration: none; color: inherit;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="9" cy="21" r="1"></circle>
                         <circle cx="20" cy="21" r="1"></circle>
                         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
@@ -122,7 +130,7 @@ function getInitials($name) {
                         ?>
                     </div>
                     <p class="based-on">Based on <?php echo $stats['total']; ?> Reviews</p>
-                    
+
                     <div class="rating-bars">
                         <?php
                         $total = max(intval($stats['total']), 1);
@@ -176,13 +184,13 @@ function getInitials($name) {
                 </div>
 
                 <div class="reviews-list" id="reviews-container">
-                    <?php 
+                    <?php
                     if ($reviews_result && $reviews_result->num_rows > 0) {
                         while ($review = $reviews_result->fetch_assoc()) {
                             $initials = getInitials($review['DisplayName']);
                             $dateAttr = date('Y-m-d H:i:s', strtotime($review['CreatedDate']));
                             echo '<div class="review-card" data-date="' . $dateAttr . '">';
-                            
+
                             // User Header
                             echo '<div class="review-card-header">';
                             echo '<div class="avatar">' . htmlspecialchars($initials) . '</div>';
@@ -191,10 +199,10 @@ function getInitials($name) {
                             echo '<span class="user-name">' . htmlspecialchars($review['DisplayName']) . '</span>';
                             echo '<span class="type-badge">' . $review['FeedbackType'] . '</span>';
                             echo '</div>';
-                            
+
                             // Date
                             echo '<div class="review-date">' . date('M d, Y', strtotime($review['CreatedDate'])) . '</div>';
-                            
+
                             // Stars
                             echo '<div class="card-main-stars">';
                             for ($i = 1; $i <= 5; $i++) {
@@ -203,6 +211,20 @@ function getInitials($name) {
                             }
                             echo '</div>';
                             echo '</div></div>'; // end user-meta, review-card-header
+                    
+                            // Display Reviewed Items
+                            $reviewedItems = '';
+                            if ($review['FeedbackType'] === 'Order' && !empty($review['OrderItems'])) {
+                                $reviewedItems = $review['OrderItems'];
+                            } elseif ($review['FeedbackType'] === 'Reservation' && !empty($review['ReservationItems'])) {
+                                $reviewedItems = $review['ReservationItems'];
+                            }
+
+                            if ($reviewedItems) {
+                                echo '<div class="reviewed-items-display" style="font-size: 0.9em; color: #555; margin: 5px 0 10px 60px; font-style: italic;">';
+                                echo 'Ordered: ' . htmlspecialchars($reviewedItems);
+                                echo '</div>';
+                            }
 
                             // Category Badges
                             echo '<div class="category-badges">';
@@ -224,14 +246,14 @@ function getInitials($name) {
                             }
 
                             // Accordion
-                            $hasComments = $review['FoodTasteComment'] || $review['PortionSizeComment'] || 
-                                          $review['ServiceComment'] || $review['AmbienceComment'] || 
-                                          $review['CleanlinessComment'];
-                            
+                            $hasComments = $review['FoodTasteComment'] || $review['PortionSizeComment'] ||
+                                $review['ServiceComment'] || $review['AmbienceComment'] ||
+                                $review['CleanlinessComment'];
+
                             if ($hasComments) {
                                 echo '<button class="accordion-btn" onclick="toggleAccordion(this)">View detailed feedback ⌵</button>';
                                 echo '<div class="accordion-content">';
-                                
+
                                 $comments = [
                                     'Food Taste' => $review['FoodTasteComment'],
                                     'Portion Size' => $review['PortionSizeComment'],
@@ -239,7 +261,7 @@ function getInitials($name) {
                                     'Ambience' => $review['AmbienceComment'],
                                     'Cleanliness' => $review['CleanlinessComment']
                                 ];
-                                
+
                                 foreach ($comments as $label => $comment) {
                                     if ($comment) {
                                         echo '<div class="comment-group">';
@@ -250,7 +272,7 @@ function getInitials($name) {
                                 }
                                 echo '</div>'; // end accordion-content
                             }
-                            
+
                             echo '</div>'; // end review-card
                         }
                     } else {
@@ -271,9 +293,9 @@ function getInitials($name) {
         <div class="modal-content">
             <span class="close-btn" id="close-modal-btn">&times;</span>
             <h2 class="modal-title">Share Your Experience</h2>
-            
+
             <div id="user-info-section"></div>
-            
+
             <div class="feedback-type-selection">
                 <h4>What would you like to review?</h4>
                 <div class="feedback-type-buttons">
@@ -282,22 +304,22 @@ function getInitials($name) {
                     <button class="feedback-type-btn active" data-type="General">⭐ General Experience</button>
                 </div>
             </div>
-            
+
             <div class="reviewable-items-section" id="orders-section">
                 <h4>Select an order to review:</h4>
                 <div id="orders-list"></div>
             </div>
-            
+
             <div class="reviewable-items-section" id="reservations-section">
                 <h4>Select a reservation to review:</h4>
                 <div id="reservations-list"></div>
             </div>
-            
+
             <div class="anonymous-option">
                 <input type="checkbox" id="anonymous-checkbox">
                 <label for="anonymous-checkbox" class="anonymous-label">Post anonymously</label>
             </div>
-            
+
             <div class="overall-rating-input">
                 <h3>Overall Rating</h3>
                 <div class="rating-stars modal-rating-stars" id="overall-stars">
@@ -314,7 +336,7 @@ function getInitials($name) {
 
             <div class="review-form-section">
                 <h4 class="modal-subtitle">Rate Each Category</h4>
-                
+
                 <div class="rating-category">
                     <label class="cat-label">🍽️ Food Taste</label>
                     <div class="category-stars" data-category="food">
@@ -337,7 +359,8 @@ function getInitials($name) {
                         <span class="star" data-rating="5">★</span>
                     </div>
                 </div>
-                <textarea class="comment-field" id="portion-comment" placeholder="Was the portion satisfying?"></textarea>
+                <textarea class="comment-field" id="portion-comment"
+                    placeholder="Was the portion satisfying?"></textarea>
 
                 <div class="rating-category">
                     <label class="cat-label">👨‍💼 Customer Service</label>
@@ -361,7 +384,8 @@ function getInitials($name) {
                         <span class="star" data-rating="5">★</span>
                     </div>
                 </div>
-                <textarea class="comment-field" id="ambience-comment" placeholder="Describe the atmosphere..."></textarea>
+                <textarea class="comment-field" id="ambience-comment"
+                    placeholder="Describe the atmosphere..."></textarea>
 
                 <div class="rating-category">
                     <label class="cat-label">🧹 Cleanliness</label>
@@ -373,12 +397,14 @@ function getInitials($name) {
                         <span class="star" data-rating="5">★</span>
                     </div>
                 </div>
-                <textarea class="comment-field" id="cleanliness-comment" placeholder="How clean was the place?"></textarea>
+                <textarea class="comment-field" id="cleanliness-comment"
+                    placeholder="How clean was the place?"></textarea>
             </div>
 
             <div class="review-form-section">
                 <h4 class="modal-subtitle-margin">General Comments (Optional)</h4>
-                <textarea class="comment-field general-comment" id="review-message" placeholder="Share your overall experience..."></textarea>
+                <textarea class="comment-field general-comment" id="review-message"
+                    placeholder="Share your overall experience..."></textarea>
             </div>
 
             <button id="submit-review-btn" class="write-btn">Submit Review</button>
@@ -411,7 +437,8 @@ function getInitials($name) {
                         <img src="Photo/Facebook.png" alt="Facebook">
                         <div class="contact-item-text">
                             <strong>Connect</strong>
-                            <p><a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank">Tabeya, VCN</a></p>
+                            <p><a href="https://www.facebook.com/profile.php?id=100063540027038" target="_blank">Tabeya,
+                                    VCN</a></p>
                         </div>
                     </div>
                 </div>
@@ -419,7 +446,8 @@ function getInitials($name) {
         </div>
     </footer>
 
-    <script src="review_enhanced.js?v=1.4"></script>
+    <script src="review_enhanced.js?v=1.5"></script>
 </body>
+
 </html>
 <?php $conn->close(); ?>

@@ -724,3 +724,4 @@ Stack trace:
 [02-Jan-2026 18:11:50 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
 [02-Jan-2026 20:00:10 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
 [03-Jan-2026 16:05:14 Europe/Berlin] DEBUG: Customer #2 - Orders: 2, Reservations: 1, Total: 3
+[04-Jan-2026 20:15:53 Europe/Berlin] SUCCESS: Reservation #12002 created with Payment #20007 for customer 12008

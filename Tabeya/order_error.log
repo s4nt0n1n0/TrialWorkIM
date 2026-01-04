@@ -11,3 +11,29 @@
 [01-Jan-2026 10:28:13 Europe/Berlin] SUCCESS: Order #13001 created - Status: Pending, Delivery: Pickup
 [02-Jan-2026 08:42:12 Europe/Berlin] SUCCESS: Order #13002 created - Status: Pending, Delivery: Pickup
 [02-Jan-2026 11:24:48 Europe/Berlin] SUCCESS: Order #13003 created - Status: Pending, Delivery: Pickup
+[04-Jan-2026 19:39:47 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php:131
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php(131): mysqli_stmt->bind_param('issdsisss', '12008', 'Online', 'Website', '40.00', 'Pending', 1, 'Pickup Order', NULL, '', 'Pickup')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php on line 131
+[04-Jan-2026 20:08:09 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php:131
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php(131): mysqli_stmt->bind_param('issdsisss', '12008', 'Online', 'Website', '40.00', 'Pending', 1, 'Pickup Order', NULL, '', 'Pickup')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php on line 131
+[04-Jan-2026 20:08:24 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php:131
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php(131): mysqli_stmt->bind_param('issdsisss', '12008', 'Online', 'Website', '40.00', 'Pending', 1, 'Pickup Order', NULL, '', 'Pickup')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php on line 131
+[04-Jan-2026 20:08:48 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php:132
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php(132): mysqli_stmt->bind_param('issdsisss', '12008', 'Online', 'Website', '40.00', 'Pending', 1, 'Pickup Order', NULL, '', 'Pickup')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php on line 132
+[04-Jan-2026 20:11:56 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php:132
+Stack trace:
+#0 D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php(132): mysqli_stmt->bind_param('issdsisss', '12008', 'Online', 'Website', '40.00', 'Pending', 1, 'Pickup Order', NULL, '', 'Pickup')
+#1 {main}
+  thrown in D:\XAMPP\htdocs\TrialWeb\TrialWorkIM\Tabeya\process_order_enhanced.php on line 132
+[04-Jan-2026 20:14:09 Europe/Berlin] SUCCESS: Order #13007 created - Status: Pending, Delivery: Pickup
